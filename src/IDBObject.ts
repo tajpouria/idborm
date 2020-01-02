@@ -7,11 +7,11 @@ type IDBObjectKey = string | number | Date | ArrayBufferView | ArrayBuffer | IDB
 export class IDBObject {
   constructor(private db: idb.IDBPDatabase<unknown>, private storeName: string) {}
 
-  public set = async (key: IDBObjectKey, value: any) => {
+  public put = async (key: IDBObjectKey, value: any) => {
     const closeDBConnection = () => {
       this.db.close();
 
-      this.set(key, value);
+      this.put(key, value);
     };
     try {
       const db = await idb.openDB(this.db.name, this.db.version + 1, {

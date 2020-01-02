@@ -4,7 +4,7 @@ import { IDBObject } from "./IDBObject";
 
 const IDBORM = "idborm";
 
-export default class IDB {
+export class IDB {
   protected objectStoresOptions: Record<string, IDBObjectStoreParameters> = {};
 
   constructor(private dbName: string, private db: idb.IDBPDatabase<unknown>) {}
@@ -28,21 +28,17 @@ export default class IDB {
   };
 
   get objectStores() {
-    try {
-      const idbObjectStores = this.db.objectStoreNames;
+    const idbObjectStores = this.db.objectStoreNames;
 
-      const _objectStore: string[] = [];
+    const _objectStore: string[] = [];
 
-      for (let key in idbObjectStores) {
-        if (!["length", "item", "contains"].includes(key)) {
-          _objectStore.push(idbObjectStores[+key]);
-        }
+    for (let key in idbObjectStores) {
+      if (!["length", "item", "contains"].includes(key)) {
+        _objectStore.push(idbObjectStores[+key]);
       }
-
-      return _objectStore;
-    } catch (err) {
-      console.error(`${IDBORM}: cannot get objectStores of ${this.dbName}`);
     }
+
+    return _objectStore;
   }
 
   public createObjectStore = async (

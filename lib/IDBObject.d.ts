@@ -4,7 +4,7 @@ export declare class IDBObject {
     private db;
     private storeName;
     constructor(db: idb.IDBPDatabase<unknown>, storeName: string);
-    set: (key: IDBObjectKey, value: any) => Promise<string | number | Date | ArrayBufferView | ArrayBuffer | IDBArrayKey | undefined>;
+    put: (key: IDBObjectKey, value: any) => Promise<string | number | Date | ArrayBufferView | ArrayBuffer | IDBArrayKey | undefined>;
     get: (key: IDBObjectKey) => Promise<any>;
     delete: (key: IDBObjectKey) => Promise<undefined>;
     keys: () => Promise<IDBValidKey[] | undefined>;
