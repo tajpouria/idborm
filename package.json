@@ -1,6 +1,6 @@
 {
   "name": "idborm",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A super simple and minimalist ORM built on top of IndexedDB that makes IndexedDB usable in both service-worker and application",
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
