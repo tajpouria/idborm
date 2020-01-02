@@ -1,0 +1,35 @@
+{
+  "name": "idborm",
+  "version": "0.0.1",
+  "description": "A super simple and minimalist ORM built on top of IndexedDB that makes IndexedDB usable in both service-worker and application",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "scripts": {
+    "build": "tsc && yarn stand-alone",
+    "stand-alone": "webpack --config=webpack.config.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tajpouria/idborm"
+  },
+  "keywords": [
+    "indexeddb",
+    "idb",
+    "browser",
+    "database",
+    "service worker",
+    "react",
+    "angular",
+    "vue"
+  ],
+  "author": "Pouria Tajdivand",
+  "license": "MIT",
+  "devDependencies": {
+    "typescript": "^3.7.4",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
+  },
+  "dependencies": {
+    "idb": "^4.0.5"
+  }
+}
