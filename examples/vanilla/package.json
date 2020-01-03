@@ -1,0 +1,9 @@
+{
+  "name": "vanillajs-idborm-example",
+  "scripts": {
+    "start": "parcel index.html"
+  },
+  "devDependencies": {
+    "parcel": "^1.12.4"
+  }
+}

@@ -1,60 +1,55 @@
-import * as idb from "idb";
+import { openDB, IDBPDatabase, deleteDB } from "idb";
 
 import { IDBObject } from "./IDBObject";
 
 const IDBORM = "idborm";
 
 export class IDB {
-  protected objectStoresOptions: Record<string, IDBObjectStoreParameters> = {};
+  private dbName: string;
 
-  constructor(private dbName: string, private db: idb.IDBPDatabase<unknown>) {}
+  private db: IDBPDatabase<unknown>;
 
-  public static init = async (dataBaseName: string) => {
+  constructor(dbName: string, db: IDBPDatabase<unknown>) {
+    this.dbName = dbName;
+    this.db = db;
+  }
+
+  public static init = async (dataBaseName: string): Promise<IDB> => {
     if (!dataBaseName) {
       console.error(`${IDBORM}: dataBaseName is required.`);
       throw new Error(`${IDBORM}: dataBaseName is required.`);
     }
 
-    // @ts-ignore //TODO: browser support
-    const dataBases: { name: string; version: number }[] = await indexedDB.databases();
-
-    const isAlreadyExist = dataBases.find(_database => _database.name === dataBaseName);
-
-    const _version = isAlreadyExist?.version || 1;
-
-    const idbdb = await idb.openDB(dataBaseName, _version);
-
-    return new IDB(dataBaseName, idbdb);
+    return (async function identifyDB(version: number): Promise<IDB> {
+      try {
+        const idbdb = await openDB(dataBaseName, version);
+        return new IDB(dataBaseName, idbdb);
+      } catch (error) {
+        return identifyDB(version + 1);
+      }
+    })(1);
   };
 
-  get objectStores() {
+  get objectStores(): string[] {
     const idbObjectStores = this.db.objectStoreNames;
-
-    const _objectStore: string[] = [];
-
-    for (let key in idbObjectStores) {
-      if (!["length", "item", "contains"].includes(key)) {
-        _objectStore.push(idbObjectStores[+key]);
-      }
-    }
-
-    return _objectStore;
+    return Object.keys(idbObjectStores).map(objectStore => idbObjectStores[+objectStore]);
   }
 
   public createObjectStore = async (
     objectStoreName: string,
     options: IDBObjectStoreParameters = { autoIncrement: true },
-  ) => {
-    const closeDBConnection = () => this.db.close();
+  ): Promise<IDBObject> => {
+    const closeDBConnection = (): void => this.db.close();
 
     try {
       if (!this.db.objectStoreNames.contains(objectStoreName)) {
-        await idb.openDB(this.dbName, this.db.version + 1, {
+        await openDB(this.dbName, this.db.version + 1, {
           upgrade(db) {
+            console.log("upgrade", objectStoreName);
             db.createObjectStore(objectStoreName, options);
           },
-
           blocked() {
+            console.log("blocked", objectStoreName);
             closeDBConnection();
           },
         });
@@ -63,13 +58,14 @@ export class IDB {
       return new IDBObject(this.db, objectStoreName);
     } catch (err) {
       console.error(IDBORM, err);
+      throw new Error(err);
     }
   };
 
-  public delete = async () => {
-    const closeDBConnection = () => this.db.close();
+  public delete = async (): Promise<void> => {
+    const closeDBConnection = (): void => this.db.close();
 
-    return await idb.deleteDB(this.dbName, {
+    return deleteDB(this.dbName, {
       blocked() {
         closeDBConnection();
       },

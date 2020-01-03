@@ -1,11 +1,18 @@
-import * as idb from "idb";
+import { openDB, IDBPDatabase } from "idb";
 
 const IDBORM = "idborm";
 
 type IDBObjectKey = string | number | Date | ArrayBufferView | ArrayBuffer | IDBArrayKey | IDBKeyRange;
 
 export class IDBObject {
-  constructor(private db: idb.IDBPDatabase<unknown>, private storeName: string) {}
+  private db: IDBPDatabase<unknown>;
+
+  private storeName: string;
+
+  constructor(db: IDBPDatabase<unknown>, storeName: string) {
+    this.db = db;
+    this.storeName = storeName;
+  }
 
   public put = async (key: IDBObjectKey, value: any) => {
     const closeDBConnection = () => {
@@ -14,7 +21,7 @@ export class IDBObject {
       this.put(key, value);
     };
     try {
-      const db = await idb.openDB(this.db.name, this.db.version + 1, {
+      const db = await openDB(this.db.name, this.db.version + 1, {
         blocked() {
           closeDBConnection();
         },
@@ -30,7 +37,7 @@ export class IDBObject {
     const closeDBConnection = () => this.db.close();
 
     try {
-      const db = await idb.openDB(this.db.name, this.db.version + 1, {
+      const db = await openDB(this.db.name, this.db.version + 1, {
         blocked() {
           closeDBConnection();
         },
@@ -46,7 +53,7 @@ export class IDBObject {
     const closeDBConnection = () => this.db.close();
 
     try {
-      const db = await idb.openDB(this.db.name, this.db.version + 1, {
+      const db = await openDB(this.db.name, this.db.version + 1, {
         blocked() {
           closeDBConnection();
         },
@@ -62,7 +69,7 @@ export class IDBObject {
     const closeDBConnection = () => this.db.close();
 
     try {
-      const db = await idb.openDB(this.db.name, this.db.version + 1, {
+      const db = await openDB(this.db.name, this.db.version + 1, {
         blocked() {
           closeDBConnection();
         },
@@ -88,7 +95,7 @@ export class IDBObject {
     const closeDBConnection = () => this.db.close();
 
     try {
-      const db = await idb.openDB(this.db.name, this.db.version + 1, {
+      const db = await openDB(this.db.name, this.db.version + 1, {
         blocked() {
           closeDBConnection();
         },
@@ -104,7 +111,7 @@ export class IDBObject {
     const closeDBConnection = () => this.db.close();
 
     try {
-      const db = await idb.openDB(this.db.name, this.db.version + 1, {
+      const db = await openDB(this.db.name, this.db.version + 1, {
         blocked() {
           closeDBConnection();
         },
