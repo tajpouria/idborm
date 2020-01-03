@@ -43,13 +43,11 @@ export class IDB {
 
     try {
       if (!this.db.objectStoreNames.contains(objectStoreName)) {
-        await openDB(this.dbName, this.db.version + 1, {
+        await openDB(this.dbName, this.db.version + 2, {
           upgrade(db) {
-            console.log("upgrade", objectStoreName);
             db.createObjectStore(objectStoreName, options);
           },
           blocked() {
-            console.log("blocked", objectStoreName);
             closeDBConnection();
           },
         });

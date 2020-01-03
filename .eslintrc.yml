@@ -28,4 +28,5 @@ rules:
     no-console: ["error", { allow: ["warn", "error", "info"] }],
     import/prefer-default-export: off,
     import/extensions: off,
+    "@typescript-eslint/no-explicit-any": off,
   }

@@ -14,22 +14,25 @@ export class IDBObject {
     this.storeName = storeName;
   }
 
-  public put = async (key: IDBObjectKey, value: any) => {
-    const closeDBConnection = () => {
+  public put = async (key: IDBObjectKey, value: any): Promise<any> => {
+    const closeDBConnection = async (): Promise<any> => {
       this.db.close();
 
-      this.put(key, value);
+      return this.put(key, value);
     };
     try {
-      const db = await openDB(this.db.name, this.db.version + 1, {
+      const db = await openDB(this.db.name, this.db.version, {
         blocked() {
-          closeDBConnection();
+          return closeDBConnection().then(res => res);
         },
       });
 
-      return db.put(this.storeName, value, key);
+      await db.put(this.storeName, value, key);
+
+      return this.get(key);
     } catch (err) {
-      console.error(`${IDBORM}: unknown exception "${this.storeName}.set(${key})".`, err);
+      console.error(`${IDBORM}: exception on "${this.storeName}.put(${key})".`, err);
+      return undefined;
     }
   };
 

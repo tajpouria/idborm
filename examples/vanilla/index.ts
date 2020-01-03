@@ -6,17 +6,13 @@ import IDB from "../../src";
 
   const User = await MyDataBase.createObjectStore("User");
 
-  await User.put("key one", "value one ");
-
-  console.log(MyDataBase.objectStores);
+  const userOne = await User.put("key one", { name: "value one" });
 
   const Post = await MyDataBase.createObjectStore("Post");
 
-  await Post.put("post one", { title: "value 1" });
+  // await Post.put("post one", { title: "value 1" });
 
-  const entries = await Post.entries();
-
-  console.log(entries);
+  // const entries = await Post.entries();
 
   return undefined;
 })();
