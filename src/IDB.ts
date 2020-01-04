@@ -1,6 +1,6 @@
 import { openDB, IDBPDatabase, deleteDB } from "idb";
 
-import { IDBObject } from "./IDBObject";
+import { IDBObject, BaseIDB } from ".";
 import { IDBErrors } from "./typings";
 
 export interface ObjectStoreInitializer {
@@ -8,15 +8,17 @@ export interface ObjectStoreInitializer {
   options?: IDBObjectStoreParameters;
 }
 
-export class IDB {
-  private dbName: string;
+export class IDB extends BaseIDB {
+  public dataBaseName: string;
 
   private db: IDBPDatabase<unknown>;
 
   objectStoresMap: Record<string, IDBObject> = {};
 
-  constructor(dbName: string, db: IDBPDatabase<unknown>, objectStoresMap: Record<string, IDBObject>) {
-    this.dbName = dbName;
+  constructor(dataBaseName: string, db: IDBPDatabase<unknown>, objectStoresMap: Record<string, IDBObject>) {
+    super();
+
+    this.dataBaseName = dataBaseName;
     this.db = db;
     this.objectStoresMap = objectStoresMap;
   }
@@ -26,10 +28,8 @@ export class IDB {
     objectStores: ObjectStoreInitializer | ObjectStoreInitializer[],
   ): Promise<IDB> => {
     if (!dataBaseName) {
-      console.error(IDBErrors.noDatabaseName);
       throw new Error(IDBErrors.noDatabaseName);
     } else if (!objectStores || (Array.isArray(objectStores) && !objectStores.length)) {
-      console.error(IDBErrors.noObjectStore);
       throw new Error(IDBErrors.noObjectStore);
     }
 
@@ -49,17 +49,11 @@ export class IDB {
               objectStoresMap[os.name] = new IDBObject(db, os.name);
             });
           },
-
-          blocking() {
-            console.log("blocking ");
-          },
         });
 
         return new IDB(dataBaseName, idbdb, objectStoresMap);
-      } catch (_error) {
-        console.log(_error);
-        debugger;
-        return identifyDB(version + 1);
+      } catch (error) {
+        console.error(error);
       }
     })(1);
   };
@@ -71,7 +65,7 @@ export class IDB {
   public delete = async (): Promise<void> => {
     const closeDBConnection = (): void => this.db.close();
 
-    return deleteDB(this.dbName, {
+    return deleteDB(this.dataBaseName, {
       blocked() {
         closeDBConnection();
       },

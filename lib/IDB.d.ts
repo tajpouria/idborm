@@ -1,11 +1,15 @@
 import { IDBPDatabase } from "idb";
 import { IDBObject } from "./IDBObject";
+export interface ObjectStoreInitializer {
+    name: string;
+    options?: IDBObjectStoreParameters;
+}
 export declare class IDB {
     private dbName;
     private db;
-    constructor(dbName: string, db: IDBPDatabase<unknown>);
-    static init: (dataBaseName: string) => Promise<IDB>;
-    get objectStores(): string[];
-    createObjectStore: (objectStoreName: string, options?: IDBObjectStoreParameters) => Promise<IDBObject>;
+    objectStoresMap: Record<string, IDBObject>;
+    constructor(dbName: string, db: IDBPDatabase<unknown>, objectStoresMap: Record<string, IDBObject>);
+    static init: (dataBaseName: string, objectStores: ObjectStoreInitializer | ObjectStoreInitializer[]) => Promise<IDB>;
+    get objectStores(): Record<string, IDBObject>;
     delete: () => Promise<void>;
 }
