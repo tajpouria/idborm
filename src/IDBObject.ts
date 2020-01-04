@@ -1,11 +1,13 @@
 import { openDB, IDBPDatabase } from "idb";
 
-const IDBORM = "idborm";
+import { IDBORM } from "./typings";
 
 type IDBObjectKey = string | number | Date | ArrayBufferView | ArrayBuffer | IDBArrayKey | IDBKeyRange;
 
 export class IDBObject {
   private db: IDBPDatabase<unknown>;
+
+  private trackingVersion = 1;
 
   private storeName: string;
 
@@ -15,15 +17,12 @@ export class IDBObject {
   }
 
   public put = async (key: IDBObjectKey, value: any): Promise<any> => {
-    const closeDBConnection = async (): Promise<any> => {
-      this.db.close();
+    const closeDBConnection = (): void => this.db.close();
 
-      return this.put(key, value);
-    };
     try {
-      const db = await openDB(this.db.name, this.db.version, {
+      const db = await openDB(this.db.name, this.trackingVersion, {
         blocked() {
-          return closeDBConnection().then(res => res);
+          return closeDBConnection();
         },
       });
 
@@ -31,13 +30,13 @@ export class IDBObject {
 
       return this.get(key);
     } catch (err) {
-      console.error(`${IDBORM}: exception on "${this.storeName}.put(${key})".`, err);
-      return undefined;
+      this.trackingVersion += 1;
+      return this.put(key, value);
     }
   };
 
   public get = async (key: IDBObjectKey) => {
-    const closeDBConnection = () => this.db.close();
+    const closeDBConnection = (): void => this.db.close();
 
     try {
       const db = await openDB(this.db.name, this.db.version + 1, {
