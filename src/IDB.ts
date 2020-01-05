@@ -65,7 +65,7 @@ export class IDB {
             }
           });
 
-          // TODO: handle the case database deleted manually or programmatically
+          // TODO: handle the case database deleted manually
         },
       });
 
