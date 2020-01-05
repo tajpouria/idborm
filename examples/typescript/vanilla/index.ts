@@ -6,9 +6,8 @@ import IDB from "../../../src";
     { name: "JS" },
     { name: "TS" },
     { name: "PY" },
-    { name: "JAVA" },
-    { name: "RUST" },
     { name: "BASH" },
+    { name: "GO" },
   ]);
 
   // const User = await MyDataBase.createObjectStore("User");

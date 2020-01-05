@@ -47,6 +47,12 @@ export class IDB {
 
             objectStoresMap[os.name] = new IDBObject(db, os.name);
           });
+
+          Object.values(db.objectStoreNames).forEach(os => {
+            if (!objectStoresMap[os]) {
+              db.deleteObjectStore(os);
+            }
+          });
         },
       });
 
