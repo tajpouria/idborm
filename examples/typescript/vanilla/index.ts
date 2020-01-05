@@ -33,10 +33,12 @@ import IDB from "../../../src";
   const perlEntries = await Perl.entries();
   const PyEntries = await PY.entries();
   const CEntries = await C.entries();
+  const CppEnries = await Cpp.entries();
 
   console.log(perlEntries);
   console.log(PyEntries);
   console.log(CEntries);
+  console.log(CppEnries);
 
   return undefined;
 })();

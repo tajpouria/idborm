@@ -24,7 +24,7 @@ export class IDBObject {
     const closeDBConnection = (): void => db.close();
 
     try {
-      const idbdb = await openDB(this.db.name, dbVersionController.incDbVersion(), {
+      const idbdb = await openDB(db.name, dbVersionController.incDbVersion(), {
         blocked() {
           return closeDBConnection();
         },
@@ -75,17 +75,19 @@ export class IDBObject {
     }
   };
 
-  public keys = async (): Promise<IDBValidKey[]> => {
-    const closeDBConnection = (): void => this.db.close();
+  public keys = async (): Promise<IDBObjectKey[]> => {
+    const { db, storeName, dbVersionController } = this;
+
+    const closeDBConnection = (): void => db.close();
 
     try {
-      const idbdb = await openDB(this.db.name, this.db.version + 1, {
+      const idbdb = await openDB(db.name, dbVersionController.incDbVersion(), {
         blocked() {
           closeDBConnection();
         },
       });
 
-      return idbdb.getAllKeys(this.storeName).then(keys => {
+      return idbdb.getAllKeys(storeName).then(keys => {
         idbdb.close();
         return keys;
       });
@@ -96,33 +98,32 @@ export class IDBObject {
   };
 
   public values = async (): Promise<any[]> => {
-    try {
-      const entries = await this.entries();
+    const { db, storeName, dbVersionController } = this;
 
-      return entries && entries.length ? entries.map(entry => entry) : [];
+    const closeDBConnection = (): void => db.close();
+
+    try {
+      const idbdb = await openDB(db.name, dbVersionController.incDbVersion(), {
+        blocked() {
+          closeDBConnection();
+        },
+      });
+
+      return idbdb.getAll(storeName).then(values => {
+        idbdb.close();
+        return values;
+      });
     } catch (err) {
       console.error(IDBORM, err);
       return [];
     }
   };
 
-  public entries = async (): Promise<any[] | undefined> => {
-    const { db, dbVersionController } = this;
-
-    const closeDBConnection = (): void => db.close();
-
+  public entries = async (): Promise<[IDBObjectKey, any][]> => {
     try {
-      const idbdb = await openDB(this.db.name, dbVersionController.incDbVersion(), {
-        blocked() {
-          closeDBConnection();
-        },
-      });
+      const keyAndValues = await Promise.all<IDBObjectKey[], any[]>([this.keys(), this.values()]);
 
-      return idbdb.getAll(this.storeName).then(entries => {
-        idbdb.close();
-        // TODO: return [ [key, value] ]
-        return entries;
-      });
+      return keyAndValues?.[0].map((key: IDBObjectKey, idx: number) => [key, keyAndValues?.[1][idx]]);
     } catch (err) {
       console.error(IDBORM, err);
       return [];
