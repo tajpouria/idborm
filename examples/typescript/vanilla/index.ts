@@ -6,8 +6,14 @@ import IDB from "../../../src";
     { name: "JS", options: { keyPath: "id" } },
     { name: "PY", options: {} },
     { name: "C" },
-    { name: "C++" },
+    { name: "Cpp" },
+    { name: "Perl" },
   ]);
+
+  console.log(MyDataBase.objectStores);
+  const { JS, PY, C, Perl } = MyDataBase.objectStores;
+
+  Perl.put("key1", "test");
 
   // const User = await MyDataBase.createObjectStore("User");
 

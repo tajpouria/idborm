@@ -1,5 +1,6 @@
 import { openDB, IDBPDatabase } from "idb";
 
+import { IDBVersionController } from ".";
 import { IDBORM } from "./typings";
 
 type IDBObjectKey = string | number | Date | ArrayBufferView | ArrayBuffer | IDBArrayKey | IDBKeyRange;
@@ -7,31 +8,34 @@ type IDBObjectKey = string | number | Date | ArrayBufferView | ArrayBuffer | IDB
 export class IDBObject {
   private db: IDBPDatabase<unknown>;
 
-  private trackingVersion = 1;
+  private dbVersionController: IDBVersionController;
 
   private storeName: string;
 
-  constructor(db: IDBPDatabase<unknown>, storeName: string) {
+  constructor(db: IDBPDatabase<unknown>, storeName: string, dbVersionController: IDBVersionController) {
     this.db = db;
+    this.dbVersionController = dbVersionController;
     this.storeName = storeName;
   }
 
   public put = async (key: IDBObjectKey, value: any): Promise<any> => {
-    const closeDBConnection = (): void => this.db.close();
+    const { db, dbVersionController } = this;
+
+    const closeDBConnection = (): void => db.close();
 
     try {
-      const db = await openDB(this.db.name, this.trackingVersion, {
+      const idbdb = await openDB(this.db.name, dbVersionController.incDbVersion(), {
         blocked() {
           return closeDBConnection();
         },
       });
 
-      await db.put(this.storeName, value, key);
+      await idbdb.put(this.storeName, value, key);
 
       return this.get(key);
     } catch (err) {
-      this.trackingVersion += 1;
-      return this.put(key, value);
+      console.error(err);
+      return undefined;
     }
   };
 
