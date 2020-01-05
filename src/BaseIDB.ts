@@ -1,28 +1,33 @@
 import { IDBORM, IDBErrors } from "./typings";
 
-export abstract class BaseIDB {
-  abstract dataBaseName: string;
+export class IDBVersionController {
+  private dataBaseName: string;
 
   private localStorage: Storage;
 
-  constructor() {
+  constructor(dataBaseName: string) {
     // TODO: check for localStorage and ETC properly
     if (!window.localStorage || !indexedDB || !JSON) {
       throw new Error(IDBErrors.noAccessToRequireStuff);
     }
-    localStorage.setItem(IDBORM, JSON.stringify({}));
-    this.localStorage = window.localStorage;
+
+    this.dataBaseName = dataBaseName;
+    this.localStorage = localStorage;
+
+    if (!this.idbormStorage) {
+      localStorage.setItem(IDBORM, JSON.stringify({}));
+    }
   }
 
-  protected get dbVersion(): number {
+  public get dbVersion(): number {
     return JSON.parse(this.localStorage.getItem(IDBORM) as string)[this.dataBaseName] || 0;
   }
 
-  protected get idbormStorage(): Record<string, number> {
+  public get idbormStorage(): Record<string, number> {
     return JSON.parse(this.localStorage.getItem(IDBORM) as string);
   }
 
-  protected incDbVersion = (): number => {
+  public incDbVersion = (): number => {
     const { idbormStorage, dataBaseName, dbVersion } = this;
 
     this.localStorage.setItem(
@@ -36,7 +41,7 @@ export abstract class BaseIDB {
     return dbVersion;
   };
 
-  protected deleteDbVersion = (): undefined => {
+  public deleteDbVersion = (): undefined => {
     const { idbormStorage, dataBaseName } = this;
 
     delete idbormStorage[dataBaseName];

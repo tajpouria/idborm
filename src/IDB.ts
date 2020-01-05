@@ -1,14 +1,14 @@
 import { openDB, IDBPDatabase, deleteDB } from "idb";
 
-import { IDBObject, BaseIDB } from ".";
-import { IDBErrors } from "./typings";
+import { IDBObject, IDBVersionController } from ".";
+import { IDBErrors, IDBORM } from "./typings";
 
 export interface ObjectStoreInitializer {
   name: string;
   options?: IDBObjectStoreParameters;
 }
 
-export class IDB extends BaseIDB {
+export class IDB {
   public dataBaseName: string;
 
   private db: IDBPDatabase<unknown>;
@@ -16,8 +16,6 @@ export class IDB extends BaseIDB {
   objectStoresMap: Record<string, IDBObject> = {};
 
   constructor(dataBaseName: string, db: IDBPDatabase<unknown>, objectStoresMap: Record<string, IDBObject>) {
-    super();
-
     this.dataBaseName = dataBaseName;
     this.db = db;
     this.objectStoresMap = objectStoresMap;
@@ -33,29 +31,29 @@ export class IDB extends BaseIDB {
       throw new Error(IDBErrors.noObjectStore);
     }
 
+    const dbVersionController = new IDBVersionController(dataBaseName);
+
     const objectStoresList = Array.isArray(objectStores) ? objectStores : [objectStores];
 
-    return (async function identifyDB(version: number): Promise<IDB> {
-      const objectStoresMap: Record<string, IDBObject> = {};
+    const objectStoresMap: Record<string, IDBObject> = {};
 
-      try {
-        const idbdb = await openDB(dataBaseName, version, {
-          upgrade(db) {
-            objectStoresList.forEach(os => {
-              if (!db.objectStoreNames.contains(os.name)) {
-                db.createObjectStore(os.name, os.options || { autoIncrement: true });
-              }
+    try {
+      const idbdb = await openDB(dataBaseName, dbVersionController.incDbVersion(), {
+        upgrade(db) {
+          objectStoresList.forEach(os => {
+            if (!db.objectStoreNames.contains(os.name)) {
+              db.createObjectStore(os.name, os.options || { autoIncrement: true });
+            }
 
-              objectStoresMap[os.name] = new IDBObject(db, os.name);
-            });
-          },
-        });
+            objectStoresMap[os.name] = new IDBObject(db, os.name);
+          });
+        },
+      });
 
-        return new IDB(dataBaseName, idbdb, objectStoresMap);
-      } catch (error) {
-        console.error(error);
-      }
-    })(1);
+      return new IDB(dataBaseName, idbdb, objectStoresMap);
+    } catch (error) {
+      throw new Error(`${IDBORM}: ${error}`);
+    }
   };
 
   get objectStores(): Record<string, IDBObject> {
