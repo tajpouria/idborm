@@ -15,9 +15,17 @@ export class IDB {
 
   objectStoresMap: Record<string, IDBObject> = {};
 
-  constructor(dataBaseName: string, db: IDBPDatabase<unknown>, objectStoresMap: Record<string, IDBObject>) {
+  dbVersionController: IDBVersionController;
+
+  constructor(
+    dataBaseName: string,
+    db: IDBPDatabase<unknown>,
+    objectStoresMap: Record<string, IDBObject>,
+    dbVersionController: IDBVersionController,
+  ) {
     this.dataBaseName = dataBaseName;
     this.db = db;
+    this.dbVersionController = dbVersionController;
     this.objectStoresMap = objectStoresMap;
   }
 
@@ -61,7 +69,7 @@ export class IDB {
         },
       });
 
-      return new IDB(dataBaseName, idbdb, objectStoresMap);
+      return new IDB(dataBaseName, idbdb, objectStoresMap, dbVersionController);
     } catch (error) {
       throw new Error(`${IDBORM}: ${error}`);
     }
@@ -72,12 +80,16 @@ export class IDB {
   }
 
   public delete = async (): Promise<void> => {
-    const closeDBConnection = (): void => this.db.close();
+    const { db, dbVersionController } = this;
+
+    const closeDBConnection = (): void => db.close();
 
     return deleteDB(this.dataBaseName, {
       blocked() {
         closeDBConnection();
       },
+    }).then(() => {
+      dbVersionController.deleteDbVersion();
     });
   };
 }

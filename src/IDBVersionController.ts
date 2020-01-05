@@ -19,7 +19,7 @@ export class IDBVersionController {
     }
   }
 
-  public get idbormStorage(): Record<string, number> | undefined {
+  public get idbormStorage(): Record<string, number> {
     return JSON.parse(this.localStorage.getItem(IDBORM) as string);
   }
 
@@ -30,19 +30,19 @@ export class IDBVersionController {
       IDBORM,
       JSON.stringify({
         ...idbormStorage,
-        [dataBaseName]: (idbormStorage?.[dataBaseName] || 0) + 1,
+        [dataBaseName]: (idbormStorage[dataBaseName] || 0) + 1,
       }),
     );
 
-    return idbormStorage?.[dataBaseName] || 1;
+    return idbormStorage[dataBaseName] || 1;
   };
 
   public deleteDbVersion = (): undefined => {
     const { idbormStorage, dataBaseName } = this;
 
-    delete idbormStorage?.[dataBaseName];
+    delete idbormStorage[dataBaseName];
 
-    this.localStorage.setItem(IDBORM, JSON.stringify({ ...this.idbormStorage }));
+    this.localStorage.setItem(IDBORM, JSON.stringify({ ...idbormStorage }));
 
     return undefined;
   };

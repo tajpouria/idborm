@@ -10,7 +10,11 @@ import IDB from "../../../src";
     { name: "Perl" },
   ]);
 
-  const { JS, PY, C, Perl } = MyDataBase.objectStores;
+  const SecondDataBase = await IDB.init("SecondDataBase", { name: "User" });
+
+  await SecondDataBase.delete();
+
+  const { JS, PY, C, Perl, Cpp } = MyDataBase.objectStores;
 
   await Perl.put("key1", "test");
   await Perl.put("key2", "test2");
@@ -20,6 +24,11 @@ import IDB from "../../../src";
   await PY.put("key2", { name: "python" });
 
   await C.put("key", { length: 50 });
+
+  await Cpp.put(
+    "longArray",
+    Array.from({ length: 60 }, () => 4),
+  );
 
   const perlEntries = await Perl.entries();
   const PyEntries = await PY.entries();
