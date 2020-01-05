@@ -1,6 +1,6 @@
 import { IDB } from "./IDB";
 
 export * from "./IDBObject";
-export * from "./BaseIDB";
+export * from "./IDBVersionController";
 
 export default IDB;

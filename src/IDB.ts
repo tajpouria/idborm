@@ -41,8 +41,11 @@ export class IDB {
       const idbdb = await openDB(dataBaseName, dbVersionController.incDbVersion(), {
         upgrade(db) {
           objectStoresList.forEach(os => {
+            // TODO: override objectStore if associated options changed
             if (!db.objectStoreNames.contains(os.name)) {
-              db.createObjectStore(os.name, os.options || { autoIncrement: true });
+              const _options = os.options?.autoIncrement || os.options?.keyPath ? os.options : { autoIncrement: true };
+
+              db.createObjectStore(os.name, _options);
             }
 
             objectStoresMap[os.name] = new IDBObject(db, os.name);
@@ -53,6 +56,8 @@ export class IDB {
               db.deleteObjectStore(os);
             }
           });
+
+          // TODO: handle the case database deleted manually or programmatically
         },
       });
 

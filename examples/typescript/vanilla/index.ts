@@ -3,11 +3,10 @@ import IDB from "../../../src";
 
 (async (): Promise<undefined> => {
   const MyDataBase = await IDB.init("MyDataBase", [
-    { name: "JS" },
-    { name: "TS" },
-    { name: "PY" },
-    { name: "BASH" },
-    { name: "GO" },
+    { name: "JS", options: { keyPath: "id" } },
+    { name: "PY", options: {} },
+    { name: "C" },
+    { name: "C++" },
   ]);
 
   // const User = await MyDataBase.createObjectStore("User");
