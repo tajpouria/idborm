@@ -38,7 +38,6 @@ export class IDB {
     const objectStoresMap: Record<string, IDBObject> = {};
 
     try {
-      console.log(dbVersionController.incDbVersion());
       const idbdb = await openDB(dataBaseName, dbVersionController.incDbVersion(), {
         upgrade(db) {
           objectStoresList.forEach(os => {

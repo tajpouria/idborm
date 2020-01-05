@@ -30,102 +30,128 @@ export class IDBObject {
         },
       });
 
-      await idbdb.put(this.storeName, value, key);
+      await idbdb.put(this.storeName, value, key).then(() => idbdb.close());
 
       return this.get(key);
     } catch (err) {
-      console.error(err);
+      console.error(IDBORM, err);
       return undefined;
     }
   };
 
-  public get = async (key: IDBObjectKey) => {
+  public get = async (key: IDBObjectKey): Promise<any> => {
+    const { db, dbVersionController } = this;
+
+    const closeDBConnection = (): void => db.close();
+
+    try {
+      const idbdb = await openDB(this.db.name, dbVersionController.incDbVersion(), {
+        blocked() {
+          closeDBConnection();
+        },
+      });
+
+      return idbdb.get(this.storeName, key).then(() => idbdb.close());
+    } catch (err) {
+      console.error(IDBORM, err);
+      return undefined;
+    }
+  };
+
+  public delete = async (key: IDBObjectKey): Promise<void> => {
     const closeDBConnection = (): void => this.db.close();
 
     try {
-      const db = await openDB(this.db.name, this.db.version + 1, {
+      const idbdb = await openDB(this.db.name, this.db.version + 1, {
         blocked() {
           closeDBConnection();
         },
       });
 
-      return db.get(this.storeName, key);
+      return idbdb.delete(this.storeName, key).then(() => idbdb.close());
     } catch (err) {
       console.error(IDBORM, err);
+      return undefined;
     }
   };
 
-  public delete = async (key: IDBObjectKey) => {
-    const closeDBConnection = () => this.db.close();
+  public keys = async (): Promise<IDBValidKey[]> => {
+    const closeDBConnection = (): void => this.db.close();
 
     try {
-      const db = await openDB(this.db.name, this.db.version + 1, {
+      const idbdb = await openDB(this.db.name, this.db.version + 1, {
         blocked() {
           closeDBConnection();
         },
       });
 
-      return db.delete(this.storeName, key);
-    } catch (err) {
-      console.error(IDBORM, err);
-    }
-  };
-
-  public keys = async () => {
-    const closeDBConnection = () => this.db.close();
-
-    try {
-      const db = await openDB(this.db.name, this.db.version + 1, {
-        blocked() {
-          closeDBConnection();
-        },
+      return idbdb.getAllKeys(this.storeName).then(keys => {
+        idbdb.close();
+        return keys;
       });
-
-      return db.getAllKeys(this.storeName);
     } catch (err) {
       console.error(IDBORM, err);
+      return [];
     }
   };
 
-  public values = async () => {
+  public values = async (): Promise<any[]> => {
     try {
       const entries = await this.entries();
 
       return entries && entries.length ? entries.map(entry => entry) : [];
     } catch (err) {
       console.error(IDBORM, err);
+      return [];
     }
   };
 
-  public entries = async () => {
-    const closeDBConnection = () => this.db.close();
+  public entries = async (): Promise<any[] | undefined> => {
+    const { db, dbVersionController } = this;
+
+    const closeDBConnection = (): void => db.close();
 
     try {
-      const db = await openDB(this.db.name, this.db.version + 1, {
+      const idbdb = await openDB(this.db.name, dbVersionController.incDbVersion(), {
         blocked() {
           closeDBConnection();
         },
       });
 
-      return db.getAll(this.storeName);
+      return idbdb.getAll(this.storeName).then(entries => {
+        idbdb.close();
+        // TODO: return [ [key, value] ]
+        return entries;
+      });
     } catch (err) {
       console.error(IDBORM, err);
+      return [];
     }
   };
 
-  public clear = async () => {
-    const closeDBConnection = () => this.db.close();
+  public clear = async (): Promise<boolean | undefined> => {
+    const closeDBConnection = (): void => this.db.close();
 
     try {
-      const db = await openDB(this.db.name, this.db.version + 1, {
+      const idbdb = await openDB(this.db.name, this.db.version + 1, {
         blocked() {
           closeDBConnection();
         },
       });
 
-      return db.clear(this.storeName);
+      return idbdb
+        .clear(this.storeName)
+        .then(() => {
+          idbdb.close();
+          return true;
+        })
+        .catch(() => {
+          idbdb.close();
+          return false;
+        });
     } catch (err) {
       console.error(IDBORM, err);
+      return undefined;
     }
   };
 }

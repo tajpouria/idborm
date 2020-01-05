@@ -10,17 +10,24 @@ import IDB from "../../../src";
     { name: "Perl" },
   ]);
 
-  console.log(MyDataBase.objectStores);
   const { JS, PY, C, Perl } = MyDataBase.objectStores;
 
-  Perl.put("key1", "test");
+  await Perl.put("key1", "test");
+  await Perl.put("key2", "test2");
 
-  // const User = await MyDataBase.createObjectStore("User");
+  await PY.put("key1", "test1");
 
-  // const userOne = await User.put("key one", { name: "value one" });
+  await PY.put("key2", { name: "python" });
 
-  // const Post = await MyDataBase.createObjectStore("Post");
-  // const post1 = await Post.put("post one", { title: "value 1" });
+  await C.put("key", { length: 50 });
+
+  const perlEntries = await Perl.entries();
+  const PyEntries = await PY.entries();
+  const CEntries = await C.entries();
+
+  console.log(perlEntries);
+  console.log(PyEntries);
+  console.log(CEntries);
 
   return undefined;
 })();
