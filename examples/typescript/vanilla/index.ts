@@ -9,7 +9,9 @@ import IDB from "../../../src";
 
   // await SecondDataBase.delete();
 
-  // const { JS, PY, C, Perl, Cpp } = MyDataBase.objectStores;
+  const os = MyDataBase.objectStores;
+
+  console.log(os);
 
   // await Perl.put("key1", "test");
   // await Perl.put("key2", "test2");

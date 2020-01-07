@@ -59,21 +59,19 @@ export class IDB {
       const idbdb = await openDB(dataBaseName, dbVersionController.incDbVersion(objectStoreDictionary), {
         upgrade(db) {
           Object.values(objectStoreDictionary).forEach(os => {
-            if (!db.objectStoreNames.contains(os.name)) {
-              const _options = os.options?.autoIncrement || os.options?.keyPath ? os.options : { autoIncrement: true };
+            const _options = os.options?.autoIncrement || os.options?.keyPath ? os.options : { autoIncrement: true };
 
+            if (!db.objectStoreNames.contains(os.name)) {
               db.createObjectStore(os.name, _options);
             }
 
             if (dbVersionController.shouldUpdateStores[os.name]) {
-              const _options = os.options?.autoIncrement || os.options?.keyPath ? os.options : { autoIncrement: true };
-
               db.deleteObjectStore(os.name);
 
               db.createObjectStore(os.name, _options);
             }
 
-            objectStoresMap[os.name] = new IDBObject(db, os.name, dbVersionController);
+            objectStoresMap[os.name] = new IDBObject(db, { name: os.name, options: _options }, dbVersionController);
           });
 
           Object.values(db.objectStoreNames).forEach(os => {

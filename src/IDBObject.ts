@@ -1,7 +1,7 @@
 import { openDB, IDBPDatabase } from "idb";
 
 import { IDBVersionController } from ".";
-import { IDBORM } from "./typings";
+import { IDBORM, ObjectStoreInitializer } from "./typings";
 
 type IDBObjectKey = string | number | Date | ArrayBufferView | ArrayBuffer | IDBArrayKey | IDBKeyRange;
 
@@ -12,10 +12,17 @@ export class IDBObject {
 
   private storeName: string;
 
-  constructor(db: IDBPDatabase<unknown>, storeName: string, dbVersionController: IDBVersionController) {
+  private storeOptions: IDBObjectStoreParameters | undefined;
+
+  constructor(
+    db: IDBPDatabase<unknown>,
+    { name, options }: ObjectStoreInitializer,
+    dbVersionController: IDBVersionController,
+  ) {
     this.db = db;
     this.dbVersionController = dbVersionController;
-    this.storeName = storeName;
+    this.storeName = name;
+    this.storeOptions = options;
   }
 
   public put = async <Value = any>(key: IDBObjectKey, value: Value): Promise<Value | undefined> => {
