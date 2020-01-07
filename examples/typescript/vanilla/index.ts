@@ -2,20 +2,14 @@
 import IDB from "../../../src";
 
 (async (): Promise<undefined> => {
-  const MyDataBase = await IDB.init("MyDataBase", [
-    { name: "JS", options: { keyPath: "id" } },
-    { name: "PY", options: {} },
-    { name: "C" },
-    { name: "Cpp" },
-    { name:                  "Perl" },
-  ]);
+  const MyDataBase = await IDB.init("MyDataBase", [{ name: "JS" }, { name: "PY", options: { keyPath: "i1" } }]);
 
   const t0 = performance.now();
   const SecondDataBase = await IDB.init("SecondDataBase", { name: "User" });
 
-  await SecondDataBase.delete();
+  // await SecondDataBase.delete();
 
-  const { JS, PY, C, Perl, Cpp } = MyDataBase.objectStores;
+  // const { JS, PY, C, Perl, Cpp } = MyDataBase.objectStores;
 
   // await Perl.put("key1", "test");
   // await Perl.put("key2", "test2");
@@ -31,7 +25,7 @@ import IDB from "../../../src";
   //   Array.from({ length: 60 }, () => 4),
   // );
 
-  const perlEntries = await Perl.entries();
+  // const perlEntries = await Perl.entries();
   // const PyEntries = await PY.entries();
   // const CEntries = await C.entries();
   // const CppEnries = await Cpp.entries();
@@ -44,7 +38,7 @@ import IDB from "../../../src";
   const t1 = performance.now();
 
   console.log(t1 - t0);
-  console.log(perlEntries);
+  // console.log(perlEntries);
 
   return undefined;
 })();

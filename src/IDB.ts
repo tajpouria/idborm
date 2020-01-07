@@ -1,12 +1,7 @@
 import { openDB, IDBPDatabase, deleteDB } from "idb";
 
 import { IDBObject, IDBVersionController } from ".";
-import { IDBErrors, IDBORM } from "./typings";
-
-export interface ObjectStoreInitializer {
-  name: string;
-  options?: IDBObjectStoreParameters;
-}
+import { IDBErrors, IDBORM, ObjectStoreInitializer } from "./typings";
 
 export class IDB {
   public dataBaseName: string;
@@ -29,6 +24,21 @@ export class IDB {
     this.objectStoresMap = objectStoresMap;
   }
 
+  private static objectStoreDictionaryCreator(
+    objectStores: ObjectStoreInitializer | ObjectStoreInitializer[],
+  ): Record<string, ObjectStoreInitializer> {
+    const objectStoresDictionary: Record<string, ObjectStoreInitializer> = {};
+    if (Array.isArray(objectStores)) {
+      objectStores.forEach(os => {
+        objectStoresDictionary[os.name] = os;
+      });
+    } else {
+      objectStoresDictionary[objectStores.name] = objectStores;
+    }
+
+    return objectStoresDictionary;
+  }
+
   public static init = async (
     dataBaseName: string,
     objectStores: ObjectStoreInitializer | ObjectStoreInitializer[],
@@ -41,17 +51,24 @@ export class IDB {
 
     const dbVersionController = new IDBVersionController(dataBaseName);
 
-    const objectStoresList = Array.isArray(objectStores) ? objectStores : [objectStores];
+    const objectStoreDictionary = IDB.objectStoreDictionaryCreator(objectStores);
 
     const objectStoresMap: Record<string, IDBObject> = {};
 
     try {
-      const idbdb = await openDB(dataBaseName, dbVersionController.incDbVersion(), {
+      const idbdb = await openDB(dataBaseName, dbVersionController.incDbVersion(objectStoreDictionary), {
         upgrade(db) {
-          objectStoresList.forEach(os => {
-            // TODO: override objectStore if associated options changed
+          Object.values(objectStoreDictionary).forEach(os => {
             if (!db.objectStoreNames.contains(os.name)) {
               const _options = os.options?.autoIncrement || os.options?.keyPath ? os.options : { autoIncrement: true };
+
+              db.createObjectStore(os.name, _options);
+            }
+
+            if (dbVersionController.shouldUpdateStores[os.name]) {
+              const _options = os.options?.autoIncrement || os.options?.keyPath ? os.options : { autoIncrement: true };
+
+              db.deleteObjectStore(os.name);
 
               db.createObjectStore(os.name, _options);
             }

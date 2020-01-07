@@ -1,9 +1,16 @@
-import { IDBORM, IDBErrors } from "./typings";
+import { IDBORM, IDBErrors, ObjectStoreInitializer } from "./typings";
+
+interface StorageDbInstance {
+  objectStores: Record<string, ObjectStoreInitializer>;
+  version: number;
+}
 
 export class IDBVersionController {
   private dataBaseName: string;
 
   private localStorage: Storage;
+
+  public shouldUpdateStores: Record<string, any> = {};
 
   constructor(dataBaseName: string) {
     // TODO: check for localStorage and ETC properly
@@ -19,23 +26,69 @@ export class IDBVersionController {
     }
   }
 
-  private get idbormStorage(): Record<string, number> {
+  public get idbormStorage(): Record<string, StorageDbInstance> {
     return JSON.parse(this.localStorage.getItem(IDBORM) as string);
   }
 
-  public incDbVersion = (): number => {
+  public getIdbormStorageCurrentDb = (selector: {
+    objectStores?: boolean;
+    version?: boolean;
+  }): StorageDbInstance | Record<string, ObjectStoreInitializer> | number => {
     const { idbormStorage, dataBaseName } = this;
 
-    this.localStorage.setItem(
-      IDBORM,
-      JSON.stringify({
-        ...idbormStorage,
-        [dataBaseName]: (idbormStorage[dataBaseName] || 0) + 1,
-      }),
-    );
+    if (selector.objectStores && !selector.version) {
+      return idbormStorage[dataBaseName]?.objectStores || {};
+    }
 
-    return idbormStorage[dataBaseName] || 1;
+    if (selector.version && !selector.objectStores) {
+      return idbormStorage[dataBaseName]?.version;
+    }
+
+    return idbormStorage?.[dataBaseName];
   };
+
+  public incDbVersion(objectStores?: Record<string, ObjectStoreInitializer>): number {
+    const { dataBaseName, idbormStorage, getIdbormStorageCurrentDb, localStorage } = this;
+
+    this.shouldUpdateStores = {};
+
+    const currentObjectStores = getIdbormStorageCurrentDb({ objectStores: true }) as Record<
+      string,
+      ObjectStoreInitializer
+    >;
+
+    if (objectStores) {
+      Object.entries(objectStores).forEach(([key, value]) => {
+        if (currentObjectStores[key] && JSON.stringify(currentObjectStores[key]) !== JSON.stringify(value)) {
+          this.shouldUpdateStores[key] = value;
+        }
+      });
+
+      localStorage.setItem(
+        IDBORM,
+        JSON.stringify({
+          ...idbormStorage,
+          [dataBaseName]: {
+            objectStores,
+            version: ((getIdbormStorageCurrentDb({ version: true }) || 0) as number) + 1,
+          },
+        }),
+      );
+    } else {
+      localStorage.setItem(
+        IDBORM,
+        JSON.stringify({
+          ...idbormStorage,
+          [dataBaseName]: {
+            objectStores: getIdbormStorageCurrentDb({ objectStores: true }),
+            version: (getIdbormStorageCurrentDb({ version: true }) as number) + 1,
+          },
+        }),
+      );
+    }
+
+    return getIdbormStorageCurrentDb({ version: true }) as number;
+  }
 
   public deleteDbVersion = (): void => {
     const { idbormStorage, dataBaseName } = this;
