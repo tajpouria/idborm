@@ -18,28 +18,34 @@ export class IDBObject {
     this.storeName = storeName;
   }
 
-  public put = async (key: IDBObjectKey, value: any): Promise<any> => {
+  public put = async <Value = any>(key: IDBObjectKey, value: Value): Promise<Value | undefined> => {
     const { db, dbVersionController } = this;
 
     const closeDBConnection = (): void => db.close();
 
     try {
+      closeDBConnection();
       const idbdb = await openDB(db.name, dbVersionController.incDbVersion(), {
         blocked() {
-          return closeDBConnection();
+          console.log("blocked put");
+          closeDBConnection();
         },
       });
 
-      await idbdb.put(this.storeName, value, key).then(() => idbdb.close());
+      this.db = idbdb;
 
-      return this.get(key);
+      await idbdb.put(this.storeName, value, key).then(() => {
+        db.close();
+      });
+
+      return value;
     } catch (err) {
       console.error(IDBORM, err);
       return undefined;
     }
   };
 
-  public get = async (key: IDBObjectKey): Promise<any> => {
+  public get = async <Value = any>(key: IDBObjectKey): Promise<Value | null> => {
     const { db, dbVersionController } = this;
 
     const closeDBConnection = (): void => db.close();
@@ -51,10 +57,13 @@ export class IDBObject {
         },
       });
 
-      return idbdb.get(this.storeName, key).then(() => idbdb.close());
+      return idbdb.get(this.storeName, key).then(value => {
+        idbdb.close();
+        return value;
+      });
     } catch (err) {
       console.error(IDBORM, err);
-      return undefined;
+      return null;
     }
   };
 
@@ -81,8 +90,10 @@ export class IDBObject {
     const closeDBConnection = (): void => db.close();
 
     try {
+      closeDBConnection();
       const idbdb = await openDB(db.name, dbVersionController.incDbVersion(), {
         blocked() {
+          console.log("blocked keys");
           closeDBConnection();
         },
       });
@@ -103,8 +114,10 @@ export class IDBObject {
     const closeDBConnection = (): void => db.close();
 
     try {
+      closeDBConnection();
       const idbdb = await openDB(db.name, dbVersionController.incDbVersion(), {
         blocked() {
+          console.log("blocked values");
           closeDBConnection();
         },
       });

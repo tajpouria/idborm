@@ -69,6 +69,8 @@ export class IDB {
         },
       });
 
+      idbdb.close();
+
       return new IDB(dataBaseName, idbdb, objectStoresMap, dbVersionController);
     } catch (error) {
       throw new Error(`${IDBORM}: ${error}`);
