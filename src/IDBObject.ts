@@ -26,7 +26,7 @@ export class IDBObject {
   }
 
   public put = async <Value = any>(key: IDBObjectKey, value: Value): Promise<Value | undefined> => {
-    const { db, dbVersionController } = this;
+    const { db, dbVersionController, storeName } = this;
 
     const closeDBConnection = (): void => db.close();
 
@@ -38,13 +38,13 @@ export class IDBObject {
         },
       });
 
-      await idbdb.put(this.storeName, value, key);
+      await idbdb.put(storeName, value, key);
 
       idbdb.close();
 
       return value;
     } catch (err) {
-      console.error(IDBORM, err);
+      console.error(`${IDBORM}: ${storeName}.put(${key}) ${err}`);
       return undefined;
     }
   };

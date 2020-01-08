@@ -2,7 +2,11 @@
 import IDB from "../../../src";
 
 (async (): Promise<undefined> => {
-  const MyDataBase = await IDB.init("MyDataBase", [{ name: "JS" }, { name: "PY" }, { name: "Perl" }]);
+  const MyDataBase = await IDB.init("MyDataBase", [
+    { name: "JS", options: { keyPath: "id" } },
+    { name: "PY" },
+    { name: "Perl" },
+  ]);
 
   const t0 = performance.now();
   const SecondDataBase = await IDB.init("SecondDataBase", { name: "User" });
@@ -13,7 +17,7 @@ import IDB from "../../../src";
 
   const { JS, PY, Perl } = os;
 
-  await JS.put("hello", "monday");
+  await JS.put("id", { id: 1, title: "react" });
 
   await PY.put(
     "longArray",
