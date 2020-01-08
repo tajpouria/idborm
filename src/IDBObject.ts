@@ -8,11 +8,11 @@ type IDBObjectKey = string | number | Date | ArrayBufferView | ArrayBuffer | IDB
 export class IDBObject {
   private db: IDBPDatabase<unknown>;
 
-  private dbVersionController: IDBVersionController;
+  private readonly dbVersionController: IDBVersionController;
 
-  private storeName: string;
+  private readonly storeName: string;
 
-  private storeOptions: IDBObjectStoreParameters | undefined;
+  private readonly storeOptions: IDBObjectStoreParameters | undefined;
 
   constructor(
     db: IDBPDatabase<unknown>,
@@ -31,7 +31,6 @@ export class IDBObject {
     const closeDBConnection = (): void => db.close();
 
     try {
-      closeDBConnection();
       const idbdb = await openDB(db.name, dbVersionController.incDbVersion(), {
         blocked() {
           console.log("blocked put");
@@ -39,11 +38,9 @@ export class IDBObject {
         },
       });
 
-      this.db = idbdb;
+      await idbdb.put(this.storeName, value, key);
 
-      await idbdb.put(this.storeName, value, key).then(() => {
-        db.close();
-      });
+      idbdb.close();
 
       return value;
     } catch (err) {
@@ -60,14 +57,16 @@ export class IDBObject {
     try {
       const idbdb = await openDB(this.db.name, dbVersionController.incDbVersion(), {
         blocked() {
+          console.log("blocked get");
           closeDBConnection();
         },
       });
 
-      return idbdb.get(this.storeName, key).then(value => {
-        idbdb.close();
-        return value;
-      });
+      const value = await idbdb.get(this.storeName, key);
+
+      idbdb.close();
+
+      return value;
     } catch (err) {
       console.error(IDBORM, err);
       return null;
@@ -84,11 +83,14 @@ export class IDBObject {
         },
       });
 
-      return idbdb.delete(this.storeName, key).then(() => idbdb.close());
+      await idbdb.delete(this.storeName, key);
+
+      idbdb.close();
     } catch (err) {
       console.error(IDBORM, err);
-      return undefined;
     }
+
+    return undefined;
   };
 
   public keys = async (): Promise<IDBObjectKey[]> => {
@@ -97,7 +99,6 @@ export class IDBObject {
     const closeDBConnection = (): void => db.close();
 
     try {
-      closeDBConnection();
       const idbdb = await openDB(db.name, dbVersionController.incDbVersion(), {
         blocked() {
           console.log("blocked keys");
@@ -105,10 +106,11 @@ export class IDBObject {
         },
       });
 
-      return idbdb.getAllKeys(storeName).then(keys => {
-        idbdb.close();
-        return keys;
-      });
+      const keys = await idbdb.getAllKeys(storeName);
+
+      idbdb.close();
+
+      return keys;
     } catch (err) {
       console.error(IDBORM, err);
       return [];
@@ -129,10 +131,11 @@ export class IDBObject {
         },
       });
 
-      return idbdb.getAll(storeName).then(values => {
-        idbdb.close();
-        return values;
-      });
+      const values = idbdb.getAll(storeName);
+
+      idbdb.close();
+
+      return values;
     } catch (err) {
       console.error(IDBORM, err);
       return [];
@@ -143,7 +146,7 @@ export class IDBObject {
     try {
       const keyAndValues = await Promise.all<IDBObjectKey[], any[]>([this.keys(), this.values()]);
 
-      return keyAndValues?.[0].map((key: IDBObjectKey, idx: number) => [key, keyAndValues?.[1][idx]]);
+      return keyAndValues?.[0].map((key: IDBObjectKey, idx: number) => [key, keyAndValues?.[1][idx]]) || [];
     } catch (err) {
       console.error(IDBORM, err);
       return [];
@@ -160,16 +163,11 @@ export class IDBObject {
         },
       });
 
-      return idbdb
-        .clear(this.storeName)
-        .then(() => {
-          idbdb.close();
-          return true;
-        })
-        .catch(() => {
-          idbdb.close();
-          return false;
-        });
+      await idbdb.clear(this.storeName);
+
+      idbdb.close();
+
+      return true;
     } catch (err) {
       console.error(IDBORM, err);
       return undefined;

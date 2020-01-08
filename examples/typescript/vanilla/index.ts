@@ -2,45 +2,36 @@
 import IDB from "../../../src";
 
 (async (): Promise<undefined> => {
-  const MyDataBase = await IDB.init("MyDataBase", [{ name: "JS" }, { name: "PY", options: { keyPath: "i1" } }]);
+  const MyDataBase = await IDB.init("MyDataBase", [{ name: "JS" }, { name: "PY" }, { name: "Perl" }]);
 
   const t0 = performance.now();
   const SecondDataBase = await IDB.init("SecondDataBase", { name: "User" });
 
-  // await SecondDataBase.delete();
+  await SecondDataBase.delete();
 
   const os = MyDataBase.objectStores;
 
-  console.log(os);
+  const { JS, PY, Perl } = os;
 
-  // await Perl.put("key1", "test");
-  // await Perl.put("key2", "test2");
+  await JS.put("hello", "monday");
 
-  // await PY.put("key1", "test1");
+  await PY.put(
+    "longArray",
+    Array.from({ length: 500 }, () => 100),
+  );
 
-  // await PY.put("key2", { name: "python" });
+  await Perl.put(
+    "longArray",
+    Array.from({ length: 500 }, () => 200),
+  );
 
-  // await C.put("key", { length: 50 });
+  await PY.keys();
 
-  // await Cpp.put(
-  //   "longArray",
-  //   Array.from({ length: 60 }, () => 4),
-  // );
-
-  // const perlEntries = await Perl.entries();
-  // const PyEntries = await PY.entries();
-  // const CEntries = await C.entries();
-  // const CppEnries = await Cpp.entries();
-
-  // console.log(perlEntries);
-  // console.log(PyEntries);
-  // console.log(CEntries);
-  // console.log(CppEnries);
+  await JS.get("hello");
 
   const t1 = performance.now();
 
   console.log(t1 - t0);
-  // console.log(perlEntries);
 
   return undefined;
 })();
