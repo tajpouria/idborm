@@ -1,14 +1,13 @@
 import { IDBPDatabase } from "idb";
-import { IDBObject } from "./IDBObject";
-export interface ObjectStoreInitializer {
-    name: string;
-    options?: IDBObjectStoreParameters;
-}
+import { IDBObject, IDBVersionController } from ".";
+import { ObjectStoreInitializer } from "./typings";
 export declare class IDB {
-    private dbName;
+    dataBaseName: string;
     private db;
     objectStoresMap: Record<string, IDBObject>;
-    constructor(dbName: string, db: IDBPDatabase<unknown>, objectStoresMap: Record<string, IDBObject>);
+    dbVersionController: IDBVersionController;
+    constructor(dataBaseName: string, db: IDBPDatabase<unknown>, objectStoresMap: Record<string, IDBObject>, dbVersionController: IDBVersionController);
+    private static objectStoreDictionaryCreator;
     static init: (dataBaseName: string, objectStores: ObjectStoreInitializer | ObjectStoreInitializer[]) => Promise<IDB>;
     get objectStores(): Record<string, IDBObject>;
     delete: () => Promise<void>;
