@@ -2,7 +2,7 @@ sudo: required
 services:
   - docker
 before_install:
-  - docker build -t tajpouria/idborm -f ./.Dockerfile .
+  - docker build -t tajpouria/idborm -f ./Dockerfile .
 script:
   - docker run tajpouria/idborm npm run test -- --watchAll=false
 branches:
