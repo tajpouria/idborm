@@ -1,17 +1,15 @@
 import IDB from "../lib";
 import { repeater, randomIntFromInterval } from "./utils";
 
-const TEST_TARGET = "IDB class";
+const TEST_TARGET = "IDB CLASS";
 
 /* 
  IDB:
     create database:
       creating massive multiple database X
-      version controller track right data X
 
     delete database:
       deleting massive multiple database
-      version track right data 
 
     create object store;
       creating massive multiple object store
@@ -23,7 +21,7 @@ const TEST_TARGET = "IDB class";
 */
 
 describe(TEST_TARGET, () => {
-  describe("Creating database", () => {
+  describe("Create database", () => {
     it("Massive case", async () => {
       const refDB = await IDB.init("ref", { name: "os" });
 
@@ -42,6 +40,12 @@ describe(TEST_TARGET, () => {
           expect(Idb).toHaveProperty(key);
         });
       });
+    });
+  });
+
+  describe("Delete database", () => {
+    it("Massive case", async () => {
+      // console.log(dbs);
     });
   });
 });
