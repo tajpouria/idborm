@@ -46,7 +46,7 @@ export class IDB {
 
   public static init = async (
     dataBaseName: string,
-    objectStores: ObjectStoreInitializer | ObjectStoreInitializer[],
+    objectStores: ObjectStoreInitializer | ObjectStoreInitializer[] | ObjectStoreInitializerFunction,
   ): Promise<IDB> => {
     if (!dataBaseName) {
       throw new Error(IDBErrors.noDatabaseName);
