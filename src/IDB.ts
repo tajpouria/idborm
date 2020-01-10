@@ -3,6 +3,8 @@ import { openDB, IDBPDatabase, deleteDB } from "idb";
 import { IDBObject, IDBVersionController } from ".";
 import { IDBErrors, IDBORM, ObjectStoreInitializer } from "./typings";
 
+type ObjectStoreInitializerFunction = () => ObjectStoreInitializer | ObjectStoreInitializer[];
+
 export class IDB {
   public dataBaseName: string;
 
@@ -25,15 +27,18 @@ export class IDB {
   }
 
   private static objectStoreDictionaryCreator(
-    objectStores: ObjectStoreInitializer | ObjectStoreInitializer[],
+    objectStores: ObjectStoreInitializer | ObjectStoreInitializer[] | ObjectStoreInitializerFunction,
   ): Record<string, ObjectStoreInitializer> {
+    const _objectStores = typeof objectStores === "function" ? objectStores() : objectStores;
+
     const objectStoresDictionary: Record<string, ObjectStoreInitializer> = {};
-    if (Array.isArray(objectStores)) {
-      objectStores.forEach(os => {
+
+    if (Array.isArray(_objectStores)) {
+      _objectStores.forEach(os => {
         objectStoresDictionary[os.name] = os;
       });
     } else {
-      objectStoresDictionary[objectStores.name] = objectStores;
+      objectStoresDictionary[_objectStores.name] = _objectStores;
     }
 
     return objectStoresDictionary;
@@ -79,8 +84,6 @@ export class IDB {
               db.deleteObjectStore(os);
             }
           });
-
-          // TODO: handle the case database deleted manually
         },
       });
 
@@ -95,6 +98,10 @@ export class IDB {
   get objectStores(): Record<string, IDBObject> {
     return this.objectStoresMap;
   }
+
+  public iterateOverObjectStores = (
+    callbackfn: (objectStore?: IDBObject, index?: number, ObjectStoresArray?: IDBObject[]) => any,
+  ): void => Object.values(this.objectStores).forEach(callbackfn);
 
   public delete = async (): Promise<void> => {
     const { db, dbVersionController } = this;

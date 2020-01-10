@@ -10,5 +10,6 @@ export declare class IDB {
     private static objectStoreDictionaryCreator;
     static init: (dataBaseName: string, objectStores: ObjectStoreInitializer | ObjectStoreInitializer[]) => Promise<IDB>;
     get objectStores(): Record<string, IDBObject>;
+    iterateOverObjectStores: (callbackfn: (objectStore?: IDBObject | undefined, index?: number | undefined, ObjectStoresArray?: IDBObject[] | undefined) => any) => void;
     delete: () => Promise<void>;
 }

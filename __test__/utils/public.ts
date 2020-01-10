@@ -1,3 +1,4 @@
+// RANDOM GENERATORS
 /** 
  Generate random number between two numbers
 
@@ -5,9 +6,15 @@
  @param {number} max 
  @return {number}
 */
-export const randomIntFromInterval = (min: number, max: number): number => {
-  return Math.floor(Math.random() * (max - min + 1) + min);
-};
+export const randomIntFromInterval = (min: number, max: number): number =>
+  Math.floor(Math.random() * (max - min + 1) + min);
+
+/**
+ Generate random string
+
+ @returns {string}
+*/
+export const randomString = (): string => Math.random().toString();
 
 /** 
  Repeat an action in amount that specified or a random value between specified sequence

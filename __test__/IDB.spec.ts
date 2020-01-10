@@ -1,5 +1,5 @@
 import IDB from "../lib";
-import { repeater, randomIntFromInterval } from "./utils";
+import { repeater, randomIntFromInterval, randomString, createReferenceDB } from "./utils";
 
 const TEST_TARGET = "IDB CLASS";
 
@@ -23,13 +23,13 @@ const TEST_TARGET = "IDB CLASS";
 describe(TEST_TARGET, () => {
   describe("Create database", () => {
     it("Massive case", async () => {
-      const refDB = await IDB.init("ref", { name: "os" });
+      const refDB = await createReferenceDB();
 
       const randomNumber = randomIntFromInterval(15, 20);
 
       const res = await Promise.all(
         repeater(async () => {
-          return IDB.init(Math.random().toString(), { name: "os" });
+          return IDB.init(randomString(), { name: "os" });
         }, randomNumber),
       );
 
