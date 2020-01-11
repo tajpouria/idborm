@@ -15,7 +15,7 @@
     "lib"
   ],
   "scripts": {
-    "test": "yarn build && jest",
+    "test": "yarn build && jest --collectCoverage",
     "build": "tsc && yarn stand-alone",
     "stand-alone": "webpack --mode production --config=webpack.config.js"
   },
