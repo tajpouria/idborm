@@ -1,9 +1,14 @@
 import { openDB, IDBPDatabase, deleteDB } from "idb";
 
 import { IDBObject, IDBVersionController } from ".";
-import { IDBErrors, IDBORM, ObjectStoreInitializer } from "./typings";
-
-type ObjectStoreInitializerFunction = () => ObjectStoreInitializer | ObjectStoreInitializer[];
+import {
+  IDBErrors,
+  IDBORM,
+  ObjectStoreInitializer,
+  ObjectStoreInitializerFunction,
+  ObjectStoresAndActionMap,
+  ObjectStoreIteratorCallbackfn,
+} from "./typings";
 
 export class IDB {
   public dataBaseName: string;
@@ -95,25 +100,37 @@ export class IDB {
     }
   };
 
-  get objectStores(): Record<string, IDBObject> {
-    return this.objectStoresMap;
+  get objectStores(): ObjectStoresAndActionMap {
+    const iterateOverObjectStores = (callbackfn: ObjectStoreIteratorCallbackfn): void => {
+      this.iterateOverObjectStores(callbackfn);
+    };
+
+    return {
+      ...this.objectStoresMap,
+
+      methods: {
+        // @ts-ignore
+        iterate(callbackfn: ObjectStoreIteratorCallbackfn): void {
+          iterateOverObjectStores(callbackfn);
+        },
+      },
+    };
   }
 
-  public iterateOverObjectStores = (
-    callbackfn: (objectStore?: IDBObject, index?: number, ObjectStoresArray?: IDBObject[]) => any,
-  ): void => Object.values(this.objectStores).forEach(callbackfn);
+  private iterateOverObjectStores = (callbackfn: ObjectStoreIteratorCallbackfn): void =>
+    Object.values(this.objectStoresMap).forEach(callbackfn as any);
 
   public delete = async (): Promise<void> => {
     const { db, dbVersionController } = this;
 
     const closeDBConnection = (): void => db.close();
 
-    return deleteDB(this.dataBaseName, {
+    await deleteDB(this.dataBaseName, {
       blocked() {
         closeDBConnection();
       },
-    }).then(() => {
-      dbVersionController.deleteDbVersion();
     });
+
+    dbVersionController.deleteDbVersion();
   };
 }

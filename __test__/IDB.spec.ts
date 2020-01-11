@@ -11,9 +11,6 @@ const TEST_TARGET = "IDB CLASS";
     delete database:
       deleting massive multiple database
 
-    create object store;
-      creating massive multiple object store
-
     modify object store initializer;
       delete a certain field
       change a certain field name

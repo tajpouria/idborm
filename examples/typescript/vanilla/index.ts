@@ -7,16 +7,19 @@ import IDB from "../../../src";
     return [{ name: "os" }, { name: "he" }];
   });
 
-  MyDataBase.iterateOverObjectStores((os, index, array) => console.log(os, index, array));
+  MyDataBase.objectStores.methods.iterate((os, idx, array) => {
+    console.log(os, idx, array);
+  });
+
+  const { he } = MyDataBase.objectStores;
+
+  console.log(he);
 
   const t0 = performance.now();
   const SecondDataBase = await IDB.init("SecondDataBase", { name: "User" });
 
   await SecondDataBase.delete();
 
-  const os = MyDataBase.objectStores;
-
-  console.log(os);
   // const { PY, Perl } = os;
 
   // await PY.put(

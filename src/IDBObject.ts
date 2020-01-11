@@ -33,7 +33,6 @@ export class IDBObject {
     try {
       const idbdb = await openDB(db.name, dbVersionController.incDbVersion(), {
         blocked() {
-          console.log("blocked put");
           closeDBConnection();
         },
       });
@@ -57,7 +56,6 @@ export class IDBObject {
     try {
       const idbdb = await openDB(this.db.name, dbVersionController.incDbVersion(), {
         blocked() {
-          console.log("blocked get");
           closeDBConnection();
         },
       });
@@ -101,7 +99,6 @@ export class IDBObject {
     try {
       const idbdb = await openDB(db.name, dbVersionController.incDbVersion(), {
         blocked() {
-          console.log("blocked keys");
           closeDBConnection();
         },
       });
@@ -126,7 +123,6 @@ export class IDBObject {
       closeDBConnection();
       const idbdb = await openDB(db.name, dbVersionController.incDbVersion(), {
         blocked() {
-          console.log("blocked values");
           closeDBConnection();
         },
       });

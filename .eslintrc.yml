@@ -30,4 +30,5 @@ rules:
     import/extensions: off,
     "@typescript-eslint/no-explicit-any": off,
     import/no-cycle: off,
+    "@typescript-eslint/ban-ts-ignore": off,
   }

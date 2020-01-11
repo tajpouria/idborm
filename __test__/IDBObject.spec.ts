@@ -20,7 +20,7 @@ describe(TEST_TARGET, () => {
 
       let _osCount = 0;
 
-      TestDB.iterateOverObjectStores((_os, idx) => {
+      TestDB.objectStores.methods.iterate((_os, idx) => {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         _osCount = idx! + 1;
 
