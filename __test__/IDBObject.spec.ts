@@ -8,7 +8,7 @@ describe(TEST_TARGET, () => {
     it("Massive case", async () => {
       const randomNumber = randomIntFromInterval(50, 60);
 
-      const RefDB = await createReferenceDB();
+      const RefDB = await createReferenceDB("ref");
 
       const TestDB = await IDB.init("TestDB", () => {
         const objectStores = repeater(() => ({ name: randomString() }), randomNumber);
