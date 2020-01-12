@@ -1,7 +1,7 @@
 import { openDB, IDBPDatabase } from "idb";
 
 import { IDBVersionController } from ".";
-import { IDBORM, ObjectStoreInitializer, IDBObjectKey } from "./typings";
+import { IDBORM, ObjectStoreInitializer, IDBObjectKey, IDBErrors } from "./typings";
 
 export class IDBObject {
   private db: IDBPDatabase<unknown>;
@@ -25,8 +25,8 @@ export class IDBObject {
 
   private static closeDBConnection = (db: IDBPDatabase): void => db.close();
 
-  public put = async <Value = any>(value: Value, key?: IDBObjectKey): Promise<Value | undefined> => {
-    const { db, dbVersionController, storeName } = this;
+  public put = async <Value = any>(value: Value, key?: IDBObjectKey): Promise<Value> => {
+    const { db, dbVersionController, storeName, storeOptions } = this;
     const { closeDBConnection } = IDBObject;
 
     try {
@@ -42,10 +42,8 @@ export class IDBObject {
 
       return value;
     } catch (err) {
-      console.error(`${IDBORM}: ${storeName}.put(${key}): ${err}`);
+      throw new Error(`${IDBORM}: ${storeName}.put(${key}): ${err}`);
     }
-
-    return undefined;
   };
 
   public get = async <Value = any>(key: IDBObjectKey): Promise<Value | null> => {
