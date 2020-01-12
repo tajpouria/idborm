@@ -25,15 +25,15 @@ export class IDBObject {
     this.storeOptions = options;
   }
 
+  private static closeDBConnection = (db: IDBPDatabase): void => db.close();
+
   public put = async <Value = any>(key: IDBObjectKey, value: Value): Promise<Value | undefined> => {
     const { db, dbVersionController, storeName } = this;
-
-    const closeDBConnection = (): void => db.close();
 
     try {
       const idbdb = await openDB(db.name, dbVersionController.incDbVersion(), {
         blocked() {
-          closeDBConnection();
+          IDBObject.closeDBConnection(db);
         },
       });
 
@@ -51,12 +51,10 @@ export class IDBObject {
   public get = async <Value = any>(key: IDBObjectKey): Promise<Value | null> => {
     const { db, dbVersionController } = this;
 
-    const closeDBConnection = (): void => db.close();
-
     try {
       const idbdb = await openDB(this.db.name, dbVersionController.incDbVersion(), {
         blocked() {
-          closeDBConnection();
+          IDBObject.closeDBConnection(db);
         },
       });
 
@@ -72,12 +70,12 @@ export class IDBObject {
   };
 
   public delete = async (key: IDBObjectKey): Promise<void> => {
-    const closeDBConnection = (): void => this.db.close();
+    const { db } = this;
 
     try {
-      const idbdb = await openDB(this.db.name, this.db.version + 1, {
+      const idbdb = await openDB(db.name, db.version + 1, {
         blocked() {
-          closeDBConnection();
+          IDBObject.closeDBConnection(db);
         },
       });
 
@@ -94,12 +92,10 @@ export class IDBObject {
   public keys = async (): Promise<IDBObjectKey[]> => {
     const { db, storeName, dbVersionController } = this;
 
-    const closeDBConnection = (): void => db.close();
-
     try {
       const idbdb = await openDB(db.name, dbVersionController.incDbVersion(), {
         blocked() {
-          closeDBConnection();
+          IDBObject.closeDBConnection(db);
         },
       });
 
@@ -123,7 +119,7 @@ export class IDBObject {
       closeDBConnection();
       const idbdb = await openDB(db.name, dbVersionController.incDbVersion(), {
         blocked() {
-          closeDBConnection();
+          IDBObject.closeDBConnection(db);
         },
       });
 
@@ -150,12 +146,12 @@ export class IDBObject {
   };
 
   public clear = async (): Promise<boolean | undefined> => {
-    const closeDBConnection = (): void => this.db.close();
+    const { db } = this;
 
     try {
-      const idbdb = await openDB(this.db.name, this.db.version + 1, {
+      const idbdb = await openDB(db.name, db.version + 1, {
         blocked() {
-          closeDBConnection();
+          IDBObject.closeDBConnection(db);
         },
       });
 

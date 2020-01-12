@@ -31,9 +31,9 @@ export class IDB {
     this.objectStoresMap = objectStoresMap;
   }
 
-  private static objectStoreDictionaryCreator(
+  private static objectStoreDictionaryCreator = (
     objectStores: ObjectStoreInitializer | ObjectStoreInitializer[] | ObjectStoreInitializerFunction,
-  ): Record<string, ObjectStoreInitializer> {
+  ): Record<string, ObjectStoreInitializer> => {
     const _objectStores = typeof objectStores === "function" ? objectStores() : objectStores;
 
     const objectStoresDictionary: Record<string, ObjectStoreInitializer> = {};
@@ -47,7 +47,7 @@ export class IDB {
     }
 
     return objectStoresDictionary;
-  }
+  };
 
   public static init = async (
     dataBaseName: string,
@@ -120,14 +120,14 @@ export class IDB {
   private iterateOverObjectStores = (callbackfn: ObjectStoreIteratorCallbackfn): void =>
     Object.values(this.objectStoresMap).forEach(callbackfn as any);
 
+  private static closeDBConnection = (db: IDBPDatabase): void => db.close();
+
   public delete = async (): Promise<void> => {
     const { db, dbVersionController } = this;
 
-    const closeDBConnection = (): void => db.close();
-
     await deleteDB(this.dataBaseName, {
       blocked() {
-        closeDBConnection();
+        IDB.closeDBConnection(db);
       },
     });
 

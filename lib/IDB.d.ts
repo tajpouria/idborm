@@ -11,5 +11,6 @@ export declare class IDB {
     static init: (dataBaseName: string, objectStores: ObjectStoreInitializer | ObjectStoreInitializerFunction | ObjectStoreInitializer[]) => Promise<IDB>;
     get objectStores(): ObjectStoresAndActionMap;
     private iterateOverObjectStores;
+    private static closeDBConnection;
     delete: () => Promise<void>;
 }

@@ -11,25 +11,6 @@ import { IDBErrors } from "../src/typings";
 
 const TEST_TARGET = "IDB CLASS";
 
-/* 
- IDB:
-    create database:
-      massive case
-      edge case:
-        no name throw an error
-        no initializer throw an error
-
-    delete database:
-      massive case
-
-    createObjectStore
-      massive case
-      create a certain field 
-      delete a certain field
-      modify option
-      iterate method
-*/
-
 describe(TEST_TARGET, () => {
   describe("Create database", () => {
     it("Massive case", async () => {

@@ -8,6 +8,7 @@ export declare class IDBObject {
     private readonly storeName;
     private readonly storeOptions;
     constructor(db: IDBPDatabase<unknown>, { name, options }: ObjectStoreInitializer, dbVersionController: IDBVersionController);
+    private static closeDBConnection;
     put: <Value = any>(key: IDBObjectKey, value: Value) => Promise<Value | undefined>;
     get: <Value = any>(key: IDBObjectKey) => Promise<Value | null>;
     delete: (key: IDBObjectKey) => Promise<void>;
