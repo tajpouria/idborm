@@ -1,9 +1,7 @@
 import { openDB, IDBPDatabase } from "idb";
 
 import { IDBVersionController } from ".";
-import { IDBORM, ObjectStoreInitializer } from "./typings";
-
-type IDBObjectKey = string | number | Date | ArrayBufferView | ArrayBuffer | IDBArrayKey | IDBKeyRange;
+import { IDBORM, ObjectStoreInitializer, IDBObjectKey } from "./typings";
 
 export class IDBObject {
   private db: IDBPDatabase<unknown>;
@@ -29,61 +27,65 @@ export class IDBObject {
 
   public put = async <Value = any>(key: IDBObjectKey, value: Value): Promise<Value | undefined> => {
     const { db, dbVersionController, storeName } = this;
+    const { closeDBConnection } = IDBObject;
 
     try {
       const idbdb = await openDB(db.name, dbVersionController.incDbVersion(), {
         blocked() {
-          IDBObject.closeDBConnection(db);
+          closeDBConnection(db);
         },
       });
 
       await idbdb.put(storeName, value, key);
 
-      idbdb.close();
+      closeDBConnection(idbdb);
 
       return value;
     } catch (err) {
-      console.error(`${IDBORM}: ${storeName}.put(${key}) ${err}`);
+      console.error(`${IDBORM}: ${storeName}.put(${key}): ${err}`);
       return undefined;
     }
   };
 
   public get = async <Value = any>(key: IDBObjectKey): Promise<Value | null> => {
-    const { db, dbVersionController } = this;
+    const { db, dbVersionController, storeName } = this;
+    const { closeDBConnection } = IDBObject;
 
     try {
-      const idbdb = await openDB(this.db.name, dbVersionController.incDbVersion(), {
+      const idbdb = await openDB(db.name, dbVersionController.incDbVersion(), {
         blocked() {
-          IDBObject.closeDBConnection(db);
+          closeDBConnection(db);
         },
       });
 
-      const value = await idbdb.get(this.storeName, key);
+      const value = await idbdb.get(storeName, key);
 
-      idbdb.close();
+      closeDBConnection(idbdb);
 
       return value;
     } catch (err) {
-      console.error(IDBORM, err);
+      console.error(`${IDBORM}: ${storeName}.get(${key}): ${err}`);
       return null;
     }
   };
 
-  public delete = async (key: IDBObjectKey): Promise<void> => {
-    const { db } = this;
+  public delete = async (key: IDBObjectKey): Promise<boolean | undefined> => {
+    const { db, dbVersionController, storeName } = this;
+    const { closeDBConnection } = IDBObject;
 
     try {
-      const idbdb = await openDB(db.name, db.version + 1, {
+      const idbdb = await openDB(db.name, dbVersionController.incDbVersion(), {
         blocked() {
-          IDBObject.closeDBConnection(db);
+          closeDBConnection(db);
         },
       });
 
-      await idbdb.delete(this.storeName, key);
+      await idbdb.delete(storeName, key);
 
       idbdb.close();
+      return true;
     } catch (err) {
-      console.error(IDBORM, err);
+      console.error(`${IDBORM}: ${storeName}.delete(${key}): ${err}`);
     }
 
     return undefined;
@@ -91,78 +93,82 @@ export class IDBObject {
 
   public keys = async (): Promise<IDBObjectKey[]> => {
     const { db, storeName, dbVersionController } = this;
+    const { closeDBConnection } = IDBObject;
 
     try {
       const idbdb = await openDB(db.name, dbVersionController.incDbVersion(), {
         blocked() {
-          IDBObject.closeDBConnection(db);
+          closeDBConnection(db);
         },
       });
 
       const keys = await idbdb.getAllKeys(storeName);
 
-      idbdb.close();
+      closeDBConnection(idbdb);
 
       return keys;
     } catch (err) {
-      console.error(IDBORM, err);
+      console.error(`${IDBORM}: ${storeName}.keys(): ${err}`);
       return [];
     }
   };
 
-  public values = async (): Promise<any[]> => {
+  public values = async <Value = any>(): Promise<Value[]> => {
     const { db, storeName, dbVersionController } = this;
-
-    const closeDBConnection = (): void => db.close();
+    const { closeDBConnection } = IDBObject;
 
     try {
-      closeDBConnection();
       const idbdb = await openDB(db.name, dbVersionController.incDbVersion(), {
         blocked() {
-          IDBObject.closeDBConnection(db);
+          closeDBConnection(db);
         },
       });
 
       const values = idbdb.getAll(storeName);
 
-      idbdb.close();
+      closeDBConnection(idbdb);
 
       return values;
     } catch (err) {
-      console.error(IDBORM, err);
-      return [];
+      console.error(`${IDBORM}: ${storeName}.values(): ${err}`);
     }
+
+    return [];
   };
 
-  public entries = async (): Promise<[IDBObjectKey, any][]> => {
+  public entries = async <Value = any>(): Promise<[IDBObjectKey, Value][]> => {
+    const { storeName } = this;
     try {
       const keyAndValues = await Promise.all<IDBObjectKey[], any[]>([this.keys(), this.values()]);
 
       return keyAndValues?.[0].map((key: IDBObjectKey, idx: number) => [key, keyAndValues?.[1][idx]]) || [];
     } catch (err) {
-      console.error(IDBORM, err);
-      return [];
+      console.error(`${IDBORM}: ${storeName}.entries(): ${err}`);
     }
+
+    return [];
   };
 
   public clear = async (): Promise<boolean | undefined> => {
-    const { db } = this;
+    const { db, storeName } = this;
+    const { closeDBConnection } = IDBObject;
 
     try {
       const idbdb = await openDB(db.name, db.version + 1, {
         blocked() {
-          IDBObject.closeDBConnection(db);
+          closeDBConnection(db);
         },
       });
 
       await idbdb.clear(this.storeName);
 
-      idbdb.close();
+      closeDBConnection(idbdb);
 
       return true;
     } catch (err) {
-      console.error(IDBORM, err);
-      return undefined;
+      console.error(`${IDBORM}: ${storeName}.clear(): ${err}`);
     }
+
+    return undefined;
   };
 }
