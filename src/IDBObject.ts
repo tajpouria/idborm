@@ -25,7 +25,7 @@ export class IDBObject {
 
   private static closeDBConnection = (db: IDBPDatabase): void => db.close();
 
-  public put = async <Value = any>(key: IDBObjectKey, value: Value): Promise<Value | undefined> => {
+  public put = async <Value = any>(value: Value, key?: IDBObjectKey): Promise<Value | undefined> => {
     const { db, dbVersionController, storeName } = this;
     const { closeDBConnection } = IDBObject;
 
@@ -43,8 +43,9 @@ export class IDBObject {
       return value;
     } catch (err) {
       console.error(`${IDBORM}: ${storeName}.put(${key}): ${err}`);
-      return undefined;
     }
+
+    return undefined;
   };
 
   public get = async <Value = any>(key: IDBObjectKey): Promise<Value | null> => {
@@ -65,8 +66,9 @@ export class IDBObject {
       return value;
     } catch (err) {
       console.error(`${IDBORM}: ${storeName}.get(${key}): ${err}`);
-      return null;
     }
+
+    return null;
   };
 
   public delete = async (key: IDBObjectKey): Promise<boolean | undefined> => {
@@ -82,7 +84,8 @@ export class IDBObject {
 
       await idbdb.delete(storeName, key);
 
-      idbdb.close();
+      closeDBConnection(idbdb);
+
       return true;
     } catch (err) {
       console.error(`${IDBORM}: ${storeName}.delete(${key}): ${err}`);
@@ -109,8 +112,9 @@ export class IDBObject {
       return keys;
     } catch (err) {
       console.error(`${IDBORM}: ${storeName}.keys(): ${err}`);
-      return [];
     }
+
+    return [];
   };
 
   public values = async <Value = any>(): Promise<Value[]> => {

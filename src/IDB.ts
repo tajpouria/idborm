@@ -10,6 +10,9 @@ import {
   ObjectStoreIteratorCallbackfn,
 } from "./typings";
 
+// @ts-ignore
+window.openDB = openDB;
+
 export class IDB {
   public dataBaseName: string;
 
@@ -69,19 +72,19 @@ export class IDB {
       const idbdb = await openDB(dataBaseName, dbVersionController.incDbVersion(objectStoreDictionary), {
         upgrade(db) {
           Object.values(objectStoreDictionary).forEach(os => {
-            const _options = os.options?.autoIncrement || os.options?.keyPath ? os.options : { autoIncrement: true };
+            const { name, options } = os;
 
-            if (!db.objectStoreNames.contains(os.name)) {
-              db.createObjectStore(os.name, _options);
+            if (!db.objectStoreNames.contains(name)) {
+              db.createObjectStore(name, options);
             }
 
-            if (dbVersionController.shouldUpdateStores[os.name]) {
-              db.deleteObjectStore(os.name);
+            if (dbVersionController.shouldUpdateStores[name]) {
+              db.deleteObjectStore(name);
 
-              db.createObjectStore(os.name, _options);
+              db.createObjectStore(name, options);
             }
 
-            objectStoresMap[os.name] = new IDBObject(db, { name: os.name, options: _options }, dbVersionController);
+            objectStoresMap[os.name] = new IDBObject(db, { name, options }, dbVersionController);
           });
 
           Object.values(db.objectStoreNames).forEach(os => {

@@ -3,6 +3,10 @@ import { repeater, randomIntFromInterval, randomString, createReferenceDB } from
 
 const TEST_TARGET = "IDBObject CLASS";
 
+/**
+ *
+ */
+
 describe(TEST_TARGET, () => {
   describe("Create ObjectStore", () => {
     it("Massive case", async () => {
