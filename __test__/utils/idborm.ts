@@ -13,3 +13,6 @@ export const isObjectStoreValid = (_os: IDBObject | undefined, refOS: IDBObject)
 
   return true;
 };
+
+// @ts-ignore
+export const dataBases = async (): Promise<{ name: string; version: number }[]> => indexedDB.databases();

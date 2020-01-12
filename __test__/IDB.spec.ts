@@ -1,5 +1,12 @@
 import IDB from "../lib";
-import { repeater, randomIntFromInterval, randomString, createReferenceDB, isObjectStoreValid } from "./utils";
+import {
+  repeater,
+  randomIntFromInterval,
+  randomString,
+  createReferenceDB,
+  isObjectStoreValid,
+  dataBases,
+} from "./utils";
 import { IDBErrors } from "../src/typings";
 
 const TEST_TARGET = "IDB CLASS";
@@ -67,7 +74,21 @@ describe(TEST_TARGET, () => {
   });
 
   describe("Delete database", () => {
-    it("Massive case", async () => {});
+    it("Massive case", async () => {
+      const randomNames = repeater(randomString, [15, 20]);
+
+      const res = await Promise.all(randomNames.map(name => IDB.init(name, { name: "os" })));
+
+      await Promise.all(res.map(db => db.delete()));
+
+      const _dataBases = await dataBases();
+
+      expect(
+        _dataBases.forEach(db => {
+          if (randomNames.includes(db.name)) return true;
+        }),
+      ).toBeFalsy();
+    });
   });
 
   describe("Create ObjectStore", () => {
