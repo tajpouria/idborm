@@ -1,4 +1,4 @@
-import IDB from "../lib";
+import IDB from "../src";
 import {
   repeater,
   randomIntFromInterval,

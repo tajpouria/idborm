@@ -15,7 +15,7 @@
     "lib"
   ],
   "scripts": {
-    "test": "yarn build && jest --collectCoverage",
+    "test": "jest --collectCoverage",
     "build": "tsc && yarn stand-alone",
     "stand-alone": "webpack --mode production --config=webpack.config.js"
   },
@@ -37,7 +37,7 @@
     "webpack-cli": "^3.3.10"
   },
   "dependencies": {
-    "idb": "^4.0.5"
+    "idb": "^5.0.0"
   },
   "repository": {
     "type": "git",

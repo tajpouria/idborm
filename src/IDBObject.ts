@@ -26,7 +26,7 @@ export class IDBObject {
   private static closeDBConnection = (db: IDBPDatabase): void => db.close();
 
   public put = async <Value = any>(value: Value, key?: IDBObjectKey): Promise<Value> => {
-    const { db, dbVersionController, storeName, storeOptions } = this;
+    const { db, dbVersionController, storeName } = this;
     const { closeDBConnection } = IDBObject;
 
     try {
@@ -46,7 +46,7 @@ export class IDBObject {
     }
   };
 
-  public get = async <Value = any>(key: IDBObjectKey): Promise<Value | null> => {
+  public get = async <Value = any>(key: IDBObjectKey): Promise<Value | undefined> => {
     const { db, dbVersionController, storeName } = this;
     const { closeDBConnection } = IDBObject;
 
@@ -66,7 +66,7 @@ export class IDBObject {
       console.error(`${IDBORM}: ${storeName}.get(${key}): ${err}`);
     }
 
-    return null;
+    return undefined;
   };
 
   public delete = async (key: IDBObjectKey): Promise<boolean | undefined> => {
@@ -152,11 +152,11 @@ export class IDBObject {
   };
 
   public clear = async (): Promise<boolean | undefined> => {
-    const { db, storeName } = this;
+    const { db, storeName, dbVersionController } = this;
     const { closeDBConnection } = IDBObject;
 
     try {
-      const idbdb = await openDB(db.name, db.version + 1, {
+      const idbdb = await openDB(db.name, dbVersionController.incDbVersion(), {
         blocked() {
           closeDBConnection(db);
         },

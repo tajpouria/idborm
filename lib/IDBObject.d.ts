@@ -9,7 +9,7 @@ export declare class IDBObject {
     constructor(db: IDBPDatabase<unknown>, { name, options }: ObjectStoreInitializer, dbVersionController: IDBVersionController);
     private static closeDBConnection;
     put: <Value = any>(value: Value, key?: string | number | Date | ArrayBufferView | ArrayBuffer | IDBArrayKey | IDBKeyRange | undefined) => Promise<Value>;
-    get: <Value = any>(key: IDBObjectKey) => Promise<Value | null>;
+    get: <Value = any>(key: IDBObjectKey) => Promise<Value | undefined>;
     delete: (key: IDBObjectKey) => Promise<boolean | undefined>;
     keys: () => Promise<IDBObjectKey[]>;
     values: <Value = any>() => Promise<Value[]>;

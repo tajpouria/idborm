@@ -10,9 +10,6 @@ import {
   ObjectStoreIteratorCallbackfn,
 } from "./typings";
 
-// @ts-ignore
-window.openDB = openDB;
-
 export class IDB {
   public dataBaseName: string;
 
