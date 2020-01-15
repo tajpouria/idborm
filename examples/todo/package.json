@@ -1,0 +1,14 @@
+{
+  "name": "todo",
+  "version": "1.0.0",
+  "description": "idborm todoList example",
+  "main": "index.ts",
+  "license": "MIT",
+  "private": false,
+  "devDependencies": {
+    "parcel": "^1.12.4"
+  },
+  "scripts": {
+    "start": "parcel ./index.html"
+  }
+}
