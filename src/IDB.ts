@@ -11,13 +11,13 @@ import {
 } from "./typings";
 
 export class IDB {
-  public dataBaseName: string;
+  private dataBaseName: string;
 
   private db: IDBPDatabase<unknown>;
 
-  objectStoresMap: Record<string, IDBObject> = {};
+  private objectStoresMap: Record<string, IDBObject> = {};
 
-  dbVersionController: IDBVersionController;
+  private dbVersionController: IDBVersionController;
 
   constructor(
     dataBaseName: string,
