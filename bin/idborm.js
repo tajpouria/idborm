@@ -1,10 +1,12 @@
 #!/usr/bin/env node
-"use strict";
+
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable @typescript-eslint/no-var-requires */
 
 require("v8-compile-cache");
 
-const fs = require("fs"),
-  path = require("path");
+const fs = require("fs");
+const path = require("path");
 
 const IDBORM = "idborm";
 const IDBORM_UTILITY = `${IDBORM}-utility.js`;
@@ -20,42 +22,44 @@ process.once("uncaughtException", err => {
 const swPath = args.serviceworker;
 
 if (swPath) {
-  // TODO: Copy then replace strategy
-
   fs.readFile(swPath, "utf8", (err, targetData) => {
     if (err) {
       console.error(IDBORM, err.message);
       process.exitCode = 2;
     }
 
-    fs.writeFile(swPath, [IMPORT_SCRIPT_CONTENT, targetData].join("\n"), err => {
-      if (err) {
-        console.error(IDBORM, err.message);
+    fs.writeFile(swPath, [IMPORT_SCRIPT_CONTENT, targetData].join("\n"), writeServiceWorkerFileError => {
+      if (writeServiceWorkerFileError) {
+        console.error(IDBORM, writeServiceWorkerFileError.message);
         process.exitCode = 2;
       }
 
       console.info(`${IDBORM}: "${swPath}" modified successfully. ✔`);
 
-      fs.readFile(path.resolve(__dirname, `../lib/${IDBORM_UTILITY}`), "utf8", (err, idbORMUtility) => {
-        if (err) {
-          console.error(IDBORM, err.message);
-          process.exitCode = 2;
-        }
-
-        const swPathArr = swPath.split("/");
-        swPathArr[swPathArr.length - 1] = IDBORM_UTILITY;
-        const utilityPath = swPathArr.join("/");
-
-        fs.writeFile(utilityPath, idbORMUtility, err => {
+      fs.readFile(
+        path.resolve(__dirname, `../lib/${IDBORM_UTILITY}`),
+        "utf8",
+        (readIdbORMUtilityFileError, idbORMUtility) => {
           if (err) {
-            console.error(IDBORM, err.message);
+            console.error(IDBORM, readIdbORMUtilityFileError.message);
             process.exitCode = 2;
           }
 
-          console.info(`${IDBORM}: "${utilityPath}" created successfully. ✔`);
-          process.exitCode = 0;
-        });
-      });
+          const swPathArr = swPath.split("/");
+          swPathArr[swPathArr.length - 1] = IDBORM_UTILITY;
+          const utilityPath = swPathArr.join("/");
+
+          fs.writeFile(utilityPath, idbORMUtility, writeIdbORMUtilityFileError => {
+            if (err) {
+              console.error(IDBORM, writeIdbORMUtilityFileError.message);
+              process.exitCode = 2;
+            }
+
+            console.info(`${IDBORM}: "${utilityPath}" created successfully. ✔`);
+            process.exitCode = 0;
+          });
+        },
+      );
     });
   });
 } else {

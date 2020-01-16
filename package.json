@@ -17,7 +17,8 @@
   "scripts": {
     "test": "jest --collectCoverage",
     "build": "tsc && yarn stand-alone",
-    "stand-alone": "webpack --mode production --config=webpack.config.js"
+    "stand-alone": "webpack --mode production --config=webpack.config.js",
+    "lint": "eslint -c .eslintrc.yml --fix src/**/*.ts bin/**/*.js examples/**/*.ts"
   },
   "devDependencies": {
     "@types/jest": "^24.0.25",

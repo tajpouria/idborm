@@ -5,6 +5,7 @@ before_install:
   - docker build -t tajpouria/idborm -f ./Dockerfile .
 script:
   - docker run tajpouria/idborm npm run test -- --watchAll=false
+  - docker run tajpouria/idborm npm run lint
 branches:
   except:
-    - dev 
+    - dev
