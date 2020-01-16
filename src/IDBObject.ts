@@ -25,6 +25,28 @@ export class IDBObject {
 
   private static closeDBConnection = (db: IDBPDatabase): void => db.close();
 
+  /**
+   * Put a record in the database
+   *
+   * @param value - item's value
+   *
+   * @param key - item's key _optional_ **when no option (keyPath or autoIncrement) specified this argument is required**
+   *
+   * @returns Promise<Value>
+   *
+   * @example
+   * ```ts
+   * const { Todo } = DB.objectStores;
+   *
+   * // e.g Using `id` as objectStore keyPath option
+   * await Todo.put({ id: 1, content: 'Pet my cat' })
+   * // e.g Using autoIncrement option
+   * await Todo.put({ content: 'Pet my cat' })
+   * // e.g No option (keyPath or autoIncrement) provided
+   * await Todo.put({ content: 'Pet my cat' }, 'task one')
+   * });
+   * ```
+   */
   public put = async <Value = any>(value: Value, key?: IDBObjectKey): Promise<Value> => {
     const { db, dbVersionController, storeName } = this;
     const { closeDBConnection } = IDBObject;
@@ -46,6 +68,20 @@ export class IDBObject {
     }
   };
 
+  /**
+   * Get a record from database
+   *
+   * @param key - item's key
+   *
+   * @returns Promise<Value | undefined>
+   *
+   * @example
+   * ```ts
+   * const { Todo } = DB.objectStores;
+   *
+   * await Todo.get('task one')
+   * ```
+   */
   public get = async <Value = any>(key: IDBObjectKey): Promise<Value | undefined> => {
     const { db, dbVersionController, storeName } = this;
     const { closeDBConnection } = IDBObject;
@@ -69,7 +105,21 @@ export class IDBObject {
     return undefined;
   };
 
-  public delete = async (key: IDBObjectKey): Promise<boolean | undefined> => {
+  /**
+   * Delete a record from database
+   *
+   * @param key - item's key
+   *
+   * @returns Promise<true | undefined>
+   *
+   * @example
+   * ```ts
+   * const { Todo } = DB.objectStores;
+   *
+   * await Todo.delete('task one')
+   * ```
+   */
+  public delete = async (key: IDBObjectKey): Promise<true | undefined> => {
     const { db, dbVersionController, storeName } = this;
     const { closeDBConnection } = IDBObject;
 
@@ -92,6 +142,18 @@ export class IDBObject {
     return undefined;
   };
 
+  /**
+   * Retrieves the keys of records in an object store
+   *
+   * @returns Promise<IDBObjectKey[]>
+   *
+   * @example
+   * ```ts
+   * const { Todo } = DB.objectStores;
+   *
+   * await Todo.keys()
+   * ```
+   */
   public keys = async (): Promise<IDBObjectKey[]> => {
     const { db, storeName, dbVersionController } = this;
     const { closeDBConnection } = IDBObject;
@@ -115,6 +177,18 @@ export class IDBObject {
     return [];
   };
 
+  /**
+   * Retrieves the values of records in an object store
+   *
+   * @returns Promise<Value[]>
+   *
+   * @example
+   * ```ts
+   * const { Todo } = DB.objectStores;
+   *
+   * await Todo.values()
+   * ```
+   */
   public values = async <Value = any>(): Promise<Value[]> => {
     const { db, storeName, dbVersionController } = this;
     const { closeDBConnection } = IDBObject;
@@ -138,6 +212,18 @@ export class IDBObject {
     return [];
   };
 
+  /**
+   * Retrieves the an 2D matrix of keys and values of records in an object store
+   *
+   * @returns Promise<[IDBObjectKeys, Value][]>
+   *
+   * @example
+   * ```ts
+   * const { Todo } = DB.objectStores;
+   *
+   * await Todo.entries()
+   * ```
+   */
   public entries = async <Value = any>(): Promise<Entry<Value>[]> => {
     const { storeName } = this;
     try {
@@ -151,7 +237,19 @@ export class IDBObject {
     return [];
   };
 
-  public clear = async (): Promise<boolean | undefined> => {
+  /**
+   * Remove all records stored previously in an object store
+   *
+   * @returns Promise<true | undefined>
+   *
+   * @example
+   * ```ts
+   * const { Todo } = DB.objectStores;
+   *
+   * await Todo.clear()
+   * ```
+   */
+  public clear = async (): Promise<true | undefined> => {
     const { db, storeName, dbVersionController } = this;
     const { closeDBConnection } = IDBObject;
 
@@ -174,6 +272,22 @@ export class IDBObject {
     return undefined;
   };
 
+  /**
+   * Iterate over all the record in an object store and perform an async action on each one
+   *
+   * @param callbackfn - async callback (action)
+   *
+   * @returns Promise<any[]>
+   *
+   * @example
+   * ```ts
+   * const { Todo } = DB.objectStores;
+   *
+   * await Todo.iterate(([key, value], index, entries) => {
+   *  if (value.completed) return Todo.delete(key);
+   * })
+   * ```
+   */
   public iterate = async <Value = any>(callbackfn: EntriesIteratorCallbackfn<Value>): Promise<any[]> => {
     const { entries } = this;
 

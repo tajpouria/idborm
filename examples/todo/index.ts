@@ -2,6 +2,7 @@ import IDB from "../../src";
 
 (async (): Promise<void> => {
   // Initializing dataBase and objectStore
+
   const DB = await IDB.init("TodoDataBase", { name: "Todo", options: { keyPath: "id" } });
 
   // Destructors ObjectStore
@@ -17,13 +18,13 @@ import IDB from "../../src";
 
     todos.reverse().forEach(([key, value]) => {
       const todoItem = `
-    <li>
-      <div class="view">
-        <input data-id="${key}" class="toggle" type="checkbox" ${value.completed ? "checked" : ""}>
-        <label>${value.content}</label>
-        <button data-id="${key}" class="destroy"></button>
-      </div>
-    </li>`;
+      <li>
+        <div class="view">
+          <input data-id="${key}" class="toggle" type="checkbox" ${value.completed ? "checked" : ""}>
+          <label>${value.content}</label>
+          <button data-id="${key}" class="destroy"></button>
+        </div>
+      </li>`;
 
       todoList.innerHTML += todoItem;
     });

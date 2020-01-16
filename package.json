@@ -16,8 +16,9 @@
   ],
   "scripts": {
     "test": "jest --collectCoverage",
-    "build": "tsc && yarn stand-alone",
+    "build": "tsc && yarn stand-alone && yarn docs",
     "stand-alone": "webpack --mode production --config=webpack.config.js",
+    "docs": "typedoc --out docs src/IDB.ts src/IDBObject.ts",
     "lint": "eslint -c .eslintrc.yml --fix src/**/*.ts bin/**/*.js examples/**/*.ts"
   },
   "devDependencies": {
@@ -33,6 +34,7 @@
     "jest": "^24.9.0",
     "prettier": "^1.19.1",
     "ts-jest": "^24.3.0",
+    "typedoc": "^0.16.6",
     "typescript": "^3.7.4",
     "webpack": "^4.41.5",
     "webpack-cli": "^3.3.10"

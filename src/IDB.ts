@@ -51,6 +51,26 @@ export class IDB {
     return objectStoresDictionary;
   };
 
+  /**
+   * Retrieves an indexed data base
+   *
+   * @param dataBaseName - Data base name
+   * @param objectStores - Initialize objectStore(s)
+   *
+   * @returns Promise<IDB>
+   *
+   * @example
+   * ```ts
+   * // e.g. Creating single object Store
+   * const DB = await IDB.init("TodoDataBase", { name: "Todo", options: { keyPath: "id" } });
+   * // e.g Create multiple object Stores
+   * const DB = await IDB.init("TodoDataBase", [ { name: "Todo" }, {name: "Notes", options: { keyPath: "id" }} ]);
+   * // e.g Use a callback function to create object stores
+   * const DB = await IDB.init("TodoDataBase", () => {
+   *  return { name: "Todo", options: { autoIncrement: true } };
+   * });
+   * ```
+   */
   public static init = async (
     dataBaseName: string,
     objectStores: ObjectStoreInitializer | ObjectStoreInitializer[] | ObjectStoreInitializerFunction,
@@ -102,6 +122,20 @@ export class IDB {
     }
   };
 
+  /**
+   * Retrieves data base object stores and methods map
+   *
+   * @returns Promise<{[ objectStoreName: string ]: IDBObject, methods: { iterate(callbackfn){} }}>
+   *
+   * @example
+   * ```ts
+   * // Access a object store
+   * const { Todo } = DB.objectStores;
+   *
+   * // Iterate over data base object stores
+   * DB.objectStores.methods.iterate((objectStore) => {})
+   * ```
+   */
   get objectStores(): ObjectStoresAndActionMap {
     const iterateOverObjectStores = (callbackfn: ObjectStoreIteratorCallbackfn): void => {
       this.iterateOverObjectStores(callbackfn);
@@ -122,6 +156,18 @@ export class IDB {
   private iterateOverObjectStores = (callbackfn: ObjectStoreIteratorCallbackfn): void =>
     Object.values(this.objectStoresMap).forEach(callbackfn as any);
 
+  /**
+   * Delete an indexed database
+   *
+   * @returns Promise<void>
+   *
+   * @example
+   * ```ts
+   * const DB = IDB.init("TodoDataBase", { name: "Todo" });
+   *
+   * iDB.delete()
+   * ```
+   */
   public delete = async (): Promise<void> => {
     const { db, dbVersionController } = this;
 
