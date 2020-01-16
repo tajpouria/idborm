@@ -1,9 +1,9 @@
 /* istanbul ignore file */
+
 export const IDBORM = "idborm";
 
 export const IDBErrors = {
-  // TODO: handle not access error properly
-  noAccessToRequireStuff: `${IDBORM}: cannot access to "window.localstorage" or "window.indexedDB"`,
+  noAccessToRequireStuff: `${IDBORM}:FATALError: localStorage or indexedDB is not available.`,
   noDatabaseName: `${IDBORM}: dataBaseName is required.`,
   noObjectStore: `${IDBORM}: objectStore(s) is not provided.`,
 };

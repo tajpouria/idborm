@@ -19,6 +19,8 @@ export class IDB {
 
   private dbVersionController: IDBVersionController;
 
+  private static closeDBConnection = (db: IDBPDatabase): void => db.close();
+
   constructor(
     dataBaseName: string,
     db: IDBPDatabase<unknown>,
@@ -105,11 +107,11 @@ export class IDB {
       this.iterateOverObjectStores(callbackfn);
     };
 
+    // @ts-ignore
     return {
       ...this.objectStoresMap,
 
       methods: {
-        // @ts-ignore
         iterate(callbackfn: ObjectStoreIteratorCallbackfn): void {
           iterateOverObjectStores(callbackfn);
         },
@@ -119,8 +121,6 @@ export class IDB {
 
   private iterateOverObjectStores = (callbackfn: ObjectStoreIteratorCallbackfn): void =>
     Object.values(this.objectStoresMap).forEach(callbackfn as any);
-
-  private static closeDBConnection = (db: IDBPDatabase): void => db.close();
 
   public delete = async (): Promise<void> => {
     const { db, dbVersionController } = this;

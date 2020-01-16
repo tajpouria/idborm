@@ -4,17 +4,20 @@ import { repeater, randomIntFromInterval, randomString } from "./utils";
 const TEST_TARGET = "IDBObject CLASS";
 
 describe(TEST_TARGET, () => {
-  describe("put get keys values entries", () => {
+  describe("put get keys values entries iterate clear", () => {
     const testObjectStore = async (OS: IDBObject, dataCount: number): Promise<void> => {
+      // Keys
       const keys = await OS.keys();
       expect(keys.length).toBe(dataCount);
 
-      const getValues = await Promise.all(keys.map(key => OS.get(key)));
+      // iterate
+      const getValues = await OS.iterate(([key]) => OS.get(key));
 
+      // values
       const values = await OS.values();
-
       expect(values).toEqual(getValues);
 
+      // entries
       const entries = await OS.entries();
       expect(entries.length).toBe(dataCount);
       expect(
@@ -23,16 +26,14 @@ describe(TEST_TARGET, () => {
         }),
       ).toBeFalsy();
 
+      // delete
       await OS.delete(keys[0]);
-
       const deleteValue = await OS.get(keys[0]);
-
       expect(deleteValue).toBeUndefined();
 
+      // clear
       await OS.clear();
-
       const clearedEntries = await OS.entries();
-
       expect(clearedEntries.length).toBe(0);
     };
 

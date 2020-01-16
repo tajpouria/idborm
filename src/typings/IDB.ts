@@ -5,7 +5,7 @@ import { IDBObject } from "..";
 export type ObjectStoreInitializerFunction = () => ObjectStoreInitializer | ObjectStoreInitializer[];
 
 export type ObjectStoreIteratorCallbackfn = (
-  objectStore?: IDBObject,
+  objectStore: IDBObject,
   index?: number,
   ObjectStoresArray?: IDBObject[],
 ) => any;

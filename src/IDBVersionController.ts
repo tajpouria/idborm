@@ -13,8 +13,7 @@ export class IDBVersionController {
   public shouldUpdateStores: Record<string, any> = {};
 
   constructor(dataBaseName: string) {
-    // TODO: check for localStorage and ETC properly
-    if (!window.localStorage || !indexedDB || !JSON) {
+    if (!window.localStorage || !window.indexedDB || !JSON) {
       throw new Error(IDBErrors.noAccessToRequireStuff);
     }
 

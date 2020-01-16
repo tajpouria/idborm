@@ -1,7 +1,7 @@
 import { openDB, IDBPDatabase } from "idb";
 
 import { IDBVersionController } from ".";
-import { IDBORM, ObjectStoreInitializer, IDBObjectKey, IDBErrors } from "./typings";
+import { IDBORM, ObjectStoreInitializer, IDBObjectKey, Entry, EntriesIteratorCallbackfn } from "./typings";
 
 export class IDBObject {
   private db: IDBPDatabase<unknown>;
@@ -138,10 +138,10 @@ export class IDBObject {
     return [];
   };
 
-  public entries = async <Value = any>(): Promise<[IDBObjectKey, Value][]> => {
+  public entries = async <Value = any>(): Promise<Entry<Value>[]> => {
     const { storeName } = this;
     try {
-      const keyAndValues = await Promise.all<IDBObjectKey[], any[]>([this.keys(), this.values()]);
+      const keyAndValues = await Promise.all([this.keys(), this.values()]);
 
       return keyAndValues?.[0].map((key: IDBObjectKey, idx: number) => [key, keyAndValues?.[1][idx]]) || [];
     } catch (err) {
@@ -172,5 +172,13 @@ export class IDBObject {
     }
 
     return undefined;
+  };
+
+  public iterate = async <Value = any>(callbackfn: EntriesIteratorCallbackfn<Value>): Promise<any[]> => {
+    const { entries } = this;
+
+    const _entries = await entries();
+
+    return Promise.all(_entries.map(callbackfn));
   };
 }
