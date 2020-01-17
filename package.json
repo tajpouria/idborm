@@ -1,11 +1,8 @@
 {
   "name": "idborm",
-  "version": "0.0.9",
+  "version": "0.1.0",
   "description": "A super simple and minimalist ORM built on top of IndexedDB that makes IndexedDB usable",
   "author": "Pouria Tajdivand<tajpouria.dev@gmail.com>",
-  "bin": {
-    "idborm": "./bin/idborm.js"
-  },
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
@@ -17,7 +14,7 @@
     "test": "jest --collectCoverage",
     "build": "tsc && yarn docs",
     "stand-alone": "webpack --mode production --config=webpack.config.js",
-    "docs": "typedoc --excludePrivate --excludeProtected --exclude \"**/*+(index|IDBVersionController).ts\" --out docs src/IDB.ts src/IDBObject.ts",
+    "docs": "typedoc --includeVersion --excludePrivate --excludeProtected --exclude \"**/*+(index|IDBVersionController).ts\" --out docs src/IDB.ts src/IDBObject.ts",
     "lint": "eslint -c .eslintrc.yml --fix src/**/*.ts bin/**/*.js examples/**/*.ts"
   },
   "devDependencies": {
@@ -45,6 +42,7 @@
     "type": "git",
     "url": "git+https://github.com/tajpouria/idborm"
   },
+  "homepage": "https://tajpouria.github.io/idborm/",
   "keywords": [
     "indexeddb",
     "idb",
