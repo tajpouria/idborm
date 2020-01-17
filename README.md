@@ -2,13 +2,9 @@
 
 ## Documentations: https://tajpouria.github.io/idborm/
 
-<iframe
-     src="https://codesandbox.io/embed/wizardly-saha-q4lct?fontsize=13&hidenavigation=1&module=%2Findex.js"
-     style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
-     title="idborm-todo-example"
-     allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb"
-     sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
-   ></iframe>
+## Demo
+
+[![Edit idborm-todo-example](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/wizardly-saha-q4lct?fontsize=13&hidenavigation=1&module=%2Findex.js)
 
 A super simple and minimalist ORM built on top of IndexedDB powered by [ idb ](https://github.com/jakearchibald/idb) that makes IndexedDB usable
 
