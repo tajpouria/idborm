@@ -14,7 +14,7 @@
     "test": "jest --collectCoverage",
     "build": "tsc && yarn docs",
     "stand-alone": "webpack --mode production --config=webpack.config.js",
-    "docs": "typedoc --includeVersion --excludePrivate --excludeProtected --exclude \"**/*+(index|IDBVersionController).ts\" --out docs src/IDB.ts src/IDBObject.ts",
+    "docs": "typedoc --includeVersion --excludePrivate --excludeProtected --exclude \"**/*+(index|IDBVersionController).ts\" --out docs src/IDB.ts src/IDBObject.ts && cp _config.yml docs/",
     "lint": "eslint -c .eslintrc.yml --fix src/**/*.ts bin/**/*.js examples/**/*.ts"
   },
   "devDependencies": {
