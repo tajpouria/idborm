@@ -6,6 +6,7 @@ export declare class IDBObject {
     private readonly dbVersionController;
     private readonly storeName;
     private readonly storeOptions;
+    /** @ignore */
     constructor(db: IDBPDatabase<unknown>, { name, options }: ObjectStoreInitializer, dbVersionController: IDBVersionController);
     private static closeDBConnection;
     /**
@@ -13,21 +14,23 @@ export declare class IDBObject {
      *
      * @param value - item's value
      *
-     * @param key - item's key _optional_ **when no option (keyPath or autoIncrement) specified this argument is required**
+     * @param key - item's key **when no option (keyPath or autoIncrement) specified this argument is required**
      *
-     * @returns Promise<Value>
+     * @typeparam Value - value's type
      *
-     * @example
+     * @returns Recorded value
+     *
+     * Using `id` as objectStore keyPath option :
      * ```ts
-     * const { Todo } = DB.objectStores;
-     *
-     * // e.g Using `id` as objectStore keyPath option
      * await Todo.put({ id: 1, content: 'Pet my cat' })
-     * // e.g Using autoIncrement option
+     * ```
+     * Using autoIncrement option :
+     * ```ts
      * await Todo.put({ content: 'Pet my cat' })
-     * // e.g No option (keyPath or autoIncrement) provided
+     * ```
+     * No option (keyPath or autoIncrement) provided :
+     * ```ts
      * await Todo.put({ content: 'Pet my cat' }, 'task one')
-     * });
      * ```
      */
     put: <Value = any>(value: Value, key?: string | number | Date | ArrayBufferView | ArrayBuffer | IDBArrayKey | IDBKeyRange | undefined) => Promise<Value>;
@@ -36,12 +39,12 @@ export declare class IDBObject {
      *
      * @param key - item's key
      *
-     * @returns Promise<Value | undefined>
+     * @typeparam Value - value's type
      *
-     * @example
+     * @returns Recorded value
+     *
+     * Get record with key `task one`
      * ```ts
-     * const { Todo } = DB.objectStores;
-     *
      * await Todo.get('task one')
      * ```
      */
@@ -51,12 +54,10 @@ export declare class IDBObject {
      *
      * @param key - item's key
      *
-     * @returns Promise<true | undefined>
+     * @returns true if record successfully deleted
      *
-     * @example
+     * Delete record with key `task one`
      * ```ts
-     * const { Todo } = DB.objectStores;
-     *
      * await Todo.delete('task one')
      * ```
      */
@@ -64,12 +65,9 @@ export declare class IDBObject {
     /**
      * Retrieves the keys of records in an object store
      *
-     * @returns Promise<IDBObjectKey[]>
+     * @returns An list containing all object store keys
      *
-     * @example
      * ```ts
-     * const { Todo } = DB.objectStores;
-     *
      * await Todo.keys()
      * ```
      */
@@ -77,38 +75,33 @@ export declare class IDBObject {
     /**
      * Retrieves the values of records in an object store
      *
-     * @returns Promise<Value[]>
+     * @typeparam Value - value's type
      *
-     * @example
+     * @returns An list containing all object store values
+     *
      * ```ts
-     * const { Todo } = DB.objectStores;
-     *
      * await Todo.values()
      * ```
      */
     values: <Value = any>() => Promise<Value[]>;
     /**
-     * Retrieves the an 2D matrix of keys and values of records in an object store
+     * Retrieves an 2D matrix containing keys and values of records in an object store
      *
-     * @returns Promise<[IDBObjectKeys, Value][]>
+     * @typeparam Value - value's type
      *
-     * @example
+     * @returns List of arrays that each array contains record's key and value
+     *
      * ```ts
-     * const { Todo } = DB.objectStores;
-     *
      * await Todo.entries()
      * ```
      */
     entries: <Value = any>() => Promise<Entry<Value>[]>;
     /**
-     * Remove all records stored previously in an object store
+     * Delete all records stored in an object store
      *
-     * @returns Promise<true | undefined>
+     * @returns true if all records successfully deleted
      *
-     * @example
      * ```ts
-     * const { Todo } = DB.objectStores;
-     *
      * await Todo.clear()
      * ```
      */
@@ -118,12 +111,12 @@ export declare class IDBObject {
      *
      * @param callbackfn - async callback (action)
      *
-     * @returns Promise<any[]>
+     * @typeparam Value - value's type
      *
-     * @example
+     * @returns A list contains async action results
+     *
+     * Delete all completed task :
      * ```ts
-     * const { Todo } = DB.objectStores;
-     *
      * await Todo.iterate(([key, value], index, entries) => {
      *  if (value.completed) return Todo.delete(key);
      * })

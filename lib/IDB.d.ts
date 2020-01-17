@@ -7,6 +7,7 @@ export declare class IDB {
     private objectStoresMap;
     private dbVersionController;
     private static closeDBConnection;
+    /** @ignore */
     constructor(dataBaseName: string, db: IDBPDatabase<unknown>, objectStoresMap: Record<string, IDBObject>, dbVersionController: IDBVersionController);
     private static objectStoreDictionaryCreator;
     /**
@@ -15,15 +16,18 @@ export declare class IDB {
      * @param dataBaseName - Data base name
      * @param objectStores - Initialize objectStore(s)
      *
-     * @returns Promise<IDB>
+     * @returns An indexed data base that contains defined object store
      *
-     * @example
+     * Creating single object Store :
      * ```ts
-     * // e.g. Creating single object Store
      * const DB = await IDB.init("TodoDataBase", { name: "Todo", options: { keyPath: "id" } });
-     * // e.g Create multiple object Stores
+     * ```
+     * Create multiple object Stores :
+     * ```ts
      * const DB = await IDB.init("TodoDataBase", [ { name: "Todo" }, {name: "Notes", options: { keyPath: "id" }} ]);
-     * // e.g Use a callback function to create object stores
+     * ```
+     * Use a callback function to initialize object stores :
+     * ```ts
      * const DB = await IDB.init("TodoDataBase", () => {
      *  return { name: "Todo", options: { autoIncrement: true } };
      * });
@@ -33,15 +37,15 @@ export declare class IDB {
     /**
      * Retrieves data base object stores and methods map
      *
-     * @returns Promise<{[ objectStoreName: string ]: IDBObject, methods: { iterate(callbackfn){} }}>
+     * @returns An map containing defined object stores, and methods to perform action on object stores
      *
-     * @example
+     * Access object stores :
      * ```ts
-     * // Access a object store
      * const { Todo } = DB.objectStores;
-     *
-     * // Iterate over data base object stores
-     * DB.objectStores.methods.iterate((objectStore) => {})
+     * ```
+     * Iterate over data base object stores :
+     * ```
+     * DataBase.objectStores.methods.iterate((objectStore) => {})
      * ```
      */
     get objectStores(): ObjectStoresAndActionMap;
@@ -49,15 +53,8 @@ export declare class IDB {
     /**
      * Delete an indexed database
      *
-     * @returns Promise<void>
-     *
-     * @example
      * ```ts
-     * // Access a object store
-     * const { Todo } = DB.objectStores;
-     *
-     * // Iterate over data base object stores
-     * DB.objectStores.methods.iterate((objectStore) => {})
+     * await DataBase.delete()
      * ```
      */
     delete: () => Promise<void>;

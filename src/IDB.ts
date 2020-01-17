@@ -21,6 +21,7 @@ export class IDB {
 
   private static closeDBConnection = (db: IDBPDatabase): void => db.close();
 
+  /** @ignore */
   constructor(
     dataBaseName: string,
     db: IDBPDatabase<unknown>,
@@ -57,15 +58,18 @@ export class IDB {
    * @param dataBaseName - Data base name
    * @param objectStores - Initialize objectStore(s)
    *
-   * @returns Promise<IDB>
+   * @returns An indexed data base that contains defined object store
    *
-   * @example
+   * Creating single object Store :
    * ```ts
-   * // e.g. Creating single object Store
    * const DB = await IDB.init("TodoDataBase", { name: "Todo", options: { keyPath: "id" } });
-   * // e.g Create multiple object Stores
+   * ```
+   * Create multiple object Stores :
+   * ```ts
    * const DB = await IDB.init("TodoDataBase", [ { name: "Todo" }, {name: "Notes", options: { keyPath: "id" }} ]);
-   * // e.g Use a callback function to create object stores
+   * ```
+   * Use a callback function to initialize object stores :
+   * ```ts
    * const DB = await IDB.init("TodoDataBase", () => {
    *  return { name: "Todo", options: { autoIncrement: true } };
    * });
@@ -125,18 +129,18 @@ export class IDB {
   /**
    * Retrieves data base object stores and methods map
    *
-   * @returns Promise<{[ objectStoreName: string ]: IDBObject, methods: { iterate(callbackfn){} }}>
+   * @returns An map containing defined object stores, and methods to perform action on object stores
    *
-   * @example
+   * Access object stores :
    * ```ts
-   * // Access a object store
    * const { Todo } = DB.objectStores;
-   *
-   * // Iterate over data base object stores
-   * DB.objectStores.methods.iterate((objectStore) => {})
+   * ```
+   * Iterate over data base object stores :
+   * ```
+   * DataBase.objectStores.methods.iterate((objectStore) => {})
    * ```
    */
-  get objectStores(): ObjectStoresAndActionMap {
+  public get objectStores(): ObjectStoresAndActionMap {
     const iterateOverObjectStores = (callbackfn: ObjectStoreIteratorCallbackfn): void => {
       this.iterateOverObjectStores(callbackfn);
     };
@@ -159,13 +163,8 @@ export class IDB {
   /**
    * Delete an indexed database
    *
-   * @returns Promise<void>
-   *
-   * @example
    * ```ts
-   * const DB = IDB.init("TodoDataBase", { name: "Todo" });
-   *
-   * iDB.delete()
+   * await DataBase.delete()
    * ```
    */
   public delete = async (): Promise<void> => {

@@ -12,6 +12,7 @@ export class IDBObject {
 
   private readonly storeOptions: IDBObjectStoreParameters | undefined;
 
+  /** @ignore */
   constructor(
     db: IDBPDatabase<unknown>,
     { name, options }: ObjectStoreInitializer,
@@ -30,21 +31,23 @@ export class IDBObject {
    *
    * @param value - item's value
    *
-   * @param key - item's key _optional_ **when no option (keyPath or autoIncrement) specified this argument is required**
+   * @param key - item's key **when no option (keyPath or autoIncrement) specified this argument is required**
    *
-   * @returns Promise<Value>
+   * @typeparam Value - value's type
    *
-   * @example
+   * @returns Recorded value
+   *
+   * Using `id` as objectStore keyPath option :
    * ```ts
-   * const { Todo } = DB.objectStores;
-   *
-   * // e.g Using `id` as objectStore keyPath option
    * await Todo.put({ id: 1, content: 'Pet my cat' })
-   * // e.g Using autoIncrement option
+   * ```
+   * Using autoIncrement option :
+   * ```ts
    * await Todo.put({ content: 'Pet my cat' })
-   * // e.g No option (keyPath or autoIncrement) provided
+   * ```
+   * No option (keyPath or autoIncrement) provided :
+   * ```ts
    * await Todo.put({ content: 'Pet my cat' }, 'task one')
-   * });
    * ```
    */
   public put = async <Value = any>(value: Value, key?: IDBObjectKey): Promise<Value> => {
@@ -73,12 +76,12 @@ export class IDBObject {
    *
    * @param key - item's key
    *
-   * @returns Promise<Value | undefined>
+   * @typeparam Value - value's type
    *
-   * @example
+   * @returns Recorded value
+   *
+   * Get record with key `task one`
    * ```ts
-   * const { Todo } = DB.objectStores;
-   *
    * await Todo.get('task one')
    * ```
    */
@@ -110,12 +113,10 @@ export class IDBObject {
    *
    * @param key - item's key
    *
-   * @returns Promise<true | undefined>
+   * @returns true if record successfully deleted
    *
-   * @example
+   * Delete record with key `task one`
    * ```ts
-   * const { Todo } = DB.objectStores;
-   *
    * await Todo.delete('task one')
    * ```
    */
@@ -145,12 +146,9 @@ export class IDBObject {
   /**
    * Retrieves the keys of records in an object store
    *
-   * @returns Promise<IDBObjectKey[]>
+   * @returns An list containing all object store keys
    *
-   * @example
    * ```ts
-   * const { Todo } = DB.objectStores;
-   *
    * await Todo.keys()
    * ```
    */
@@ -180,12 +178,11 @@ export class IDBObject {
   /**
    * Retrieves the values of records in an object store
    *
-   * @returns Promise<Value[]>
+   * @typeparam Value - value's type
    *
-   * @example
+   * @returns An list containing all object store values
+   *
    * ```ts
-   * const { Todo } = DB.objectStores;
-   *
    * await Todo.values()
    * ```
    */
@@ -213,14 +210,13 @@ export class IDBObject {
   };
 
   /**
-   * Retrieves the an 2D matrix of keys and values of records in an object store
+   * Retrieves an 2D matrix containing keys and values of records in an object store
    *
-   * @returns Promise<[IDBObjectKeys, Value][]>
+   * @typeparam Value - value's type
    *
-   * @example
+   * @returns List of arrays that each array contains record's key and value
+   *
    * ```ts
-   * const { Todo } = DB.objectStores;
-   *
    * await Todo.entries()
    * ```
    */
@@ -238,14 +234,11 @@ export class IDBObject {
   };
 
   /**
-   * Remove all records stored previously in an object store
+   * Delete all records stored in an object store
    *
-   * @returns Promise<true | undefined>
+   * @returns true if all records successfully deleted
    *
-   * @example
    * ```ts
-   * const { Todo } = DB.objectStores;
-   *
    * await Todo.clear()
    * ```
    */
@@ -277,12 +270,12 @@ export class IDBObject {
    *
    * @param callbackfn - async callback (action)
    *
-   * @returns Promise<any[]>
+   * @typeparam Value - value's type
    *
-   * @example
+   * @returns A list contains async action results
+   *
+   * Delete all completed task :
    * ```ts
-   * const { Todo } = DB.objectStores;
-   *
    * await Todo.iterate(([key, value], index, entries) => {
    *  if (value.completed) return Todo.delete(key);
    * })
