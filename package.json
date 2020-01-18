@@ -1,6 +1,6 @@
 {
   "name": "idborm",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A super simple and minimalist ORM built on top of IndexedDB that makes IndexedDB usable",
   "author": "Pouria Tajdivand<tajpouria.dev@gmail.com>",
   "main": "lib/index.js",
