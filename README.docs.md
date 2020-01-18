@@ -1,17 +1,11 @@
 # IDBORM &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/tajpouria/idborm/blob/master/LICENSE) [![npm version](https://img.shields.io/npm/v/idborm?style=flat)](https://www.npmjs.com/package/idborm) [![Build Status](https://travis-ci.org/tajpouria/idborm.svg?branch=master)](https://travis-ci.org/tajpouria/idborm) [ ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg) ](#Contribute!)
 
-## Documentations: https://tajpouria.github.io/idborm/
-
-## Demo
-
-[![Edit idborm-todo-example](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/wizardly-saha-q4lct?fontsize=13&hidenavigation=1&module=%2Findex.js)
-
 A super simple and minimalist ORM built on top of IndexedDB powered by [ idb ](https://github.com/jakearchibald/idb) that makes IndexedDB usable
 
-- [ Installation ](#Installation)
-- [API](#API)
+- [ Installation ](#installation)
+- [API](#api)
   - [ init ](#init)
-  - [ ObjectStores](#objectStores)
+  - [ ObjectStores](#objectstores)
   - [ put ](#put)
   - [ get ](#get)
   - [ delete ](#delete)
@@ -19,7 +13,15 @@ A super simple and minimalist ORM built on top of IndexedDB powered by [ idb ](h
   - [ values ](#values)
   - [ entries ](#entries)
 
-# Installation
+<iframe
+     src="https://codesandbox.io/embed/idborm-todo-example-q4lct?fontsize=14&hidenavigation=1&theme=dark"
+     style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
+     title="idborm-todo-example"
+     allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb"
+     sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
+   ></iframe>
+
+# installation
 
 This is a Node.js module available through the npm registry.
 
@@ -33,7 +35,7 @@ $ npm install idborm
 $ yarn add idborm
 ```
 
-# API
+# api
 
 Assuming you're using a module-compatible system (like webpack, Rollup etc):
 
@@ -102,7 +104,7 @@ const DB = await IDB.init(database_name, object_store(s)_Initializer);
 })();
 ```
 
-# objectStores
+# objectstores
 
 ## Destructor objectStores
 
