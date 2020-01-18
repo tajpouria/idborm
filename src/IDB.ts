@@ -1,6 +1,6 @@
 import { openDB, IDBPDatabase, deleteDB } from "idb";
 
-import { IDBObject, IDBVersionController } from ".";
+import { IDBObject } from ".";
 import {
   IDBErrors,
   IDBORM,
@@ -13,24 +13,14 @@ import {
 export class IDB {
   private dataBaseName: string;
 
-  private db: IDBPDatabase<unknown>;
+  private db: Promise<IDBPDatabase<unknown>>;
 
   private objectStoresMap: Record<string, IDBObject> = {};
 
-  private dbVersionController: IDBVersionController;
-
-  private static closeDBConnection = (db: IDBPDatabase): void => db.close();
-
   /** @ignore */
-  constructor(
-    dataBaseName: string,
-    db: IDBPDatabase<unknown>,
-    objectStoresMap: Record<string, IDBObject>,
-    dbVersionController: IDBVersionController,
-  ) {
+  constructor(dataBaseName: string, db: Promise<IDBPDatabase<unknown>>, objectStoresMap: Record<string, IDBObject>) {
     this.dataBaseName = dataBaseName;
     this.db = db;
-    this.dbVersionController = dbVersionController;
     this.objectStoresMap = objectStoresMap;
   }
 
@@ -85,29 +75,26 @@ export class IDB {
       throw new Error(IDBErrors.noObjectStore);
     }
 
-    const dbVersionController = new IDBVersionController(dataBaseName);
-
     const objectStoreDictionary = IDB.objectStoreDictionaryCreator(objectStores);
 
     const objectStoresMap: Record<string, IDBObject> = {};
 
     try {
-      const idbdb = await openDB(dataBaseName, dbVersionController.incDbVersion(objectStoreDictionary), {
+      const idbdb = openDB(dataBaseName, 1, {
         upgrade(db) {
           Object.values(objectStoreDictionary).forEach(os => {
+            console.log(os);
             const { name, options } = os;
 
             if (!db.objectStoreNames.contains(name)) {
               db.createObjectStore(name, options);
             }
 
-            if (dbVersionController.shouldUpdateStores[name]) {
+            if (1) {
               db.deleteObjectStore(name);
 
               db.createObjectStore(name, options);
             }
-
-            objectStoresMap[os.name] = new IDBObject(db, { name, options }, dbVersionController);
           });
 
           Object.values(db.objectStoreNames).forEach(os => {
@@ -118,9 +105,12 @@ export class IDB {
         },
       });
 
-      idbdb.close();
+      Object.values(objectStoreDictionary).forEach(os => {
+        const { name, options } = os;
+        objectStoresMap[os.name] = new IDBObject(idbdb, { name, options });
+      });
 
-      return new IDB(dataBaseName, idbdb, objectStoresMap, dbVersionController);
+      return new IDB(dataBaseName, idbdb, objectStoresMap);
     } catch (error) {
       throw new Error(`${IDBORM}: ${error}`);
     }
@@ -168,14 +158,11 @@ export class IDB {
    * ```
    */
   public delete = async (): Promise<void> => {
-    const { db, dbVersionController } = this;
-
-    await deleteDB(this.dataBaseName, {
+    const { dataBaseName, db } = this;
+    return deleteDB(dataBaseName, {
       blocked() {
-        IDB.closeDBConnection(db);
+        db.then(_db => _db.close());
       },
     });
-
-    dbVersionController.deleteDbVersion();
   };
 }

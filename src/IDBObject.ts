@@ -1,30 +1,20 @@
-import { openDB, IDBPDatabase } from "idb";
+import { IDBPDatabase } from "idb";
 
-import { IDBVersionController } from ".";
 import { IDBORM, ObjectStoreInitializer, IDBObjectKey, Entry, EntriesIteratorCallbackfn } from "./typings";
 
 export class IDBObject {
-  private db: IDBPDatabase<unknown>;
-
-  private readonly dbVersionController: IDBVersionController;
+  private db: Promise<IDBPDatabase<unknown>>;
 
   private readonly storeName: string;
 
   private readonly storeOptions: IDBObjectStoreParameters | undefined;
 
   /** @ignore */
-  constructor(
-    db: IDBPDatabase<unknown>,
-    { name, options }: ObjectStoreInitializer,
-    dbVersionController: IDBVersionController,
-  ) {
+  constructor(db: Promise<IDBPDatabase<unknown>>, { name, options }: ObjectStoreInitializer) {
     this.db = db;
-    this.dbVersionController = dbVersionController;
     this.storeName = name;
     this.storeOptions = options;
   }
-
-  private static closeDBConnection = (db: IDBPDatabase): void => db.close();
 
   /**
    * Put a record in the database
@@ -50,25 +40,20 @@ export class IDBObject {
    * await Todo.put({ content: 'Pet my cat' }, 'task one')
    * ```
    */
-  public put = async <Value = any>(value: Value, key?: IDBObjectKey): Promise<Value> => {
-    const { db, dbVersionController, storeName } = this;
-    const { closeDBConnection } = IDBObject;
+  public put = <Value = any>(value: Value, key?: IDBObjectKey): Promise<Value> => {
+    const { db, storeName } = this;
 
-    try {
-      const idbdb = await openDB(db.name, dbVersionController.incDbVersion(), {
-        blocked() {
-          closeDBConnection(db);
-        },
+    return db
+      .then(_db => {
+        const tx = _db.transaction(storeName, "readwrite");
+        const store = tx.objectStore(storeName);
+        store.put(value, key);
+        return tx.done;
+      })
+      .then(() => value)
+      .catch(err => {
+        throw new Error(`${IDBORM}: ${storeName}.put(${key}): ${err}`);
       });
-
-      await idbdb.put(storeName, value, key);
-
-      closeDBConnection(idbdb);
-
-      return value;
-    } catch (err) {
-      throw new Error(`${IDBORM}: ${storeName}.put(${key}): ${err}`);
-    }
   };
 
   /**
@@ -86,26 +71,17 @@ export class IDBObject {
    * ```
    */
   public get = async <Value = any>(key: IDBObjectKey): Promise<Value | undefined> => {
-    const { db, dbVersionController, storeName } = this;
-    const { closeDBConnection } = IDBObject;
+    const { db, storeName } = this;
 
-    try {
-      const idbdb = await openDB(db.name, dbVersionController.incDbVersion(), {
-        blocked() {
-          closeDBConnection(db);
-        },
+    return db
+      .then(_db => {
+        const tx = _db.transaction(storeName, "readwrite");
+        const store = tx.objectStore(storeName);
+        return store.get(key);
+      })
+      .catch(err => {
+        throw new Error(`${IDBORM}: ${storeName}.get(${key}): ${err}`);
       });
-
-      const value = await idbdb.get(storeName, key);
-
-      closeDBConnection(idbdb);
-
-      return value;
-    } catch (err) {
-      console.error(`${IDBORM}: ${storeName}.get(${key}): ${err}`);
-    }
-
-    return undefined;
   };
 
   /**
@@ -113,66 +89,47 @@ export class IDBObject {
    *
    * @param key - item's key
    *
-   * @returns true if record successfully deleted
-   *
    * Delete record with key `task one`
    * ```ts
    * await Todo.delete('task one')
    * ```
    */
-  public delete = async (key: IDBObjectKey): Promise<true | undefined> => {
-    const { db, dbVersionController, storeName } = this;
-    const { closeDBConnection } = IDBObject;
+  public delete = async (key: IDBObjectKey): Promise<void> => {
+    const { db, storeName } = this;
 
-    try {
-      const idbdb = await openDB(db.name, dbVersionController.incDbVersion(), {
-        blocked() {
-          closeDBConnection(db);
-        },
+    return db
+      .then(async _db => {
+        const tx = _db.transaction(storeName, "readwrite");
+        const store = tx.objectStore(storeName);
+        store.delete(key);
+        return tx.done;
+      })
+      .catch(err => {
+        throw new Error(`${IDBORM}: ${storeName}.get(${key}): ${err}`);
       });
-
-      await idbdb.delete(storeName, key);
-
-      closeDBConnection(idbdb);
-
-      return true;
-    } catch (err) {
-      console.error(`${IDBORM}: ${storeName}.delete(${key}): ${err}`);
-    }
-
-    return undefined;
   };
 
   /**
    * Retrieves the keys of records in an object store
    *
-   * @returns An list containing all object store keys
+   * @returns A list containing all object store keys
    *
    * ```ts
    * await Todo.keys()
    * ```
    */
   public keys = async (): Promise<IDBObjectKey[]> => {
-    const { db, storeName, dbVersionController } = this;
-    const { closeDBConnection } = IDBObject;
+    const { db, storeName } = this;
 
-    try {
-      const idbdb = await openDB(db.name, dbVersionController.incDbVersion(), {
-        blocked() {
-          closeDBConnection(db);
-        },
+    return db
+      .then(async _db => {
+        const tx = _db.transaction(storeName, "readwrite");
+        const store = tx.objectStore(storeName);
+        return store.getAllKeys();
+      })
+      .catch(err => {
+        throw new Error(`${IDBORM}: ${storeName}.keys(): ${err}`);
       });
-
-      const keys = await idbdb.getAllKeys(storeName);
-
-      closeDBConnection(idbdb);
-
-      return keys;
-    } catch (err) {
-      console.error(`${IDBORM}: ${storeName}.keys(): ${err}`);
-    }
-
-    return [];
   };
 
   /**
@@ -186,27 +143,18 @@ export class IDBObject {
    * await Todo.values()
    * ```
    */
-  public values = async <Value = any>(): Promise<Value[]> => {
-    const { db, storeName, dbVersionController } = this;
-    const { closeDBConnection } = IDBObject;
+  public values = <Value = any>(): Promise<Value[]> => {
+    const { db, storeName } = this;
 
-    try {
-      const idbdb = await openDB(db.name, dbVersionController.incDbVersion(), {
-        blocked() {
-          closeDBConnection(db);
-        },
+    return db
+      .then(async _db => {
+        const tx = _db.transaction(storeName, "readwrite");
+        const store = tx.objectStore(storeName);
+        return store.getAll();
+      })
+      .catch(err => {
+        throw new Error(`${IDBORM}: ${storeName}.values(): ${err}`);
       });
-
-      const values = idbdb.getAll(storeName);
-
-      closeDBConnection(idbdb);
-
-      return values;
-    } catch (err) {
-      console.error(`${IDBORM}: ${storeName}.values(): ${err}`);
-    }
-
-    return [];
   };
 
   /**
@@ -227,42 +175,30 @@ export class IDBObject {
 
       return keyAndValues?.[0].map((key: IDBObjectKey, idx: number) => [key, keyAndValues?.[1][idx]]) || [];
     } catch (err) {
-      console.error(`${IDBORM}: ${storeName}.entries(): ${err}`);
+      throw new Error(`${IDBORM}: ${storeName}.entries(): ${err}`);
     }
-
-    return [];
   };
 
   /**
    * Delete all records stored in an object store
    *
-   * @returns true if all records successfully deleted
-   *
    * ```ts
    * await Todo.clear()
    * ```
    */
-  public clear = async (): Promise<true | undefined> => {
-    const { db, storeName, dbVersionController } = this;
-    const { closeDBConnection } = IDBObject;
+  public clear = async (): Promise<void> => {
+    const { db, storeName } = this;
 
-    try {
-      const idbdb = await openDB(db.name, dbVersionController.incDbVersion(), {
-        blocked() {
-          closeDBConnection(db);
-        },
+    return db
+      .then(_db => {
+        const tx = _db.transaction(storeName, "readwrite");
+        const store = tx.objectStore(storeName);
+        store.clear();
+        return tx.done;
+      })
+      .catch(err => {
+        throw new Error(`${IDBORM}: ${storeName}.clear(): ${err}`);
       });
-
-      await idbdb.clear(this.storeName);
-
-      closeDBConnection(idbdb);
-
-      return true;
-    } catch (err) {
-      console.error(`${IDBORM}: ${storeName}.clear(): ${err}`);
-    }
-
-    return undefined;
   };
 
   /**
