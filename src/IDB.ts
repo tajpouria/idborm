@@ -46,27 +46,29 @@ export class IDB {
    * Retrieves an indexed data base
    *
    * @param dataBaseName - Data base name
+   * @param dataBaseVersion - Data base Version
    * @param objectStores - Initialize objectStore(s)
    *
    * @returns An indexed data base that contains defined object store
    *
    * Creating single object Store :
    * ```ts
-   * const DB = await IDB.init("TodoDataBase", { name: "Todo", options: { keyPath: "id" } });
+   * const DB = await IDB.init("TodoDataBase", 1, { name: "Todo", options: { keyPath: "id" } });
    * ```
    * Create multiple object Stores :
    * ```ts
-   * const DB = await IDB.init("TodoDataBase", [ { name: "Todo" }, {name: "Notes", options: { keyPath: "id" }} ]);
+   * const DB = await IDB.init("TodoDataBase", 1, [ { name: "Todo" }, {name: "Notes", options: { keyPath: "id" }} ]);
    * ```
    * Use a callback function to initialize object stores :
    * ```ts
-   * const DB = await IDB.init("TodoDataBase", () => {
+   * const DB = await IDB.init("TodoDataBase", 1, () => {
    *  return { name: "Todo", options: { autoIncrement: true } };
    * });
    * ```
    */
   public static init = async (
     dataBaseName: string,
+    dataBaseVersion: number,
     objectStores: ObjectStoreInitializer | ObjectStoreInitializer[] | ObjectStoreInitializerFunction,
   ): Promise<IDB> => {
     if (!dataBaseName) {
@@ -80,27 +82,12 @@ export class IDB {
     const objectStoresMap: Record<string, IDBObject> = {};
 
     try {
-      const idbdb = openDB(dataBaseName, 1, {
+      const idbdb = openDB(dataBaseName, dataBaseVersion, {
         upgrade(db) {
           Object.values(objectStoreDictionary).forEach(os => {
-            console.log(os);
             const { name, options } = os;
 
-            if (!db.objectStoreNames.contains(name)) {
-              db.createObjectStore(name, options);
-            }
-
-            if (1) {
-              db.deleteObjectStore(name);
-
-              db.createObjectStore(name, options);
-            }
-          });
-
-          Object.values(db.objectStoreNames).forEach(os => {
-            if (!objectStoresMap[os]) {
-              db.deleteObjectStore(os);
-            }
+            db.createObjectStore(name, options);
           });
         },
       });
