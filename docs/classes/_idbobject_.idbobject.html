@@ -103,23 +103,22 @@
 					<a name="clear" class="tsd-anchor"></a>
 					<h3>clear</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">clear<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">clear<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/ddbbe9e/src/IDBObject.ts#L245">IDBObject.ts:245</a></li>
+									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/734630f/src/IDBObject.ts#L190">IDBObject.ts:190</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Delete all records stored in an object store</p>
 								</div>
+								<pre><code class="language-ts"><span class="hljs-keyword">await</span> Todo.clear()</code></pre>
 							</div>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>true if all records successfully deleted</p>
-							<pre><code class="language-ts"><span class="hljs-keyword">await</span> Todo.clear()</code></pre>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -127,13 +126,13 @@
 					<a name="delete" class="tsd-anchor"></a>
 					<h3>delete</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
-						<li class="tsd-signature tsd-kind-icon">delete<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><a href="../modules/_typings_idbobject_.html#idbobjectkey" class="tsd-signature-type">IDBObjectKey</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">delete<span class="tsd-signature-symbol">(</span>key<span class="tsd-signature-symbol">: </span><a href="../modules/_typings_idbobject_.html#idbobjectkey" class="tsd-signature-type">IDBObjectKey</a><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/ddbbe9e/src/IDBObject.ts#L123">IDBObject.ts:123</a></li>
+									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/734630f/src/IDBObject.ts#L98">IDBObject.ts:98</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -148,14 +147,13 @@
 									<div class="tsd-comment tsd-typography">
 										<div class="lead">
 											<p>item&#39;s key</p>
+											<p>Delete record with key <code>task one</code></p>
+											<pre><code class="language-ts"><span class="hljs-keyword">await</span> Todo.delete(<span class="hljs-string">'task one'</span>)</code></pre>
 										</div>
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">true</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">undefined</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>true if record successfully deleted</p>
-							<p>Delete record with key <code>task one</code></p>
-							<pre><code class="language-ts"><span class="hljs-keyword">await</span> Todo.delete(<span class="hljs-string">'task one'</span>)</code></pre>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
 					</ul>
 				</section>
@@ -169,7 +167,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/ddbbe9e/src/IDBObject.ts#L223">IDBObject.ts:223</a></li>
+									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/734630f/src/IDBObject.ts#L172">IDBObject.ts:172</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -202,7 +200,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/ddbbe9e/src/IDBObject.ts#L88">IDBObject.ts:88</a></li>
+									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/734630f/src/IDBObject.ts#L74">IDBObject.ts:74</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -247,7 +245,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/ddbbe9e/src/IDBObject.ts#L284">IDBObject.ts:284</a></li>
+									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/734630f/src/IDBObject.ts#L221">IDBObject.ts:221</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -294,7 +292,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/ddbbe9e/src/IDBObject.ts#L155">IDBObject.ts:155</a></li>
+									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/734630f/src/IDBObject.ts#L122">IDBObject.ts:122</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -303,7 +301,7 @@
 								</div>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/_typings_idbobject_.html#idbobjectkey" class="tsd-signature-type">IDBObjectKey</a><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
-							<p>An list containing all object store keys</p>
+							<p>A list containing all object store keys</p>
 							<pre><code class="language-ts"><span class="hljs-keyword">await</span> Todo.keys()</code></pre>
 						</li>
 					</ul>
@@ -318,12 +316,13 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/ddbbe9e/src/IDBObject.ts#L53">IDBObject.ts:53</a></li>
+									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/734630f/src/IDBObject.ts#L44">IDBObject.ts:44</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
-									<p>Put a record in the database</p>
+									<p>Put a record in the database
+									Replaces items with the same keys</p>
 								</div>
 							</div>
 							<h4 class="tsd-type-parameters-title">Type parameters</h4>
@@ -375,7 +374,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/ddbbe9e/src/IDBObject.ts#L189">IDBObject.ts:189</a></li>
+									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/734630f/src/IDBObject.ts#L147">IDBObject.ts:147</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">

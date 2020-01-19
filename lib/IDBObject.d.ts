@@ -1,16 +1,14 @@
 import { IDBPDatabase } from "idb";
-import { IDBVersionController } from ".";
 import { ObjectStoreInitializer, IDBObjectKey, Entry, EntriesIteratorCallbackfn } from "./typings";
 export declare class IDBObject {
     private db;
-    private readonly dbVersionController;
     private readonly storeName;
     private readonly storeOptions;
     /** @ignore */
-    constructor(db: IDBPDatabase<unknown>, { name, options }: ObjectStoreInitializer, dbVersionController: IDBVersionController);
-    private static closeDBConnection;
+    constructor(db: Promise<IDBPDatabase<unknown>>, { name, options }: ObjectStoreInitializer);
     /**
      * Put a record in the database
+     * Replaces items with the same keys
      *
      * @param value - item's value
      *
@@ -54,18 +52,16 @@ export declare class IDBObject {
      *
      * @param key - item's key
      *
-     * @returns true if record successfully deleted
-     *
      * Delete record with key `task one`
      * ```ts
      * await Todo.delete('task one')
      * ```
      */
-    delete: (key: IDBObjectKey) => Promise<true | undefined>;
+    delete: (key: IDBObjectKey) => Promise<void>;
     /**
      * Retrieves the keys of records in an object store
      *
-     * @returns An list containing all object store keys
+     * @returns A list containing all object store keys
      *
      * ```ts
      * await Todo.keys()
@@ -99,13 +95,11 @@ export declare class IDBObject {
     /**
      * Delete all records stored in an object store
      *
-     * @returns true if all records successfully deleted
-     *
      * ```ts
      * await Todo.clear()
      * ```
      */
-    clear: () => Promise<true | undefined>;
+    clear: () => Promise<void>;
     /**
      * Iterate over all the record in an object store and perform an async action on each one
      *

@@ -1,6 +1,6 @@
 import IDB, { IDBObject } from "../../src";
 
-export const createReferenceDB = async (dbName = "RefDB"): Promise<IDB> => IDB.init(dbName, { name: "os" });
+export const createReferenceDB = async (dbName = "RefDB"): Promise<IDB> => IDB.init(dbName, 1, { name: "os" });
 
 export const isObjectStoreValid = (_os: IDBObject | undefined, refOS: IDBObject): boolean => {
   if (!_os || !refOS) return false;

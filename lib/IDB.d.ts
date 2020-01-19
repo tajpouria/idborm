@@ -1,39 +1,38 @@
 import { IDBPDatabase } from "idb";
-import { IDBObject, IDBVersionController } from ".";
+import { IDBObject } from ".";
 import { ObjectStoreInitializer, ObjectStoreInitializerFunction, ObjectStoresAndActionMap } from "./typings";
 export declare class IDB {
     private dataBaseName;
     private db;
     private objectStoresMap;
-    private dbVersionController;
-    private static closeDBConnection;
     /** @ignore */
-    constructor(dataBaseName: string, db: IDBPDatabase<unknown>, objectStoresMap: Record<string, IDBObject>, dbVersionController: IDBVersionController);
+    constructor(dataBaseName: string, db: Promise<IDBPDatabase<unknown>>, objectStoresMap: Record<string, IDBObject>);
     private static objectStoreDictionaryCreator;
     /**
      * Retrieves an indexed data base
      *
      * @param dataBaseName - Data base name
+     * @param dataBaseVersion - Data base Version
      * @param objectStores - Initialize objectStore(s)
      *
      * @returns An indexed data base that contains defined object store
      *
      * Creating single object Store :
      * ```ts
-     * const DB = await IDB.init("TodoDataBase", { name: "Todo", options: { keyPath: "id" } });
+     * const DB = await IDB.init("TodoDataBase", 1, { name: "Todo", options: { keyPath: "id" } });
      * ```
      * Create multiple object Stores :
      * ```ts
-     * const DB = await IDB.init("TodoDataBase", [ { name: "Todo" }, {name: "Notes", options: { keyPath: "id" }} ]);
+     * const DB = await IDB.init("TodoDataBase", 1, [ { name: "Todo" }, {name: "Notes", options: { keyPath: "id" }} ]);
      * ```
      * Use a callback function to initialize object stores :
      * ```ts
-     * const DB = await IDB.init("TodoDataBase", () => {
+     * const DB = await IDB.init("TodoDataBase", 1, () => {
      *  return { name: "Todo", options: { autoIncrement: true } };
      * });
      * ```
      */
-    static init: (dataBaseName: string, objectStores: ObjectStoreInitializer | ObjectStoreInitializerFunction | ObjectStoreInitializer[]) => Promise<IDB>;
+    static init: (dataBaseName: string, dataBaseVersion: number, objectStores: ObjectStoreInitializer | ObjectStoreInitializerFunction | ObjectStoreInitializer[]) => Promise<IDB>;
     /**
      * Retrieves data base object stores and methods map
      *

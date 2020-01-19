@@ -1,6 +1,5 @@
 export declare const IDBORM = "idborm";
 export declare const IDBErrors: {
-    noAccessToRequireStuff: string;
     noDatabaseName: string;
     noObjectStore: string;
 };

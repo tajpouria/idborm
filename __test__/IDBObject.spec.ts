@@ -39,7 +39,7 @@ describe(TEST_TARGET, () => {
 
     describe("Massive case", () => {
       it("Records using **keyPath** index", async () => {
-        const TestDB = await IDB.init("TestDB", { name: "JS", options: { keyPath: "id" } });
+        const TestDB = await IDB.init(randomString(), 1, { name: "JS", options: { keyPath: "id" } });
 
         const { JS } = TestDB.objectStores;
 
@@ -51,27 +51,27 @@ describe(TEST_TARGET, () => {
       });
 
       it("Records using **autoIncrement** index", async () => {
-        const TestDB = await IDB.init("TestDB", { name: "JS", options: { autoIncrement: true } });
+        const TestDB = await IDB.init(randomString(), 1, { name: "TS", options: { autoIncrement: true } });
 
-        const { JS } = TestDB.objectStores;
+        const { TS } = TestDB.objectStores;
 
         const randomNumber = randomIntFromInterval(100, 150);
 
-        await Promise.all(repeater(() => JS.put(randomString()), randomNumber));
+        await Promise.all(repeater(() => TS.put(randomString()), randomNumber));
 
-        await testObjectStore(JS, randomNumber);
+        await testObjectStore(TS, randomNumber);
       });
 
       it("Records using **defined** key index", async () => {
-        const TestDB = await IDB.init("TestDB", { name: "JS" });
+        const TestDB = await IDB.init(randomString(), 1, { name: "C" });
 
-        const { JS } = TestDB.objectStores;
+        const { C } = TestDB.objectStores;
 
         const randomNumber = randomIntFromInterval(100, 150);
 
-        await Promise.all(repeater(() => JS.put(randomString(), randomString()), randomNumber));
+        await Promise.all(repeater(() => C.put(randomString(), randomString()), randomNumber));
 
-        await testObjectStore(JS, randomNumber);
+        await testObjectStore(C, randomNumber);
       });
     });
   });

@@ -18,6 +18,7 @@ export class IDBObject {
 
   /**
    * Put a record in the database
+   * Replaces items with the same keys
    *
    * @param value - item's value
    *
@@ -52,7 +53,7 @@ export class IDBObject {
       })
       .then(() => value)
       .catch(err => {
-        throw new Error(`${IDBORM}: ${storeName}.put(${key}): ${err}`);
+        throw new Error(`${IDBORM}: ${storeName}.put(${value}${key ? `, ${key}` : ""}): ${err}`);
       });
   };
 
@@ -204,9 +205,9 @@ export class IDBObject {
   /**
    * Iterate over all the record in an object store and perform an async action on each one
    *
-   * @param callbackfn - async callback (action)
+   * @param callbackfn - async callback(action)
    *
-   * @typeparam Value - value's type
+   * @typeparam Value - async callback returns type
    *
    * @returns A list contains async action results
    *
@@ -217,7 +218,7 @@ export class IDBObject {
    * })
    * ```
    */
-  public iterate = async <Value = any>(callbackfn: EntriesIteratorCallbackfn<Value>): Promise<any[]> => {
+  public iterate = async <Value = any>(callbackfn: EntriesIteratorCallbackfn<Value>): Promise<Value[]> => {
     const { entries } = this;
 
     const _entries = await entries();

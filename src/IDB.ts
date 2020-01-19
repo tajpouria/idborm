@@ -87,7 +87,15 @@ export class IDB {
           Object.values(objectStoreDictionary).forEach(os => {
             const { name, options } = os;
 
-            db.createObjectStore(name, options);
+            if (!db.objectStoreNames.contains(name)) {
+              db.createObjectStore(name, options);
+            }
+          });
+
+          Object.values(db.objectStoreNames).forEach(os => {
+            if (!objectStoreDictionary[os]) {
+              db.deleteObjectStore(os);
+            }
           });
         },
       });
@@ -118,24 +126,39 @@ export class IDB {
    * ```
    */
   public get objectStores(): ObjectStoresAndActionMap {
-    const iterateOverObjectStores = (callbackfn: ObjectStoreIteratorCallbackfn): void => {
+    const iterateOverObjectStores = (callbackfn: ObjectStoreIteratorCallbackfn): Promise<any[]> =>
       this.iterateOverObjectStores(callbackfn);
-    };
 
     // @ts-ignore
     return {
       ...this.objectStoresMap,
 
+      /**
+       * Iterate over all the object stores and perform an async action on each one
+       *
+       * @param callbackfn - async callback(action)
+       *
+       * @typeparam Value - async callback returns type
+       *
+       * @returns A list contains async action results
+       *
+       * Delete all completed task :
+       * ```ts
+       * await Todo.iterate(([key, value], index, entries) => {
+       *  if (value.completed) return Todo.delete(key);
+       * })
+       * ```
+       */
       methods: {
-        iterate(callbackfn: ObjectStoreIteratorCallbackfn): void {
-          iterateOverObjectStores(callbackfn);
+        iterate<Value = any>(callbackfn: ObjectStoreIteratorCallbackfn): Promise<Value[]> {
+          return iterateOverObjectStores(callbackfn);
         },
       },
     };
   }
 
-  private iterateOverObjectStores = (callbackfn: ObjectStoreIteratorCallbackfn): void =>
-    Object.values(this.objectStoresMap).forEach(callbackfn as any);
+  private iterateOverObjectStores = <Value = any>(callbackfn: ObjectStoreIteratorCallbackfn): Promise<Value[]> =>
+    Promise.all(Object.values(this.objectStoresMap).map(callbackfn));
 
   /**
    * Delete an indexed database

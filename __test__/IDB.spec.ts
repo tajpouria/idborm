@@ -20,7 +20,7 @@ describe(TEST_TARGET, () => {
 
       const res = await Promise.all(
         repeater(async () => {
-          return IDB.init(randomString(), { name: "os" });
+          return IDB.init(randomString(), 1, { name: "os" });
         }, randomNumber),
       );
 
@@ -58,7 +58,7 @@ describe(TEST_TARGET, () => {
     it("Massive case", async () => {
       const randomNames = repeater(randomString, [15, 20]);
 
-      const res = await Promise.all(randomNames.map(name => IDB.init(name, { name: "os" })));
+      const res = await Promise.all(randomNames.map(name => IDB.init(name, 1, { name: "os" })));
 
       await Promise.all(res.map(db => db.delete()));
 
@@ -76,7 +76,7 @@ describe(TEST_TARGET, () => {
     it("Massive case", async () => {
       const randomNumber = randomIntFromInterval(50, 60);
 
-      const TestDB = await IDB.init("TestDB", () => {
+      const TestDB = await IDB.init(randomString(), 1, () => {
         const objectStores = repeater(() => ({ name: randomString() }), randomNumber);
 
         return objectStores;
@@ -87,7 +87,7 @@ describe(TEST_TARGET, () => {
 
       let _osCount = 0;
 
-      TestDB.objectStores.methods.iterate((_os, idx) => {
+      TestDB.objectStores.methods.iterate(async (_os, idx) => {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         _osCount = idx! + 1;
 
@@ -98,12 +98,12 @@ describe(TEST_TARGET, () => {
     });
 
     it("Update objectStores, on adding new objectStore", async () => {
-      let TestDB = await IDB.init("TestDB", [{ name: "PY", options: { keyPath: "id" } }]);
+      let TestDB = await IDB.init(randomString(), 1, [{ name: "PY", options: { keyPath: "id" } }]);
 
       expect(TestDB.objectStores).not.toHaveProperty("JS");
       expect(TestDB.objectStores).toHaveProperty("PY");
 
-      TestDB = await IDB.init("TestDB", [
+      TestDB = await IDB.init(randomString(), 2, [
         { name: "PY", options: { keyPath: "id" } },
         { name: "JS", options: { keyPath: "id" } },
       ]);
@@ -113,7 +113,7 @@ describe(TEST_TARGET, () => {
     });
 
     it("delete, removed object store from objectStores", async () => {
-      let TestDB = await IDB.init("TestDB", [
+      let TestDB = await IDB.init(randomString(), 1, [
         { name: "JS", options: { keyPath: "id" } },
         { name: "PY", options: { keyPath: "id" } },
       ]);
@@ -121,43 +121,27 @@ describe(TEST_TARGET, () => {
       expect(TestDB.objectStores).toHaveProperty("JS");
       expect(TestDB.objectStores).toHaveProperty("PY");
 
-      TestDB = await IDB.init("TestDB", [{ name: "PY", options: { keyPath: "id" } }]);
+      TestDB = await IDB.init(randomString(), 2, [{ name: "PY", options: { keyPath: "id" } }]);
 
       expect(TestDB.objectStores).not.toHaveProperty("JS");
       expect(TestDB.objectStores).toHaveProperty("PY");
     });
 
-    it("Update objectStores, on modifying options", async () => {
-      let TestDB = await IDB.init("TestDB", [{ name: "JS", options: { keyPath: "id" } }]);
-
-      let { JS } = TestDB.objectStores;
-
-      // @ts-ignore
-      expect(JS.storeOptions).toEqual({ keyPath: "id" });
-
-      TestDB = await IDB.init("TestDB", [{ name: "JS", options: { keyPath: "changed", autoIncrement: true } }]);
-
-      JS = TestDB.objectStores.JS;
-
-      // @ts-ignore
-      expect(JS.storeOptions).toEqual({ keyPath: "changed", autoIncrement: true });
-    });
-
     it("IDB.objectStore.methods.iterate iterate over objectStores", async () => {
       const randomNumber = randomIntFromInterval(10, 20);
 
-      const TestDB = await IDB.init("TestDB", () => {
+      const TestDB = await IDB.init(randomString(), 1, () => {
         const objectStores = repeater(() => ({ name: randomString() }), randomNumber);
 
         return objectStores;
       });
 
-      const RefDB = await createReferenceDB("ref");
+      const RefDB = await createReferenceDB();
       const { os } = RefDB.objectStores;
 
       let _osCount = 0;
 
-      TestDB.objectStores.methods.iterate((_os, idx, osArray) => {
+      TestDB.objectStores.methods.iterate(async (_os, idx, osArray) => {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         _osCount = idx! + 1;
 
@@ -168,6 +152,21 @@ describe(TEST_TARGET, () => {
       });
 
       expect(_osCount).toBe(randomNumber);
+    });
+
+    it("IDB.objectStore.methods.iterate handling async callbackfn on each operation successfully", async () => {
+      const TestDB = await IDB.init(randomString(), 1, { name: "JS" });
+
+      await TestDB.objectStores.methods.iterate(async _os => {
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        _os.put(randomString(), randomString());
+      });
+
+      const { JS } = TestDB.objectStores;
+
+      const values = await JS.values();
+
+      expect(values.length).toBe(1);
     });
   });
 });
