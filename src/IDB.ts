@@ -1,6 +1,6 @@
 import { openDB, IDBPDatabase, deleteDB } from "idb";
 
-import { IDBObject } from ".";
+import { IDBObject } from "./IDBObject";
 import {
   IDBErrors,
   IDBORM,
