@@ -1,12 +1,28 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 const path = require("path");
 
 module.exports = {
-  entry: {
-    app: ["./lib/index.js", "./lib/IDB.js", "./lib/IDBObject.js", "./lib/IDBVersionController.js"],
+  entry: "./src/index.ts",
+  devtool: "inline-source-map",
+  module: {
+    rules: [
+      {
+        test: /\.tsx?$/,
+        use: "ts-loader",
+        exclude: /node_modules/,
+      },
+    ],
+  },
+  resolve: {
+    extensions: [".tsx", ".ts", ".js"],
   },
   output: {
-    path: path.resolve(__dirname, "lib"),
-    filename: "idborm-utility.js",
     publicPath: "./lib",
+    filename: "idborm-utility.js",
+    path: path.resolve(__dirname, "lib"),
+  },
+
+  optimization: {
+    minimize: false,
   },
 };

@@ -16,15 +16,18 @@
   ],
   "scripts": {
     "test": "jest --collectCoverage",
-    "build": "tsc && yarn stand-alone && yarn docs",
+    "build": "rollup -c",
     "stand-alone": "webpack --mode production --config=webpack.config.js",
     "docs": "typedoc --readme README.docs.md --includeVersion --excludePrivate --excludeProtected --exclude \"**/*+(index|IDBVersionController).ts\" --out docs src/IDB.ts src/IDBObject.ts && cp _config.yml docs/",
-    "lint": "eslint -c .eslintrc.yml --fix src/**/*.ts bin/**/*.js examples/**/*.ts"
+    "lint": "eslint -c .eslintrc.yml --fix src/**/*.ts bin/**/*.js examples/**/*.ts",
+    "tsc": "tsc"
   },
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^11.0.1",
     "@types/jest": "^24.0.25",
     "@typescript-eslint/eslint-plugin": "^2.14.0",
     "@typescript-eslint/parser": "^2.14.0",
+    "del": "^5.1.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-config-prettier": "^6.9.0",
@@ -33,7 +36,11 @@
     "fake-indexeddb": "^3.0.0",
     "jest": "^24.9.0",
     "prettier": "^1.19.1",
+    "rollup": "^1.29.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-terser": "^5.2.0",
     "ts-jest": "^24.3.0",
+    "ts-loader": "^6.2.1",
     "typedoc": "^0.16.6",
     "typescript": "^3.7.4",
     "webpack": "4.41.2",

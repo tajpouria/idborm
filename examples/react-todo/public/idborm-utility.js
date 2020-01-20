@@ -1,0 +1,1 @@
+!function(){"use strict";Object.defineProperty(exports,"__esModule",{value:!0});var e=require("./IDB");!function(e){for(var r in e)exports.hasOwnProperty(r)||(exports[r]=e[r])}(require("./IDBObject")),exports.default=e.IDB}();
