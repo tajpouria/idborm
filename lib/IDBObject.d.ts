@@ -103,9 +103,9 @@ export declare class IDBObject {
     /**
      * Iterate over all the record in an object store and perform an async action on each one
      *
-     * @param callbackfn - async callback (action)
+     * @param callbackfn - async callback(action)
      *
-     * @typeparam Value - value's type
+     * @typeparam Value - async callback returns type
      *
      * @returns A list contains async action results
      *
@@ -116,5 +116,5 @@ export declare class IDBObject {
      * })
      * ```
      */
-    iterate: <Value = any>(callbackfn: EntriesIteratorCallbackfn<Value>) => Promise<any[]>;
+    iterate: <Value = any>(callbackfn: EntriesIteratorCallbackfn<Value>) => Promise<Value[]>;
 }

@@ -109,7 +109,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/734630f/src/IDBObject.ts#L190">IDBObject.ts:190</a></li>
+									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/fb49865/src/IDBObject.ts#L190">IDBObject.ts:190</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -132,7 +132,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/734630f/src/IDBObject.ts#L98">IDBObject.ts:98</a></li>
+									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/fb49865/src/IDBObject.ts#L98">IDBObject.ts:98</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -167,7 +167,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/734630f/src/IDBObject.ts#L172">IDBObject.ts:172</a></li>
+									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/fb49865/src/IDBObject.ts#L172">IDBObject.ts:172</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -200,7 +200,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/734630f/src/IDBObject.ts#L74">IDBObject.ts:74</a></li>
+									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/fb49865/src/IDBObject.ts#L74">IDBObject.ts:74</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -239,13 +239,13 @@
 					<a name="iterate" class="tsd-anchor"></a>
 					<h3>iterate</h3>
 					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter">
-						<li class="tsd-signature tsd-kind-icon">iterate&lt;Value&gt;<span class="tsd-signature-symbol">(</span>callbackfn<span class="tsd-signature-symbol">: </span><a href="../modules/_typings_idbobject_.html#entriesiteratorcallbackfn" class="tsd-signature-type">EntriesIteratorCallbackfn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Value</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">iterate&lt;Value&gt;<span class="tsd-signature-symbol">(</span>callbackfn<span class="tsd-signature-symbol">: </span><a href="../modules/_typings_idbobject_.html#entriesiteratorcallbackfn" class="tsd-signature-type">EntriesIteratorCallbackfn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Value</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Value</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></li>
 					</ul>
 					<ul class="tsd-descriptions">
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/734630f/src/IDBObject.ts#L221">IDBObject.ts:221</a></li>
+									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/fb49865/src/IDBObject.ts#L221">IDBObject.ts:221</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -258,7 +258,7 @@
 								<li>
 									<h4>Value</h4>
 									<div class="tsd-comment tsd-typography">
-										<p>value&#39;s type</p>
+										<p>async callback returns type</p>
 									</div>
 								</li>
 							</ul>
@@ -268,12 +268,12 @@
 									<h5>callbackfn: <a href="../modules/_typings_idbobject_.html#entriesiteratorcallbackfn" class="tsd-signature-type">EntriesIteratorCallbackfn</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Value</span><span class="tsd-signature-symbol">&gt;</span></h5>
 									<div class="tsd-comment tsd-typography">
 										<div class="lead">
-											<p>async callback (action)</p>
+											<p>async callback(action)</p>
 										</div>
 									</div>
 								</li>
 							</ul>
-							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">Value</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">&gt;</span></h4>
 							<p>A list contains async action results</p>
 							<p>Delete all completed task :</p>
 							<pre><code class="language-ts"><span class="hljs-keyword">await</span> Todo.iterate(<span class="hljs-function">(<span class="hljs-params">[key, value], index, entries</span>) =&gt;</span> {
@@ -292,7 +292,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/734630f/src/IDBObject.ts#L122">IDBObject.ts:122</a></li>
+									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/fb49865/src/IDBObject.ts#L122">IDBObject.ts:122</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -316,7 +316,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/734630f/src/IDBObject.ts#L44">IDBObject.ts:44</a></li>
+									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/fb49865/src/IDBObject.ts#L44">IDBObject.ts:44</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -374,7 +374,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/734630f/src/IDBObject.ts#L147">IDBObject.ts:147</a></li>
+									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/fb49865/src/IDBObject.ts#L147">IDBObject.ts:147</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">

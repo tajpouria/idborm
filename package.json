@@ -3,16 +3,20 @@
   "version": "0.1.1",
   "description": "A super simple and minimalist ORM built on top of IndexedDB that makes IndexedDB usable",
   "author": "Pouria Tajdivand<tajpouria.dev@gmail.com>",
+  "bin": {
+    "idborm": "./bin/idborm.js"
+  },
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
   "files": [
     "LICENSE",
     "README.md",
+    "bin",
     "lib"
   ],
   "scripts": {
     "test": "jest --collectCoverage",
-    "build": "tsc && yarn docs",
+    "build": "tsc && yarn stand-alone && yarn docs",
     "stand-alone": "webpack --mode production --config=webpack.config.js",
     "docs": "typedoc --readme README.docs.md --includeVersion --excludePrivate --excludeProtected --exclude \"**/*+(index|IDBVersionController).ts\" --out docs src/IDB.ts src/IDBObject.ts && cp _config.yml docs/",
     "lint": "eslint -c .eslintrc.yml --fix src/**/*.ts bin/**/*.js examples/**/*.ts"
@@ -32,7 +36,7 @@
     "ts-jest": "^24.3.0",
     "typedoc": "^0.16.6",
     "typescript": "^3.7.4",
-    "webpack": "^4.41.5",
+    "webpack": "4.41.2",
     "webpack-cli": "^3.3.10"
   },
   "dependencies": {
@@ -48,6 +52,7 @@
     "idb",
     "browser",
     "database",
+    "service worker",
     "react",
     "angular",
     "vue"
