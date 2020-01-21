@@ -7,4 +7,4 @@ export type EntriesIteratorCallbackfn<Value> = (
   entry: Entry<Value>,
   index?: number,
   entries?: Entry<Value>[],
-) => Promise<any>;
+) => Promise<any> | undefined;

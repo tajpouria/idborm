@@ -8,7 +8,7 @@ export type ObjectStoreIteratorCallbackfn = (
   objectStore: IDBObject,
   index?: number,
   ObjectStoresArray?: IDBObject[],
-) => Promise<any>;
+) => Promise<any> | undefined;
 
 export interface ObjectStoresAndActionMap {
   [objectStoreName: string]: IDBObject;

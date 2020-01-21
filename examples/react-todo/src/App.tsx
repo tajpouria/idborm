@@ -3,6 +3,8 @@ import { IDB, Entry } from "../../../lib";
 
 import "./App.css";
 
+import idbormReactTodoIntro from "./assets/idbormReactTodoIntro.png";
+
 interface Todo {
   id: string;
   content: string;
@@ -19,23 +21,38 @@ const App: React.FC = () => {
   const [values, setValues] = React.useState({ newTodo: "" });
   const [todos, setTodos] = React.useState<Entry<Todo>[]>([]);
 
+  const updateTodos = async () => {
+    const entries = await Todo.entries();
+
+    setTodos(entries.reverse());
+  };
+
   React.useEffect(() => {
-    Todo.entries().then(entries => setTodos(entries));
-  }, [todos]);
+    updateTodos();
+  });
 
   return (
     <body>
       <section className="todoapp">
         <header className="header">
-          <h1>todos</h1>
+          <img src={idbormReactTodoIntro} className="intro" alt="how it's works" />
           <input
             name="newTodo"
+            value={values.newTodo}
             onChange={event => setValues({ newTodo: event.target.value })}
             onKeyDown={async event => {
-              if (event.keyCode === 13 && values.newTodo) {
-                const newTodo = { id: Date().valueOf(), content: values.newTodo, completed: false };
+              /**
+               * Adding todo
+               *
+               * 1. Send a fake request
+               * 2. Request body received by service worker ("src/public/serviceworker.js") fetch lifeCycle
+               * 3. Adding request body as new todo to database
+               */
 
-                await Todo.put(newTodo);
+              if (event.keyCode === 13 && values.newTodo) {
+                await fetch("ADD_TODO", { method: "POST", body: values.newTodo });
+
+                await updateTodos();
 
                 setValues({ newTodo: "" });
               }
@@ -50,12 +67,36 @@ const App: React.FC = () => {
 
           <ul className="todo-list">
             {todos.length
-              ? todos.reverse().map(([key, value]) => (
+              ? todos.map(([key, todo]) => (
                   <li key={key as string}>
                     <div className="view">
-                      <input data-id={key} className="toggle" type="checkbox" />
-                      <label>{value.content}</label>
-                      <button data-id={key} className="destroy" />
+                      <input
+                        className="toggle"
+                        type="checkbox"
+                        checked={todo.completed}
+                        onClick={async () => {
+                          // Manipulating todo
+
+                          const targetTodo = await Todo.get(key);
+
+                          await Todo.put({ ...targetTodo, completed: !targetTodo.completed });
+
+                          await updateTodos();
+                        }}
+                      />
+
+                      <label>{todo.content}</label>
+
+                      <button
+                        className="destroy"
+                        onClick={async () => {
+                          // Removing todo
+
+                          await Todo.delete(key);
+
+                          await updateTodos();
+                        }}
+                      />
                     </div>
                   </li>
                 ))
@@ -64,13 +105,29 @@ const App: React.FC = () => {
         </section>
         <footer className="footer">
           <span className="todo-count"></span>
-          <button className="clear-completed">Clear completed</button>
+          <button
+            className="clear-completed"
+            onClick={async () => {
+              // Async iterator
+
+              await Todo.iterate(([key, value]) => {
+                if (value.completed) {
+                  return Todo.delete(key);
+                }
+              });
+
+              await updateTodos();
+            }}
+          >
+            Clear completed
+          </button>
         </footer>
       </section>
+
       <footer className="info">
         <p>
           A simple <a href="https://github.com/tajpouria/idborm">idborm</a> example by
-          <a href="https://github.com/tajpouria">Pouria Tajdivand</a>
+          <a href="https://github.com/tajpouria"> Pouria Tajdivand</a>
         </p>
         <p>
           Extended from <a href="http://todomvc.com">TodoMVC</a>
@@ -81,5 +138,3 @@ const App: React.FC = () => {
 };
 
 export default App;
-
-// ${value.completed ? "checked" : ""}
