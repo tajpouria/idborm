@@ -1,9 +1,8 @@
-import IDB from "../../src";
+import { IDB } from "../../lib";
 
 (async (): Promise<void> => {
   // Initializing dataBase and objectStore
-
-  const DB = await IDB.init("TodoDataBase", 1, { name: "Todo", options: { keyPath: "id" } });
+  const DB = IDB.init("TodoDataBase", 1, { name: "Todo", options: { keyPath: "id" } });
 
   // Destructors ObjectStore
   const { Todo } = DB.objectStores;

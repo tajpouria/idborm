@@ -8,7 +8,7 @@ export declare class IDB {
     constructor(dataBaseName: string, db: Promise<IDBPDatabase<unknown>>, objectStoresMap: Record<string, IDBObject>);
     private static objectStoreDictionaryCreator;
     /**
-     * Retrieves an indexed data base
+     * Indianize an indexed data base
      *
      * @param dataBaseName - Data base name
      * @param dataBaseVersion - Data base Version
@@ -18,20 +18,20 @@ export declare class IDB {
      *
      * Creating single object Store :
      * ```ts
-     * const DB = await IDB.init("TodoDataBase", 1, { name: "Todo", options: { keyPath: "id" } });
+     * const DB = IDB.init("TodoDataBase", 1, { name: "Todo", options: { keyPath: "id" } });
      * ```
      * Create multiple object Stores :
      * ```ts
-     * const DB = await IDB.init("TodoDataBase", 1, [ { name: "Todo" }, {name: "Notes", options: { keyPath: "id" }} ]);
+     * const DB = IDB.init("TodoDataBase", 1, [ { name: "Todo" }, {name: "Notes", options: { keyPath: "id" }} ]);
      * ```
      * Use a callback function to initialize object stores :
      * ```ts
-     * const DB = await IDB.init("TodoDataBase", 1, () => {
+     * const DB = IDB.init("TodoDataBase", 1, () => {
      *  return { name: "Todo", options: { autoIncrement: true } };
      * });
      * ```
      */
-    static init: (dataBaseName: string, dataBaseVersion: number, objectStores: ObjectStoreInitializer | ObjectStoreInitializerFunction | ObjectStoreInitializer[]) => Promise<IDB>;
+    static init: (dataBaseName: string, dataBaseVersion: number, objectStores: ObjectStoreInitializer | ObjectStoreInitializerFunction | ObjectStoreInitializer[]) => IDB;
     /**
      * Retrieves data base object stores and methods map
      *
