@@ -17,16 +17,6 @@ const TestDB = IDB.init("TetsDB", 3, () => {
   ];
 });
 
-self.addEventListener("install", event => {
-  console.log("V1 installing…");
-});
+self.addEventListener("fetch", async () => {
 
-self.addEventListener("fetch", async event => {
-  const { CPP } = TestDB.objectStores;
-
-  CPP.put("hello", "love");
-
-  const entries = await CPP.entries();
-
-  console.log(entries);
 });
