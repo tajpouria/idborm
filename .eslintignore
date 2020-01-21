@@ -1,3 +1,4 @@
-lib
-docs
+lib/
+docs/
+examples/
 rollup.config.js
