@@ -6,7 +6,8 @@
   "bin": {
     "idborm": "./bin/idborm.js"
   },
-  "main": "lib/idborm-utility.js",
+  "main": "lib/index.js",
+  "iife": "lib/idborm.iife.js",
   "types": "lib/index.d.ts",
   "files": [
     "LICENSE",
@@ -15,8 +16,9 @@
     "lib"
   ],
   "scripts": {
-    "test": "jest --collectCoverage",
+    "test": "jest",
     "build": "rollup -c",
+    "dev": "rollup -cw",
     "docs": "typedoc --readme README.docs.md --includeVersion --excludePrivate --excludeProtected --exclude \"**/*+(index|IDBVersionController).ts\" --out docs src/IDB.ts src/IDBObject.ts && cp _config.yml docs/",
     "lint": "eslint -c .eslintrc.yml --fix src/**/*.ts bin/**/*.js examples/**/*.ts",
     "tsc": "tsc"
@@ -25,7 +27,6 @@
     "@types/jest": "^24.0.25",
     "@typescript-eslint/eslint-plugin": "^2.14.0",
     "@typescript-eslint/parser": "^2.14.0",
-    "del": "^5.1.0",
     "eslint": "^6.8.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-config-prettier": "^6.9.0",

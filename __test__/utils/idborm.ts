@@ -1,4 +1,4 @@
-import IDB, { IDBObject } from "../../src";
+import { IDB, IDBObject } from "../../lib";
 
 export const createReferenceDB = async (dbName = "RefDB"): Promise<IDB> => IDB.init(dbName, 1, { name: "os" });
 

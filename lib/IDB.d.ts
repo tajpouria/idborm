@@ -1,6 +1,5 @@
 import { IDBPDatabase } from "idb";
-import { IDBObject } from "./IDBObject";
-import { ObjectStoreInitializer, ObjectStoreInitializerFunction, ObjectStoresAndActionMap } from "./typings";
+import { IDBObject, ObjectStoreInitializer, ObjectStoreInitializerFunction, ObjectStoresAndActionMap } from ".";
 export declare class IDB {
     private dataBaseName;
     private db;

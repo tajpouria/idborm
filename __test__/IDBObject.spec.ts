@@ -1,4 +1,4 @@
-import IDB, { IDBObject } from "../src";
+import { IDB, IDBObject } from "../lib";
 import { repeater, randomIntFromInterval, randomString } from "./utils";
 
 const TEST_TARGET = "IDBObject CLASS";

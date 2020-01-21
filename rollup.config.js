@@ -11,6 +11,14 @@ export default {
     {
       name: "idborm",
       file: pkg.main,
+      format: "cjs",
+      globals: {
+        idb: "idb",
+      },
+    },
+    {
+      name: "idborm",
+      file: pkg.iife,
       format: "iife",
       globals: {
         idb: "idb",
@@ -20,6 +28,7 @@ export default {
   plugins: [
     typescript({
       typescript: require("typescript"),
+      tsconfig: "tsconfig.rollup.json",
     }),
     resolve(),
     terser(),

@@ -1,6 +1,6 @@
 /* istanbul ignore file */
-import { ObjectStoreInitializer } from ".";
 import { IDBObject } from "..";
+import { ObjectStoreInitializer } from "./public";
 
 export type ObjectStoreInitializerFunction = () => ObjectStoreInitializer | ObjectStoreInitializer[];
 

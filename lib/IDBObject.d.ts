@@ -1,5 +1,5 @@
 import { IDBPDatabase } from "idb";
-import { ObjectStoreInitializer, IDBObjectKey, Entry, EntriesIteratorCallbackfn } from "./typings";
+import { ObjectStoreInitializer, IDBObjectKey, Entry, EntriesIteratorCallbackfn } from ".";
 export declare class IDBObject {
     private db;
     private readonly storeName;

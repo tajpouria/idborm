@@ -1,14 +1,14 @@
 import { openDB, IDBPDatabase, deleteDB } from "idb";
 
-import { IDBObject } from "./IDBObject";
 import {
+  IDBObject,
   IDBErrors,
   IDBORM,
   ObjectStoreInitializer,
   ObjectStoreInitializerFunction,
   ObjectStoresAndActionMap,
   ObjectStoreIteratorCallbackfn,
-} from "./typings";
+} from ".";
 
 export class IDB {
   private dataBaseName: string;

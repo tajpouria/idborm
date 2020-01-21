@@ -1,6 +1,6 @@
 import { IDBPDatabase } from "idb";
 
-import { IDBORM, ObjectStoreInitializer, IDBObjectKey, Entry, EntriesIteratorCallbackfn } from "./typings";
+import { IDBORM, ObjectStoreInitializer, IDBObjectKey, Entry, EntriesIteratorCallbackfn } from ".";
 
 export class IDBObject {
   private db: Promise<IDBPDatabase<unknown>>;

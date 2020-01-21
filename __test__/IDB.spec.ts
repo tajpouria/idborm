@@ -1,4 +1,4 @@
-import IDB from "../src";
+import { IDB, IDBErrors } from "../lib";
 import {
   repeater,
   randomIntFromInterval,
@@ -7,7 +7,6 @@ import {
   isObjectStoreValid,
   dataBases,
 } from "./utils";
-import { IDBErrors } from "../src/typings";
 
 const TEST_TARGET = "IDB CLASS";
 

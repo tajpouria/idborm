@@ -9,8 +9,8 @@ const fs = require("fs");
 const path = require("path");
 
 const IDBORM = "idborm";
-const IDBORM_UTILITY = `${IDBORM}-utility.js`;
-const IMPORT_SCRIPT_CONTENT = `// ${IDBORM}: do not edit following line manually\r\nimportScripts('./${IDBORM_UTILITY}');\r\n`;
+const IDBORM_IIFE = "idborm.iife.js";
+const IMPORT_SCRIPT_CONTENT = `/** "${IDBORM}": Following code snippet is required to access the "IDB"*/\r\nimportScripts('./${IDBORM_IIFE}');\r\nconst { IDB } = idborm;\r\n`;
 
 const args = require("minimist")(process.argv.slice(2));
 
@@ -37,7 +37,7 @@ if (swPath) {
       console.info(`${IDBORM}: "${swPath}" modified successfully. ✔`);
 
       fs.readFile(
-        path.resolve(__dirname, `../lib/${IDBORM_UTILITY}`),
+        path.resolve(__dirname, `../lib/${IDBORM_IIFE}`),
         "utf8",
         (readIdbORMUtilityFileError, idbORMUtility) => {
           if (err) {
@@ -46,7 +46,7 @@ if (swPath) {
           }
 
           const swPathArr = swPath.split("/");
-          swPathArr[swPathArr.length - 1] = IDBORM_UTILITY;
+          swPathArr[swPathArr.length - 1] = IDBORM_IIFE;
           const utilityPath = swPathArr.join("/");
 
           fs.writeFile(utilityPath, idbORMUtility, writeIdbORMUtilityFileError => {
