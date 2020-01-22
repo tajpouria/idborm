@@ -1,6 +1,6 @@
 {
   "name": "idborm",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "A super simple and minimalist ORM built on top of IndexedDB that makes IndexedDB usable in both service Worker and application",
   "author": "Pouria Tajdivand<tajpouria.dev@gmail.com>",
   "bin": {

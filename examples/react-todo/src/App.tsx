@@ -3,6 +3,7 @@ import { IDB, Entry } from "../../../lib";
 
 import "./App.css";
 
+
 import idbormReactTodoIntro from "./assets/idbormReactTodoIntro.png";
 
 interface Todo {
@@ -36,6 +37,12 @@ const App: React.FC = () => {
       <section className="todoapp">
         <header className="header">
           <img src={idbormReactTodoIntro} className="intro" alt="how it's works" />
+          <p className="intro__text">
+            A simple example in order to interact with <a href="https://tajpouria.github.io/idborm/">idborm</a> API on{" "}
+            <b>Application</b> and&nbsp;<b>serviceworker</b>; obviously no body use this pattern in real world
+            applications!!
+          </p>
+          <hr />
           <input
             name="newTodo"
             value={values.newTodo}

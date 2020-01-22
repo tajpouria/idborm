@@ -5,7 +5,14 @@
   max-width: 800px;
   height: 200px;
   top: 0;
+  z-index: 10;
   transform: translateX(-50%);
+}
+
+.intro__text {
+  padding: 1rem;
+  font-size: 1.2rem;
+  line-height: 1.4rem;
 }
 
 hr {

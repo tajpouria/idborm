@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>idborm - v0.1.1</title>
+	<title>idborm - v1.0.0</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="assets/css/main.css">
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="index.html" class="title">idborm - v0.1.1</a>
+					<a href="index.html" class="title">idborm - v1.0.0</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -56,7 +56,7 @@
 					<a href="globals.html">Globals</a>
 				</li>
 			</ul>
-			<h1>idborm - v0.1.1</h1>
+			<h1>idborm - v1.0.0</h1>
 		</div>
 	</div>
 </header>
@@ -67,9 +67,16 @@
 				<a href="#idborm-middot-a-hrefhttpsgithubcomtajpouriaidbormblobmasterlicenseimg-srchttpsimgshieldsiobadgelicense-mit-bluesvg-altgithub-licensea-a-hrefhttpswwwnpmjscompackageidbormimg-srchttpsimgshieldsionpmvidbormstyleflat-altnpm-versiona-a-hrefhttpstravis-ciorgtajpouriaidbormimg-srchttpstravis-ciorgtajpouriaidbormsvgbranchmaster-altbuild-statusa-a-hrefcontribute-img-srchttpsimgshieldsiobadgeprs-welcome-brightgreensvg-altprs-welcome-a" id="idborm-middot-a-hrefhttpsgithubcomtajpouriaidbormblobmasterlicenseimg-srchttpsimgshieldsiobadgelicense-mit-bluesvg-altgithub-licensea-a-hrefhttpswwwnpmjscompackageidbormimg-srchttpsimgshieldsionpmvidbormstyleflat-altnpm-versiona-a-hrefhttpstravis-ciorgtajpouriaidbormimg-srchttpstravis-ciorgtajpouriaidbormsvgbranchmaster-altbuild-statusa-a-hrefcontribute-img-srchttpsimgshieldsiobadgeprs-welcome-brightgreensvg-altprs-welcome-a" style="color: inherit; text-decoration: none;">
 					<h1>IDBORM &middot; <a href="https://github.com/tajpouria/idborm/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="GitHub license"></a> <a href="https://www.npmjs.com/package/idborm"><img src="https://img.shields.io/npm/v/idborm?style=flat" alt="npm version"></a> <a href="https://travis-ci.org/tajpouria/idborm"><img src="https://travis-ci.org/tajpouria/idborm.svg?branch=master" alt="Build Status"></a> <a href="#Contribute!"> <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"> </a></h1>
 				</a>
-				<p>A super simple and minimalist ORM built on top of IndexedDB powered by <a href="https://github.com/jakearchibald/idb"> idb </a> that makes IndexedDB usable</p>
+				<a href="#a-hrefhttpstajpouriagithubioidborm-homepage-a" id="a-hrefhttpstajpouriagithubioidborm-homepage-a" style="color: inherit; text-decoration: none;">
+					<h3><a href="https://tajpouria.github.io/idborm/"> Homepage </a></h3>
+				</a>
+				<p>A super simple and minimalist ORM built on top of IndexedDB powered by <a href="https://github.com/jakearchibald/idb"> idb </a> that makes IndexedDB usable in both <strong>service worker</strong> an <strong>application</strong></p>
+				<a href="#table-of-contents" id="table-of-contents" style="color: inherit; text-decoration: none;">
+					<h2>Table of Contents</h2>
+				</a>
 				<ul>
 					<li><a href="#installation"> Installation </a></li>
+					<li><a href="#configuration-with-service-worker">Configuration with service worker</a></li>
 					<li><a href="#api">API</a><ul>
 							<li><a href="#init"> init </a></li>
 							<li><a href="#objectstores"> ObjectStores</a></li>
@@ -82,15 +89,8 @@
 						</ul>
 					</li>
 				</ul>
-				<iframe
-				src="https://codesandbox.io/embed/idborm-todo-example-q4lct?fontsize=14&hidenavigation=1&theme=dark"
-				style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
-				title="idborm-todo-example"
-				allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb"
-				sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
-				></iframe>
-				<a href="#installation" id="installation" style="color: inherit; text-decoration: none;">
-					<h1>installation</h1>
+				<a href="#a-nameinstallationainstallation" id="a-nameinstallationainstallation" style="color: inherit; text-decoration: none;">
+					<h2><a name="installation"></a>Installation</h2>
 				</a>
 				<p>This is a Node.js module available through the npm registry.</p>
 				<p>Before installing, download and install Node.js.</p>
@@ -98,31 +98,52 @@
 				<pre><code class="language-sh">$ npm install idborm
 <span class="hljs-comment"># or yarn</span>
 $ yarn add idborm</code></pre>
-				<a href="#api" id="api" style="color: inherit; text-decoration: none;">
-					<h1>api</h1>
+				<a href="#a-nameconfiguration-with-service-workeraconfiguration-with-service-worker" id="a-nameconfiguration-with-service-workeraconfiguration-with-service-worker" style="color: inherit; text-decoration: none;">
+					<h2><a name="configuration-with-service-worker"></a>Configuration with service worker</h2>
+				</a>
+				<p>In order to use this module inside the <code>service worker</code> use <code>--serviceworker</code> flag provided by idborm binary script :</p>
+				<pre><code class="language-sh">$ ./node_modules/.bin/idborm --serviceworker &lt;PATH_TO_YOUR_SERVICE_WORKER&gt;</code></pre>
+				<p>you&#39;ll see it create <code>idborm.iife.js</code> containing immediately invoked idborm function expression next to your service worker <em>(provided after --serviceworker flag)</em> and generate following code snippet on top of the service worker file:</p>
+				<pre><code class="language-js"><span class="hljs-comment">/** "idborm": Following code snippet is required to access the "IDB"*/</span>
+importScripts(<span class="hljs-string">"./idborm.iife.js"</span>);
+<span class="hljs-keyword">const</span> { IDB } = idborm;</code></pre>
+				<p>now, you can access idborm utility functions using destructed <a href="https://tajpouria.github.io/idborm/classes/_idb_.idb.html" target="_blank">IDB</a> class</p>
+				<a href="#a-nameapiaapi" id="a-nameapiaapi" style="color: inherit; text-decoration: none;">
+					<h2><a name="api"></a>API</h2>
 				</a>
 				<p>Assuming you&#39;re using a module-compatible system (like webpack, Rollup etc):</p>
-				<a href="#init" id="init" style="color: inherit; text-decoration: none;">
-					<h1>init</h1>
+				<a href="#a-nameinitainit-emdatabase_nameem-emdatabase_versionem-emobject_stores_initializerem-" id="a-nameinitainit-emdatabase_nameem-emdatabase_versionem-emobject_stores_initializerem-" style="color: inherit; text-decoration: none;">
+					<h2><a name="init"></a>init( <em>database_name</em>, <em>database_version</em>, <em>object_store(s)_Initializer</em> )</h2>
 				</a>
 				<a href="#initialize-database-and-object-stores" id="initialize-database-and-object-stores" style="color: inherit; text-decoration: none;">
-					<h2>Initialize database and object stores</h2>
+					<h4>Initialize database and object stores</h4>
 				</a>
 				<pre><code class="language-js"><span class="hljs-keyword">import</span> IDB <span class="hljs-keyword">from</span> <span class="hljs-string">"idborm"</span>;
 
-<span class="hljs-keyword">const</span> DB = <span class="hljs-keyword">await</span> IDB.init(database_name, object_store(s)_Initializer);</code></pre>
+<span class="hljs-keyword">const</span> DB = IDB.init(database_name, database_version, object_store(s)_Initializer);</code></pre>
 				<ul>
 					<li><p><code>database_name</code>: Name of the database</p>
 					</li>
 					<li><p><code>object_store(s)_Initializer</code>: Represent database object store(s)<em>( something like <code>Table</code> or <code>Model</code> in relational or non-relational databases )</em>; you can initialize your database object store(s) using one of the following methods:</p>
 						<ol>
-							<li>Create single object store:</li>
+							<li>initialize single object store:</li>
 						</ol>
-						<pre><code class="language-js"><span class="hljs-keyword">const</span> DB = <span class="hljs-keyword">await</span> IDB.init(database_name, { <span class="hljs-attr">name</span>: object_store_name, <span class="hljs-attr">options</span>: object_store_options });</code></pre>
+						<pre><code class="language-js"><span class="hljs-keyword">import</span> IDB <span class="hljs-keyword">from</span> <span class="hljs-string">"idborm"</span>;
+
+<span class="hljs-comment">// Using an initializer_object</span>
+
+<span class="hljs-keyword">const</span> DB = IDB.init(database_name, database_version, {
+  <span class="hljs-attr">name</span>: object_store_name,
+  <span class="hljs-attr">options</span>: object_store_options,
+});</code></pre>
 						<ol start="2">
-							<li>Create multiple object stores</li>
+							<li>initialize multiple object stores</li>
 						</ol>
-						<pre><code class="language-js"><span class="hljs-keyword">const</span> DB = <span class="hljs-keyword">await</span> IDB.init(database_name, [
+						<pre><code class="language-js"><span class="hljs-keyword">import</span> IDB <span class="hljs-keyword">from</span> <span class="hljs-string">"idborm"</span>;
+
+<span class="hljs-comment">// Using List containing multiple initializer_objects</span>
+
+<span class="hljs-keyword">const</span> DB = IDB.init(database_name, database_version, [
   { <span class="hljs-attr">name</span>: object_store_one_name, <span class="hljs-attr">options</span>: object_store_one_options },
   { <span class="hljs-attr">name</span>: object_store_two_name },
   .
@@ -132,7 +153,11 @@ $ yarn add idborm</code></pre>
 						<ol start="3">
 							<li>Create object store(s) using a callback function:</li>
 						</ol>
-						<pre><code class="language-js"><span class="hljs-keyword">const</span> DB = <span class="hljs-keyword">await</span> IDB.init(database_name, () =&gt; {
+						<pre><code class="language-js"><span class="hljs-keyword">import</span> IDB <span class="hljs-keyword">from</span> <span class="hljs-string">"idborm"</span>;
+
+<span class="hljs-comment">// Using a callback function that and initializer_object contains or a list containing multiple initializer_objects</span>
+
+<span class="hljs-keyword">const</span> DB = IDB.init(database_name, database_version, () =&gt; {
   <span class="hljs-keyword">return</span> { <span class="hljs-attr">name</span>: object_store_name, <span class="hljs-attr">options</span>: object_store_options };
   <span class="hljs-comment">// or</span>
   <span class="hljs-keyword">return</span> [
@@ -145,7 +170,7 @@ $ yarn add idborm</code></pre>
 							</li>
 							<li><p><code>object_store_options</code> <em>optional</em> : You can specify <strong>one</strong> of the following options:</p>
 								<ol>
-									<li><p>no_options: You should manually provide key for each record when <a href="#%60put%60-%C2%B7-Put-record-in-the-database">putting</a> it in the database</p>
+									<li><p>no_options: You should manually provide key for each record when <a href="#put">putting</a> it in the database</p>
 									</li>
 									<li><p><code>keyPath</code>: Uses specified keyPath as record&#39;s key therefore records should contains specified keyPath</p>
 									</li>
@@ -156,90 +181,132 @@ $ yarn add idborm</code></pre>
 						</ul>
 					</li>
 				</ul>
-				<pre><code class="language-js"><span class="hljs-comment">// Create a dataBase contains three object stores</span>
-(<span class="hljs-keyword">async</span> () =&gt; {
-  <span class="hljs-keyword">const</span> MyDB = <span class="hljs-keyword">await</span> IDB.init(<span class="hljs-string">"MyDB"</span>, [
-    { <span class="hljs-attr">name</span>: <span class="hljs-string">"User"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">keyPath</span>: <span class="hljs-string">"email"</span> } },
-    { <span class="hljs-attr">name</span>: <span class="hljs-string">"Post"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">autoIncrement</span>: <span class="hljs-literal">true</span> } },
-    { <span class="hljs-attr">name</span>: <span class="hljs-string">"Article"</span> },
-  ]);
-})();</code></pre>
-				<a href="#objectstores" id="objectstores" style="color: inherit; text-decoration: none;">
-					<h1>objectstores</h1>
+				<pre><code class="language-js"><span class="hljs-comment">// i.e.</span>
+<span class="hljs-keyword">import</span> IDB <span class="hljs-keyword">from</span> <span class="hljs-string">"idborm"</span>;
+
+<span class="hljs-comment">// Create a dataBase containing three object stores</span>
+<span class="hljs-keyword">const</span> MyDB = IDB.init(<span class="hljs-string">"MyDB"</span>, <span class="hljs-number">1</span>, [
+  { <span class="hljs-attr">name</span>: <span class="hljs-string">"User"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">keyPath</span>: <span class="hljs-string">"email"</span> } },
+  { <span class="hljs-attr">name</span>: <span class="hljs-string">"Post"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">autoIncrement</span>: <span class="hljs-literal">true</span> } },
+  { <span class="hljs-attr">name</span>: <span class="hljs-string">"Article"</span> },
+]);</code></pre>
+				<ul>
+					<li><code>database_version</code>: Database objectStore(s) schema version, <strong>bump up database_version on changing object_store(s)_initializer to apply changes on database; (using same version or lower version will not change database object store(s)</strong></li>
+				</ul>
+				<pre><code class="language-js"><span class="hljs-comment">/*
+  i.e.
+  In following example we're create "Post" object store to database so we increased database version (1 -&gt; 2) to apply changes on database
+*/</span>
+
+<span class="hljs-comment">// Before</span>
+<span class="hljs-keyword">const</span> MyDB = IDB.init(<span class="hljs-string">"MyDB"</span>, <span class="hljs-number">1</span>, { <span class="hljs-attr">name</span>: <span class="hljs-string">"User"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">keyPath</span>: <span class="hljs-string">"email"</span> } });
+
+<span class="hljs-comment">// After</span>
+<span class="hljs-keyword">const</span> MyDB = IDB.init(<span class="hljs-string">"MyDB"</span>, <span class="hljs-number">1</span>, [
+  { <span class="hljs-attr">name</span>: <span class="hljs-string">"User"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">keyPath</span>: <span class="hljs-string">"email"</span> } }
+  { <span class="hljs-attr">name</span>: <span class="hljs-string">"Post"</span> }
+  ]);</code></pre>
+				<a href="#caveats" id="caveats" style="color: inherit; text-decoration: none;">
+					<h3>Caveats</h3>
+				</a>
+				<ul>
+					<li>Changing object store&#39;s <code>name</code> will completely <strong>delete</strong> it and create another one</li>
+					<li>Changing just object store&#39;s <code>options</code> not applying changes on database, you have to completely delete the data base using asynchronous <a href="#db.delete"> DB.delete( ) </a> and <a href="#init">reinitialize</a> it</li>
+					<li>Changing object without increasing <code>database_version</code> will not apply changes on database</li>
+					<li>Using a version <strong>less than</strong> current database version throw an exception</li>
+				</ul>
+				<a href="#a-nameobjectstoresaobjectstores" id="a-nameobjectstoresaobjectstores" style="color: inherit; text-decoration: none;">
+					<h2><a name="objectstores"></a>objectStores</h2>
 				</a>
 				<a href="#destructor-objectstores" id="destructor-objectstores" style="color: inherit; text-decoration: none;">
-					<h2>Destructor objectStores</h2>
+					<h3>Destructor objectStores</h3>
 				</a>
 				<p>Once you define your object stores you can destructor them from your <code>database.objectStores</code></p>
-				<pre><code class="language-js"><span class="hljs-comment">// Make sure that destructor object stores using exact same name the you defined them</span>
+				<pre><code class="language-js"><span class="hljs-comment">// i.e.</span>
+<span class="hljs-keyword">import</span> IDB <span class="hljs-keyword">from</span> <span class="hljs-string">"idborm"</span>;
+
+<span class="hljs-comment">// Create a dataBase containing three object stores</span>
+<span class="hljs-keyword">const</span> MyDB = IDB.init(<span class="hljs-string">"MyDB"</span>, <span class="hljs-number">1</span>, [
+  { <span class="hljs-attr">name</span>: <span class="hljs-string">"User"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">keyPath</span>: <span class="hljs-string">"email"</span> } },
+  { <span class="hljs-attr">name</span>: <span class="hljs-string">"Post"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">autoIncrement</span>: <span class="hljs-literal">true</span> } },
+  { <span class="hljs-attr">name</span>: <span class="hljs-string">"Article"</span> },
+]);
+
+<span class="hljs-comment">// Make sure that destructor object stores using exact same name the you defined them</span>
 <span class="hljs-keyword">const</span> { User, Post, Article } = MyDB.objectStores;</code></pre>
-				<a href="#put" id="put" style="color: inherit; text-decoration: none;">
-					<h1>put</h1>
+				<a href="#a-nameputaput" id="a-nameputaput" style="color: inherit; text-decoration: none;">
+					<h2><a name="put"></a>put</h2>
 				</a>
 				<a href="#put-record-in-the-database" id="put-record-in-the-database" style="color: inherit; text-decoration: none;">
-					<h2>Put record in the database</h2>
+					<h3>Put record in the database</h3>
 				</a>
 				<p>Based on the options you specified to related object store you can put record in the database using <code>ObjectStore.put(value, optional_key)</code></p>
-				<pre><code class="language-js">(<span class="hljs-keyword">async</span> () =&gt; {
-  <span class="hljs-keyword">const</span> MyDB = <span class="hljs-keyword">await</span> IDB.init(<span class="hljs-string">"MyDB"</span>, [
-    { <span class="hljs-attr">name</span>: <span class="hljs-string">"User"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">keyPath</span>: <span class="hljs-string">"email"</span> } },
-    { <span class="hljs-attr">name</span>: <span class="hljs-string">"Post"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">autoIncrement</span>: <span class="hljs-literal">true</span> } },
-    { <span class="hljs-attr">name</span>: <span class="hljs-string">"Article"</span> },
-  ]);
+				<pre><code class="language-js"><span class="hljs-keyword">const</span> MyDB = IDB.init(<span class="hljs-string">"MyDB"</span>, <span class="hljs-number">1</span>, [
+  { <span class="hljs-attr">name</span>: <span class="hljs-string">"User"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">keyPath</span>: <span class="hljs-string">"email"</span> } },
+  { <span class="hljs-attr">name</span>: <span class="hljs-string">"Post"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">autoIncrement</span>: <span class="hljs-literal">true</span> } },
+  { <span class="hljs-attr">name</span>: <span class="hljs-string">"Article"</span> },
+]);
 
-  <span class="hljs-keyword">const</span> { User, Post, Article } = MyDB.objectStores;
+<span class="hljs-keyword">const</span> { User, Post, Article } = MyDB.objectStores;
 
-  <span class="hljs-keyword">await</span> User.put({ <span class="hljs-attr">email</span>: <span class="hljs-string">"bob@bob.com"</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">"bob"</span> }); <span class="hljs-comment">// email property is required because we're used email as object store keyPath</span>
+<span class="hljs-function">(<span class="hljs-params"><span class="hljs-keyword">async</span> (</span>) =&gt;</span> {
+  <span class="hljs-comment">// email property is required because we're used email as object store keyPath</span>
+  <span class="hljs-keyword">await</span> User.put({ <span class="hljs-attr">email</span>: <span class="hljs-string">"bob@bob.com"</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">"bob"</span> });
 
-  <span class="hljs-keyword">await</span> Post.put(<span class="hljs-string">"post"</span>); <span class="hljs-comment">// Uses autoIncrement integer as record's keys</span>
+  <span class="hljs-comment">// Uses autoIncrement integer as record's keys</span>
+  <span class="hljs-keyword">await</span> Post.put(<span class="hljs-string">"post"</span>);
 
-  <span class="hljs-keyword">await</span> Article.put([<span class="hljs-string">"article"</span>], <span class="hljs-string">"article one"</span>); <span class="hljs-comment">// Key is required because we not specified any option</span>
+  <span class="hljs-comment">// Key is required because we not specified any option</span>
+  <span class="hljs-keyword">await</span> Article.put([<span class="hljs-string">"article"</span>], <span class="hljs-string">"article one"</span>);
 })();</code></pre>
-				<a href="#get" id="get" style="color: inherit; text-decoration: none;">
-					<h1>get</h1>
+				<a href="#a-namegetaget" id="a-namegetaget" style="color: inherit; text-decoration: none;">
+					<h2><a name="get"></a>get</h2>
 				</a>
 				<a href="#retrieve-a-specific-record-from-database" id="retrieve-a-specific-record-from-database" style="color: inherit; text-decoration: none;">
-					<h2>Retrieve a specific record from database</h2>
+					<h3>Retrieve a specific record from database</h3>
 				</a>
-				<pre><code class="language-js">(<span class="hljs-keyword">async</span> () =&gt; {
-  <span class="hljs-keyword">const</span> MyDB = <span class="hljs-keyword">await</span> IDB.init(<span class="hljs-string">"MyDB"</span>, [
-    { <span class="hljs-attr">name</span>: <span class="hljs-string">"User"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">keyPath</span>: <span class="hljs-string">"email"</span> } },
-    { <span class="hljs-attr">name</span>: <span class="hljs-string">"Post"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">autoIncrement</span>: <span class="hljs-literal">true</span> } },
-    { <span class="hljs-attr">name</span>: <span class="hljs-string">"Article"</span> },
-  ]);
+				<pre><code class="language-js"><span class="hljs-keyword">const</span> MyDB = IDB.init(<span class="hljs-string">"MyDB"</span>, <span class="hljs-number">1</span>, [
+  { <span class="hljs-attr">name</span>: <span class="hljs-string">"User"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">keyPath</span>: <span class="hljs-string">"email"</span> } },
+  { <span class="hljs-attr">name</span>: <span class="hljs-string">"Post"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">autoIncrement</span>: <span class="hljs-literal">true</span> } },
+  { <span class="hljs-attr">name</span>: <span class="hljs-string">"Article"</span> },
+]);
 
-  <span class="hljs-keyword">const</span> { User, Post, Article } = MyDB.objectStores;
+<span class="hljs-keyword">const</span> { User, Post, Article } = MyDB.objectStores;
 
-  <span class="hljs-keyword">const</span> user = <span class="hljs-keyword">await</span> User.get(<span class="hljs-string">"bob@bob.com"</span>); <span class="hljs-comment">// Use specified keyPath property as keyto retrieve the record</span>
+<span class="hljs-function">(<span class="hljs-params"><span class="hljs-keyword">async</span> (</span>) =&gt;</span> {
+  <span class="hljs-comment">// Use specified keyPath property as keyto retrieve the record</span>
+  <span class="hljs-keyword">const</span> user = <span class="hljs-keyword">await</span> User.get(<span class="hljs-string">"bob@bob.com"</span>);
 
-  <span class="hljs-keyword">const</span> post = <span class="hljs-keyword">await</span> Post.get(<span class="hljs-number">1</span>); <span class="hljs-comment">// AutoIncrement integer as key to retrieve the record</span>
+  <span class="hljs-comment">// AutoIncrement integer as key to retrieve the record</span>
+  <span class="hljs-keyword">const</span> post = <span class="hljs-keyword">await</span> Post.get(<span class="hljs-number">1</span>);
 
-  <span class="hljs-keyword">const</span> article = <span class="hljs-keyword">await</span> Article.get(<span class="hljs-string">"article one"</span>); <span class="hljs-comment">// Use manually specified key to retrieve the record</span>
+  <span class="hljs-comment">// Use manually specified key to retrieve the record</span>
+  <span class="hljs-keyword">const</span> article = <span class="hljs-keyword">await</span> Article.get(<span class="hljs-string">"article one"</span>);
 })();</code></pre>
-				<a href="#delete" id="delete" style="color: inherit; text-decoration: none;">
-					<h1>delete</h1>
+				<a href="#a-namedeleteadelete" id="a-namedeleteadelete" style="color: inherit; text-decoration: none;">
+					<h2><a name="delete"></a>delete</h2>
 				</a>
 				<a href="#delete-a-specific-record-from-database" id="delete-a-specific-record-from-database" style="color: inherit; text-decoration: none;">
-					<h2>Delete a specific record from database</h2>
+					<h3>Delete a specific record from database</h3>
 				</a>
-				<pre><code class="language-js">(<span class="hljs-keyword">async</span> () =&gt; {
-  <span class="hljs-keyword">const</span> MyDB = <span class="hljs-keyword">await</span> IDB.init(<span class="hljs-string">"MyDB"</span>, { <span class="hljs-attr">name</span>: <span class="hljs-string">"User"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">keyPath</span>: <span class="hljs-string">"email"</span> } });
+				<pre><code class="language-js"><span class="hljs-keyword">const</span> MyDB = IDB.init(<span class="hljs-string">"MyDB"</span>, <span class="hljs-number">1</span>, { <span class="hljs-attr">name</span>: <span class="hljs-string">"User"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">keyPath</span>: <span class="hljs-string">"email"</span> } });
 
-  <span class="hljs-keyword">const</span> { User } = MyDB.objectStores;
+<span class="hljs-keyword">const</span> { User } = MyDB.objectStores;
 
+<span class="hljs-function">(<span class="hljs-params"><span class="hljs-keyword">async</span> (</span>) =&gt;</span> {
   <span class="hljs-keyword">await</span> User.delete(<span class="hljs-string">"bob@bob.com"</span>);
 })();</code></pre>
-				<a href="#keys" id="keys" style="color: inherit; text-decoration: none;">
-					<h1>keys</h1>
+				<a href="#a-namekeysakeys" id="a-namekeysakeys" style="color: inherit; text-decoration: none;">
+					<h2><a name="keys"></a>keys</h2>
 				</a>
 				<a href="#retrieve-all-records-keys-from-database" id="retrieve-all-records-keys-from-database" style="color: inherit; text-decoration: none;">
-					<h2>Retrieve all records keys from database</h2>
+					<h3>Retrieve all records keys from database</h3>
 				</a>
-				<pre><code class="language-js">(<span class="hljs-keyword">async</span> () =&gt; {
-  <span class="hljs-keyword">const</span> MyDB = <span class="hljs-keyword">await</span> IDB.init(<span class="hljs-string">"MyDB"</span>, { <span class="hljs-attr">name</span>: <span class="hljs-string">"User"</span> });
+				<pre><code class="language-js"><span class="hljs-keyword">const</span> MyDB = IDB.init(<span class="hljs-string">"MyDB"</span>, <span class="hljs-number">1</span>, { <span class="hljs-attr">name</span>: <span class="hljs-string">"User"</span> });
 
-  <span class="hljs-keyword">const</span> { User } = MyDB.objectStores;
+<span class="hljs-keyword">const</span> { User } = MyDB.objectStores;
 
+<span class="hljs-function">(<span class="hljs-params"><span class="hljs-keyword">async</span> (</span>) =&gt;</span> {
   <span class="hljs-keyword">await</span> User.put(<span class="hljs-string">"bob one"</span>, <span class="hljs-string">"user one"</span>);
   <span class="hljs-keyword">await</span> User.put(<span class="hljs-string">"bob 2"</span>, <span class="hljs-number">2</span>);
   <span class="hljs-keyword">await</span> User.put(<span class="hljs-string">"bob three"</span>, <span class="hljs-string">"user three"</span>);
@@ -252,17 +319,17 @@ $ yarn add idborm</code></pre>
       [ "user one", 2, "user three" ]
   */</span>
 })();</code></pre>
-				<a href="#values" id="values" style="color: inherit; text-decoration: none;">
-					<h1>values</h1>
+				<a href="#a-namevaluesavalues" id="a-namevaluesavalues" style="color: inherit; text-decoration: none;">
+					<h2><a name="values"></a>values</h2>
 				</a>
 				<a href="#retrieve-all-records-values-from-database" id="retrieve-all-records-values-from-database" style="color: inherit; text-decoration: none;">
-					<h2>Retrieve all records values from database</h2>
+					<h3>Retrieve all records values from database</h3>
 				</a>
-				<pre><code class="language-js">(<span class="hljs-keyword">async</span> () =&gt; {
-  <span class="hljs-keyword">const</span> MyDB = <span class="hljs-keyword">await</span> IDB.init(<span class="hljs-string">"MyDB"</span>, { <span class="hljs-attr">name</span>: <span class="hljs-string">"User"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">autoIncrement</span>: <span class="hljs-literal">true</span> } });
+				<pre><code class="language-js"><span class="hljs-keyword">const</span> MyDB = IDB.init(<span class="hljs-string">"MyDB"</span>, <span class="hljs-number">1</span>, { <span class="hljs-attr">name</span>: <span class="hljs-string">"User"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">autoIncrement</span>: <span class="hljs-literal">true</span> } });
 
-  <span class="hljs-keyword">const</span> { User } = MyDB.objectStores;
+<span class="hljs-keyword">const</span> { User } = MyDB.objectStores;
 
+<span class="hljs-function">(<span class="hljs-params"><span class="hljs-keyword">async</span> (</span>) =&gt;</span> {
   <span class="hljs-keyword">await</span> User.put(<span class="hljs-string">"bob one"</span>);
   <span class="hljs-keyword">await</span> User.put({ <span class="hljs-attr">name</span>: <span class="hljs-string">"bob two"</span> });
   <span class="hljs-keyword">await</span> User.put(<span class="hljs-number">3</span>);
@@ -275,17 +342,17 @@ $ yarn add idborm</code></pre>
       [ "bob one", { name: "bob two" }, 3 ]
   */</span>
 })();</code></pre>
-				<a href="#entries" id="entries" style="color: inherit; text-decoration: none;">
-					<h1>entries</h1>
+				<a href="#a-nameentriesaentries" id="a-nameentriesaentries" style="color: inherit; text-decoration: none;">
+					<h2><a name="entries"></a>entries</h2>
 				</a>
 				<a href="#retrieve-all-records-keys-and-values-from-database" id="retrieve-all-records-keys-and-values-from-database" style="color: inherit; text-decoration: none;">
-					<h2>Retrieve all records keys and values from database</h2>
+					<h3>Retrieve all records keys and values from database</h3>
 				</a>
-				<pre><code class="language-js">(<span class="hljs-keyword">async</span> () =&gt; {
-  <span class="hljs-keyword">const</span> MyDB = <span class="hljs-keyword">await</span> IDB.init(<span class="hljs-string">"MyDB"</span>, { <span class="hljs-attr">name</span>: <span class="hljs-string">"User"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">keyPath</span>: <span class="hljs-string">"id"</span> } });
+				<pre><code class="language-js"><span class="hljs-keyword">const</span> MyDB = IDB.init(<span class="hljs-string">"MyDB"</span>, <span class="hljs-number">1</span>, { <span class="hljs-attr">name</span>: <span class="hljs-string">"User"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">keyPath</span>: <span class="hljs-string">"id"</span> } });
 
-  <span class="hljs-keyword">const</span> { User } = MyDB.objectStores;
+<span class="hljs-keyword">const</span> { User } = MyDB.objectStores;
 
+<span class="hljs-function">(<span class="hljs-params"><span class="hljs-keyword">async</span> (</span>) =&gt;</span> {
   <span class="hljs-keyword">await</span> User.put({ <span class="hljs-attr">id</span>: <span class="hljs-string">"user one"</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">"bob one"</span> });
   <span class="hljs-keyword">await</span> User.put({ <span class="hljs-attr">id</span>: <span class="hljs-string">"user two"</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">"bob two"</span> });
 
@@ -297,16 +364,27 @@ $ yarn add idborm</code></pre>
       [ ["user one", { id: "user one", name: "bob one" }], ["user two", { id: "user two", name: "bob two" }] ]
   */</span>
 })();</code></pre>
+				<a href="#examples" id="examples" style="color: inherit; text-decoration: none;">
+					<h2>Examples</h2>
+				</a>
+				<a href="#vanilla-js" id="vanilla-js" style="color: inherit; text-decoration: none;">
+					<h4>Vanilla JS</h4>
+				</a>
+				<p><a href="https://codesandbox.io/s/wizardly-saha-q4lct?fontsize=13&amp;hidenavigation=1&amp;module=%2Findex.js"><img src="https://codesandbox.io/static/img/play-codesandbox.svg" alt=""></a></p>
+				<a href="#react-serviceworker" id="react-serviceworker" style="color: inherit; text-decoration: none;">
+					<h4>React-ServiceWorker</h4>
+				</a>
+				<p><a href="https://codesandbox.io/s/idborm-react-serviceworker-example-ent45?fontsize=14&amp;hidenavigation=1&amp;theme=dark"><img src="https://codesandbox.io/static/img/play-codesandbox.svg" alt=""></a></p>
 				<a href="#contribute" id="contribute" style="color: inherit; text-decoration: none;">
-					<h1>Contribute!</h1>
+					<h2>Contribute!</h2>
 				</a>
 				<p>I always welcome help. Please just stick to the lint rules and write tests with each feature/fix</p>
 				<a href="#versioning" id="versioning" style="color: inherit; text-decoration: none;">
-					<h1>Versioning</h1>
+					<h2>Versioning</h2>
 				</a>
 				<p>We use <a href="http://semver.org/">SemVer</a> for versioning. For the versions available, see the <a href="https://github.com/tajpouria/idborm/tags">tags on this repository</a></p>
 				<a href="#license" id="license" style="color: inherit; text-decoration: none;">
-					<h1>License</h1>
+					<h2>License</h2>
 				</a>
 				<p>This project is licensed under the MIT License - see the <a href="LICENSE">LICENSE</a> file for details</p>
 			</div>

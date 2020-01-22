@@ -8,7 +8,7 @@ export declare class IDB {
     constructor(dataBaseName: string, db: Promise<IDBPDatabase<unknown>>, objectStoresMap: Record<string, IDBObject>);
     private static objectStoreDictionaryCreator;
     /**
-     * Indianize an indexed data base
+     * Initialize an indexed data base
      *
      * @param dataBaseName - Data base name
      * @param dataBaseVersion - Data base Version
@@ -28,6 +28,8 @@ export declare class IDB {
      * ```ts
      * const DB = IDB.init("TodoDataBase", 1, () => {
      *  return { name: "Todo", options: { autoIncrement: true } };
+     *  // or returns objectStores list:
+     *  return [ { name: "Todo" }, { name: "Note" } ]
      * });
      * ```
      */

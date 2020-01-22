@@ -81,11 +81,11 @@ export declare class IDBObject {
      */
     values: <Value = any>() => Promise<Value[]>;
     /**
-     * Retrieves an 2D matrix containing keys and values of records in an object store
+     * Retrieves an array of a given object's own enumerable string-keyed property `[key, value]` pairs
      *
      * @typeparam Value - value's type
      *
-     * @returns List of arrays that each array contains record's key and value
+     * @returns an array of a given object's own enumerable string-keyed property `[key, value]` pairs
      *
      * ```ts
      * await Todo.entries()

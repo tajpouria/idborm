@@ -1,8 +1,13 @@
 # IDBORM &middot; [![GitHub license](https://img.shields.io/badge/license-MIT-blue.svg)](https://github.com/tajpouria/idborm/blob/master/LICENSE) [![npm version](https://img.shields.io/npm/v/idborm?style=flat)](https://www.npmjs.com/package/idborm) [![Build Status](https://travis-ci.org/tajpouria/idborm.svg?branch=master)](https://travis-ci.org/tajpouria/idborm) [ ![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg) ](#Contribute!)
 
-A super simple and minimalist ORM built on top of IndexedDB powered by [ idb ](https://github.com/jakearchibald/idb) that makes IndexedDB usable
+### [ Homepage ](https://tajpouria.github.io/idborm/)
+
+A super simple and minimalist ORM built on top of IndexedDB powered by [ idb ](https://github.com/jakearchibald/idb) that makes IndexedDB usable in both **service worker** and **application**
+
+## Table of Contents
 
 - [ Installation ](#installation)
+- [Configuration with service worker](#configuration-with-service-worker)
 - [API](#api)
   - [ init ](#init)
   - [ ObjectStores](#objectstores)
@@ -12,16 +17,9 @@ A super simple and minimalist ORM built on top of IndexedDB powered by [ idb ](h
   - [ keys ](#keys)
   - [ values ](#values)
   - [ entries ](#entries)
+  - [ clear ](#clear)
 
-<iframe
-     src="https://codesandbox.io/embed/idborm-todo-example-q4lct?fontsize=14&hidenavigation=1&theme=dark"
-     style="width:100%; height:500px; border:0; border-radius: 4px; overflow:hidden;"
-     title="idborm-todo-example"
-     allow="geolocation; microphone; camera; midi; vr; accelerometer; gyroscope; payment; ambient-light-sensor; encrypted-media; usb"
-     sandbox="allow-modals allow-forms allow-popups allow-scripts allow-same-origin"
-   ></iframe>
-
-# installation
+## <a name="installation"></a>Installation
 
 This is a Node.js module available through the npm registry.
 
@@ -35,33 +33,63 @@ $ npm install idborm
 $ yarn add idborm
 ```
 
-# api
+## <a name="configuration-with-service-worker"></a>Configuration with service worker
+
+In order to use this module inside the `service worker` use `--serviceworker` flag provided by idborm binary script :
+
+```sh
+$ ./node_modules/.bin/idborm --serviceworker <PATH_TO_YOUR_SERVICE_WORKER>
+```
+
+you'll see it create `idborm.iife.js` containing immediately invoked idborm function expression next to your service worker _(provided after --serviceworker flag)_ and generate following code snippet on top of the service worker file:
+
+```js
+/** "idborm": Following code snippet is required to access the "IDB"*/
+importScripts("./idborm.iife.js");
+const { IDB } = idborm;
+```
+
+now, you can access idborm utility functions using destructed <a href="https://tajpouria.github.io/idborm/classes/_idb_.idb.html" target="_blank">IDB</a> class
+
+## <a name="api"></a>API
 
 Assuming you're using a module-compatible system (like webpack, Rollup etc):
 
-# init
+## <a name="init"></a>init( _database_name_, _database_version_, _object_store(s)\_Initializer_ )
 
-## Initialize database and object stores
+#### Initialize database and object stores
 
 ```js
 import IDB from "idborm";
 
-const DB = await IDB.init(database_name, object_store(s)_Initializer);
+const DB = IDB.init(database_name, database_version, object_store(s)_Initializer);
 ```
 
 - `database_name`: Name of the database
+
 - `object_store(s)_Initializer`: Represent database object store(s)_( something like `Table` or `Model` in relational or non-relational databases )_; you can initialize your database object store(s) using one of the following methods:
 
-  1. Create single object store:
+  1. initialize single object store:
 
   ```js
-  const DB = await IDB.init(database_name, { name: object_store_name, options: object_store_options });
+  import IDB from "idborm";
+
+  // Using an initializer_object
+
+  const DB = IDB.init(database_name, database_version, {
+    name: object_store_name,
+    options: object_store_options,
+  });
   ```
 
-  2. Create multiple object stores
+  2. initialize multiple object stores
 
   ```js
-  const DB = await IDB.init(database_name, [
+  import IDB from "idborm";
+
+  // Using List containing multiple initializer_objects
+
+  const DB = IDB.init(database_name, database_version, [
     { name: object_store_one_name, options: object_store_one_options },
     { name: object_store_two_name },
     .
@@ -73,7 +101,11 @@ const DB = await IDB.init(database_name, object_store(s)_Initializer);
   3. Create object store(s) using a callback function:
 
   ```js
-  const DB = await IDB.init(database_name, () => {
+  import IDB from "idborm";
+
+  // Using a callback function that and initializer_object contains or a list containing multiple initializer_objects
+
+  const DB = IDB.init(database_name, database_version, () => {
     return { name: object_store_name, options: object_store_options };
     // or
     return [
@@ -87,104 +119,146 @@ const DB = await IDB.init(database_name, object_store(s)_Initializer);
 
   - `object_store_options` _optional_ : You can specify **one** of the following options:
 
-    1. no_options: You should manually provide key for each record when [putting](#`put`-·-Put-record-in-the-database) it in the database
+    1. no_options: You should manually provide key for each record when [putting](#put) it in the database
 
     2. `keyPath`: Uses specified keyPath as record's key therefore records should contains specified keyPath
 
     3. `autoIncrement`: Uses autoIncrement integers as record's key
 
 ```js
-// Create a dataBase contains three object stores
-(async () => {
-  const MyDB = await IDB.init("MyDB", [
-    { name: "User", options: { keyPath: "email" } },
-    { name: "Post", options: { autoIncrement: true } },
-    { name: "Article" },
-  ]);
-})();
+// i.e.
+import IDB from "idborm";
+
+// Create a dataBase containing three object stores
+const MyDB = IDB.init("MyDB", 1, [
+  { name: "User", options: { keyPath: "email" } },
+  { name: "Post", options: { autoIncrement: true } },
+  { name: "Article" },
+]);
 ```
 
-# objectstores
+- `database_version`: Database objectStore(s) schema version, **bump up database_version on changing object_store(s)\_initializer to apply changes on database; (using same version or lower version will not change database object store(s)**
 
-## Destructor objectStores
+```js
+/*
+  i.e.
+  In following example we're create "Post" object store to database so we increased database version (1 -> 2) to apply changes on database
+*/
+
+// Before
+const MyDB = IDB.init("MyDB", 1, { name: "User", options: { keyPath: "email" } });
+
+// After
+const MyDB = IDB.init("MyDB", 1, [
+  { name: "User", options: { keyPath: "email" } }
+  { name: "Post" }
+  ]);
+```
+
+### Caveats
+
+- Changing object store's `name` will completely **delete** it and create another one
+- Changing just object store's `options` not applying changes on database, you have to completely delete the data base using asynchronous [ DB.delete( ) ](#db.delete) and [reinitialize](#init) it
+- Changing object without increasing `database_version` will not apply changes on database
+- Using a version **less than** current database version throw an exception
+
+## <a name="objectstores"></a>objectStores
+
+### Destructor objectStores
 
 Once you define your object stores you can destructor them from your `database.objectStores`
 
 ```js
+// i.e.
+import IDB from "idborm";
+
+// Create a dataBase containing three object stores
+const MyDB = IDB.init("MyDB", 1, [
+  { name: "User", options: { keyPath: "email" } },
+  { name: "Post", options: { autoIncrement: true } },
+  { name: "Article" },
+]);
+
 // Make sure that destructor object stores using exact same name the you defined them
 const { User, Post, Article } = MyDB.objectStores;
 ```
 
-# put
+## <a name="put"></a>put( _value_, _optional_key_ )
 
-## Put record in the database
+### Put record in the database
 
 Based on the options you specified to related object store you can put record in the database using `ObjectStore.put(value, optional_key)`
 
 ```js
+const MyDB = IDB.init("MyDB", 1, [
+  { name: "User", options: { keyPath: "email" } },
+  { name: "Post", options: { autoIncrement: true } },
+  { name: "Article" },
+]);
+
+const { User, Post, Article } = MyDB.objectStores;
+
 (async () => {
-  const MyDB = await IDB.init("MyDB", [
-    { name: "User", options: { keyPath: "email" } },
-    { name: "Post", options: { autoIncrement: true } },
-    { name: "Article" },
-  ]);
+  // email property is required because we're used email as object store keyPath
+  await User.put({ email: "bob@bob.com", name: "bob" });
 
-  const { User, Post, Article } = MyDB.objectStores;
+  // Uses autoIncrement integer as record's keys
+  await Post.put("post");
 
-  await User.put({ email: "bob@bob.com", name: "bob" }); // email property is required because we're used email as object store keyPath
-
-  await Post.put("post"); // Uses autoIncrement integer as record's keys
-
-  await Article.put(["article"], "article one"); // Key is required because we not specified any option
+  // Key is required because we not specified any option
+  await Article.put(["article"], "article one");
 })();
 ```
 
-# get
+## <a name="get"></a>get( _key_ )
 
-## Retrieve a specific record from database
+### Retrieve a specific record from database
 
 ```js
+const MyDB = IDB.init("MyDB", 1, [
+  { name: "User", options: { keyPath: "email" } },
+  { name: "Post", options: { autoIncrement: true } },
+  { name: "Article" },
+]);
+
+const { User, Post, Article } = MyDB.objectStores;
+
 (async () => {
-  const MyDB = await IDB.init("MyDB", [
-    { name: "User", options: { keyPath: "email" } },
-    { name: "Post", options: { autoIncrement: true } },
-    { name: "Article" },
-  ]);
+  // Use specified keyPath property as key to retrieve the record
+  const user = await User.get("bob@bob.com");
 
-  const { User, Post, Article } = MyDB.objectStores;
+  // AutoIncrement integer as key to retrieve the record
+  const post = await Post.get(1);
 
-  const user = await User.get("bob@bob.com"); // Use specified keyPath property as keyto retrieve the record
-
-  const post = await Post.get(1); // AutoIncrement integer as key to retrieve the record
-
-  const article = await Article.get("article one"); // Use manually specified key to retrieve the record
+  // Use manually specified key to retrieve the record
+  const article = await Article.get("article one");
 })();
 ```
 
-# delete
+## <a name="delete"></a>delete( _key_ )
 
-## Delete a specific record from database
+### Delete a specific record from database
 
 ```js
+const MyDB = IDB.init("MyDB", 1, { name: "User", options: { keyPath: "email" } });
+
+const { User } = MyDB.objectStores;
+
 (async () => {
-  const MyDB = await IDB.init("MyDB", { name: "User", options: { keyPath: "email" } });
-
-  const { User } = MyDB.objectStores;
-
   await User.delete("bob@bob.com");
 })();
 ```
 
-# keys
+## <a name="keys"></a>keys( )
 
-## Retrieve all records keys from database
+### Retrieve all records keys from database
 
 ```js
+const MyDB = IDB.init("MyDB", 1, { name: "User" });
+
+const { User } = MyDB.objectStores;
+
 (async () => {
-  const MyDB = await IDB.init("MyDB", { name: "User" });
-
-  const { User } = MyDB.objectStores;
-
   await User.put("bob one", "user one");
   await User.put("bob 2", 2);
   await User.put("bob three", "user three");
@@ -199,16 +273,16 @@ Based on the options you specified to related object store you can put record in
 })();
 ```
 
-# values
+## <a name="values"></a>values( )
 
-## Retrieve all records values from database
+### Retrieve all records values from database
 
 ```js
+const MyDB = IDB.init("MyDB", 1, { name: "User", options: { autoIncrement: true } });
+
+const { User } = MyDB.objectStores;
+
 (async () => {
-  const MyDB = await IDB.init("MyDB", { name: "User", options: { autoIncrement: true } });
-
-  const { User } = MyDB.objectStores;
-
   await User.put("bob one");
   await User.put({ name: "bob two" });
   await User.put(3);
@@ -223,37 +297,75 @@ Based on the options you specified to related object store you can put record in
 })();
 ```
 
-# entries
+## <a name="entries"></a>entries( )
 
-## Retrieve all records keys and values from database
+### Retrieves an array of a given object's own enumerable string-keyed property **[key, value]** pairs
 
 ```js
+const MyDB = IDB.init("MyDB", 1, { name: "User", options: { keyPath: "id" } });
+
+const { User } = MyDB.objectStores;
+
 (async () => {
-  const MyDB = await IDB.init("MyDB", { name: "User", options: { keyPath: "id" } });
-
-  const { User } = MyDB.objectStores;
-
   await User.put({ id: "user one", name: "bob one" });
   await User.put({ id: "user two", name: "bob two" });
 
   const entries = await User.entries();
 
-  console.log(value);
+  console.log(entries);
   /*
     output:
-      [ ["user one", { id: "user one", name: "bob one" }], ["user two", { id: "user two", name: "bob two" }] ]
+      [ 
+        ["user one", { id: "user one", name: "bob one" }],
+        ["user two", { id: "user two", name: "bob two" }]
+      ]
   */
 })();
 ```
 
-# Contribute!
+## <a name="clear"></a>clear( )
+
+### Delete all records stored in an object store
+
+```js
+const MyDB = IDB.init("MyDB", 1, { name: "User", options: { keyPath: "id" } });
+
+const { User } = MyDB.objectStores;
+
+(async () => {
+  await User.put({ id: "user one", name: "bob one" });
+  await User.put({ id: "user two", name: "bob two" });
+
+  await User.clear();
+
+  const entries = await User.entries();
+
+  console.log(entries);
+  /*
+    output:
+      []
+  */
+})();
+```
+
+## Examples
+
+#### Vanilla JS
+
+[![](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/wizardly-saha-q4lct?fontsize=13&hidenavigation=1&module=%2Findex.js)
+
+#### React-ServiceWorker
+
+[![](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/idborm-react-serviceworker-example-ent45?fontsize=14&hidenavigation=1&theme=dark)
+
+## Contribute!
 
 I always welcome help. Please just stick to the lint rules and write tests with each feature/fix
 
-# Versioning
+## Versioning
 
 We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/tajpouria/idborm/tags)
 
-# License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details
