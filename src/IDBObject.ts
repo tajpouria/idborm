@@ -17,7 +17,7 @@ export class IDBObject {
   }
 
   /**
-   * Put a record in the database
+   * Put a record in the object store
    * Replaces items with the same keys
    *
    * @param value - item's value
@@ -58,7 +58,7 @@ export class IDBObject {
   };
 
   /**
-   * Get a record from database
+   * Get a record from object store
    *
    * @param key - item's key
    *
@@ -86,7 +86,7 @@ export class IDBObject {
   };
 
   /**
-   * Delete a record from database
+   * Delete a record from object store
    *
    * @param key - item's key
    *

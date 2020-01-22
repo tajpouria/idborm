@@ -7,7 +7,7 @@ export declare class IDBObject {
     /** @ignore */
     constructor(db: Promise<IDBPDatabase<unknown>>, { name, options }: ObjectStoreInitializer);
     /**
-     * Put a record in the database
+     * Put a record in the object store
      * Replaces items with the same keys
      *
      * @param value - item's value
@@ -33,7 +33,7 @@ export declare class IDBObject {
      */
     put: <Value = any>(value: Value, key?: string | number | Date | ArrayBufferView | ArrayBuffer | IDBArrayKey | IDBKeyRange | undefined) => Promise<Value>;
     /**
-     * Get a record from database
+     * Get a record from object store
      *
      * @param key - item's key
      *
@@ -48,7 +48,7 @@ export declare class IDBObject {
      */
     get: <Value = any>(key: IDBObjectKey) => Promise<Value | undefined>;
     /**
-     * Delete a record from database
+     * Delete a record from object store
      *
      * @param key - item's key
      *

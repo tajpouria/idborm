@@ -45,7 +45,7 @@ export declare class IDB {
      * ```
      * Iterate over data base object stores :
      * ```
-     * DataBase.objectStores.methods.iterate((objectStore) => {})
+     * await DataBase.objectStores.methods.iterate((objectStore) => { /\* Some async operation *\/ })
      * ```
      */
     get objectStores(): ObjectStoresAndActionMap;
@@ -54,7 +54,7 @@ export declare class IDB {
      * Delete an indexed database
      *
      * ```ts
-     * await DataBase.delete()
+     * await DataBase.delete("task one")
      * ```
      */
     delete: () => Promise<void>;

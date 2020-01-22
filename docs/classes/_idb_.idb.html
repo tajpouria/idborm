@@ -109,7 +109,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/40ec98a/src/IDB.ts#L130">IDB.ts:130</a></li>
+									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/9f5a393/src/IDB.ts#L130">IDB.ts:130</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
@@ -122,7 +122,7 @@
 							<p>Access object stores :</p>
 							<pre><code class="language-ts"><span class="hljs-keyword">const</span> { Todo } = DB.objectStores;</code></pre>
 							<p>Iterate over data base object stores :</p>
-							<pre><code>DataBase.objectStores.methods.iterate(<span class="hljs-function"><span class="hljs-params">(objectStore)</span> =&gt;</span> {})</code></pre>
+							<pre><code><span class="hljs-keyword">await</span> DataBase.objectStores.methods.iterate(<span class="hljs-function"><span class="hljs-params">(objectStore)</span> =&gt;</span> { <span class="hljs-regexp">/\* Some async operation *\/</span> })</code></pre>
 						</li>
 					</ul>
 				</section>
@@ -139,14 +139,14 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/40ec98a/src/IDB.ts#L172">IDB.ts:172</a></li>
+									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/9f5a393/src/IDB.ts#L172">IDB.ts:172</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">
 								<div class="lead">
 									<p>Delete an indexed database</p>
 								</div>
-								<pre><code class="language-ts"><span class="hljs-keyword">await</span> DataBase.delete()</code></pre>
+								<pre><code class="language-ts"><span class="hljs-keyword">await</span> DataBase.delete(<span class="hljs-string">"task one"</span>)</code></pre>
 							</div>
 							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
 						</li>
@@ -162,7 +162,7 @@
 						<li class="tsd-description">
 							<aside class="tsd-sources">
 								<ul>
-									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/40ec98a/src/IDB.ts#L71">IDB.ts:71</a></li>
+									<li>Defined in <a href="https://github.com/tajpouria/idborm/blob/9f5a393/src/IDB.ts#L71">IDB.ts:71</a></li>
 								</ul>
 							</aside>
 							<div class="tsd-comment tsd-typography">

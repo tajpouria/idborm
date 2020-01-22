@@ -124,7 +124,7 @@ export class IDB {
    * ```
    * Iterate over data base object stores :
    * ```
-   * DataBase.objectStores.methods.iterate((objectStore) => {})
+   * await DataBase.objectStores.methods.iterate((objectStore) => { /\* Some async operation *\/ })
    * ```
    */
   public get objectStores(): ObjectStoresAndActionMap {
@@ -144,10 +144,10 @@ export class IDB {
        *
        * @returns A list contains async action results
        *
-       * Delete all completed task :
+       * Put some data in the all objectStore of a database:
        * ```ts
-       * await Todo.iterate(([key, value], index, entries) => {
-       *  if (value.completed) return Todo.delete(key);
+       * await Todo.objectStores.methods.iterate((ObjectStore , index, objectStoresArrays) => {
+       *   return ObjectStore.put("some data");
        * })
        * ```
        */
@@ -166,7 +166,7 @@ export class IDB {
    * Delete an indexed database
    *
    * ```ts
-   * await DataBase.delete()
+   * await DataBase.delete("task one")
    * ```
    */
   public delete = async (): Promise<void> => {

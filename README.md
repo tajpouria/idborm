@@ -2,12 +2,12 @@
 
 ### [ Homepage ](https://tajpouria.github.io/idborm/)
 
-A super simple and minimalist ORM built on top of IndexedDB powered by [ idb ](https://github.com/jakearchibald/idb) that makes IndexedDB in bot **service worker** an **application**
+A super simple and minimalist ORM built on top of IndexedDB powered by [ idb ](https://github.com/jakearchibald/idb) that makes IndexedDB usable in both **service worker** and **application**
 
 ## Table of Contents
 
-- [ Installation ](#Installation)
-- [configuration with service worker](#configuration-with-service-worker)
+- [ Installation ](#installation)
+- [Configuration with service worker](#configuration-with-service-worker)
 - [API](#api)
   - [ init ](#init)
   - [ ObjectStores](#objectstores)
@@ -17,8 +17,13 @@ A super simple and minimalist ORM built on top of IndexedDB powered by [ idb ](h
   - [ keys ](#keys)
   - [ values ](#values)
   - [ entries ](#entries)
+  - [ clear ](#clear)
+  - [ iterate ](#iterate)
+  - [ DB.objectStores.methods.iterate](#db.objectStores.methods.iterate)
+  - [ DB.delete ](#db.delete)
+- [Examples](#examples)
 
-## Installation
+## <a name="installation"></a>Installation
 
 This is a Node.js module available through the npm registry.
 
@@ -54,33 +59,41 @@ now, you can access idborm utility functions using destructed <a href="https://t
 
 Assuming you're using a module-compatible system (like webpack, Rollup etc):
 
-## <a name="init"></a>init
+## <a name="init"></a>init ( _database_name_, _database_version_, _object_store(s)\_Initializer_ )
 
-#### Initialize database and object stores
+### Initialize database and object stores
 
 ```js
 import IDB from "idborm";
 
-const DB = await IDB.init(database_name, database_version, object_store(s)_Initializer);
+const DB = IDB.init(database_name, database_version, object_store(s)_Initializer);
 ```
 
 - `database_name`: Name of the database
-- `database_version`:
+
 - `object_store(s)_Initializer`: Represent database object store(s)_( something like `Table` or `Model` in relational or non-relational databases )_; you can initialize your database object store(s) using one of the following methods:
 
-  1. Create single object store:
+  1. initialize single object store:
 
   ```js
-  const DB = await IDB.init(database_name, database_version, {
+  import { IDB } from "idborm";
+
+  // Using an initializer_object
+
+  const DB = IDB.init(database_name, database_version, {
     name: object_store_name,
     options: object_store_options,
   });
   ```
 
-  2. Create multiple object stores
+  2. initialize multiple object stores
 
   ```js
-  const DB = await IDB.init(database_name, database_version, [
+  import { IDB } from "idborm";
+
+  // Using List containing multiple initializer_objects
+
+  const DB = IDB.init(database_name, database_version, [
     { name: object_store_one_name, options: object_store_one_options },
     { name: object_store_two_name },
     .
@@ -92,7 +105,11 @@ const DB = await IDB.init(database_name, database_version, object_store(s)_Initi
   3. Create object store(s) using a callback function:
 
   ```js
-  const DB = await IDB.init(database_name, database_version, () => {
+  import { IDB } from "idborm";
+
+  // Using a callback function that and initializer_object contains or a list containing multiple initializer_objects
+
+  const DB = IDB.init(database_name, database_version, () => {
     return { name: object_store_name, options: object_store_options };
     // or
     return [
@@ -106,22 +123,49 @@ const DB = await IDB.init(database_name, database_version, object_store(s)_Initi
 
   - `object_store_options` _optional_ : You can specify **one** of the following options:
 
-    1. no_options: You should manually provide key for each record when [putting](#`put`-·-Put-record-in-the-database) it in the database
+    1. no_options: You should manually provide key for each record when [putting](#put) it in the database
 
     2. `keyPath`: Uses specified keyPath as record's key therefore records should contains specified keyPath
 
     3. `autoIncrement`: Uses autoIncrement integers as record's key
 
 ```js
-// Create a dataBase contains three object stores
-(async () => {
-  const MyDB = await IDB.init("MyDB", 1, [
-    { name: "User", options: { keyPath: "email" } },
-    { name: "Post", options: { autoIncrement: true } },
-    { name: "Article" },
-  ]);
-})();
+// i.e.
+import { IDB } from "idborm";
+
+// Create a dataBase containing three object stores
+const MyDB = IDB.init("MyDB", 1, [
+  { name: "User", options: { keyPath: "email" } },
+  { name: "Post", options: { autoIncrement: true } },
+  { name: "Article" },
+]);
 ```
+
+- `database_version`: Database objectStore(s) schema version, **bump up database_version on changing object_store(s)\_initializer to apply changes on database; (using same version or lower version will not change database object store(s)**
+
+```js
+/*
+  i.e.
+  In following example we're create "Post" object store to database so we increased database version (1 -> 2) to apply changes on database
+*/
+import { IDB } from "idborm";
+
+// Before
+const MyDB = IDB.init("MyDB", 1, { name: "User", options: { keyPath: "email" } });
+
+// After
+const MyDB = IDB.init("MyDB", 1, [
+  { name: "User", options: { keyPath: "email" } }
+  { name: "Post" }
+  ]);
+```
+
+### Caveats
+
+- Changing object store's `name` will completely **delete** it and create another one
+- Changing just object store's `options` not applying changes on database, you have to completely delete the data base using asynchronous [ DB.delete( ) ](#db.delete) and [reinitialize](#init) it
+- Changing object without increasing `database_version` will not apply changes on database
+- Using a version **less than** current database version throw an exception
 
 ## <a name="objectstores"></a>objectStores
 
@@ -130,49 +174,70 @@ const DB = await IDB.init(database_name, database_version, object_store(s)_Initi
 Once you define your object stores you can destructor them from your `database.objectStores`
 
 ```js
+// i.e.
+import { IDB } from "idborm";
+
+// Create a dataBase containing three object stores
+const MyDB = IDB.init("MyDB", 1, [
+  { name: "User", options: { keyPath: "email" } },
+  { name: "Post", options: { autoIncrement: true } },
+  { name: "Article" },
+]);
+
 // Make sure that destructor object stores using exact same name the you defined them
 const { User, Post, Article } = MyDB.objectStores;
 ```
 
-## <a name="put"></a>put
+## <a name="put"></a>put ( _value_, _optional_key_ )
 
-### Put record in the database
+### Put record in the object store
 
-Based on the options you specified to related object store you can put record in the database using `ObjectStore.put(value, optional_key)`
+Based on the options you specified to related object store you can put the record in the object store using `ObjectStore.put(value, optional_key)` it will Put record in the object store and Replaces items with the same keys
+
+**Notice when no option (keyPath or autoIncrement) specified key(out-of-the-line-key) is required**
 
 ```js
+import { IDB } from "idborm";
+
+const MyDB = IDB.init("MyDB", 1, [
+  { name: "User", options: { keyPath: "email" } },
+  { name: "Post", options: { autoIncrement: true } },
+  { name: "Article" },
+]);
+
+const { User, Post, Article } = MyDB.objectStores;
+
 (async () => {
-  const MyDB = await IDB.init("MyDB", 1, [
-    { name: "User", options: { keyPath: "email" } },
-    { name: "Post", options: { autoIncrement: true } },
-    { name: "Article" },
-  ]);
+  // email property is required because we're used email as object store keyPath
+  await User.put({ email: "bob@bob.com", name: "bob" });
 
-  const { User, Post, Article } = MyDB.objectStores;
+  // Uses autoIncrement integer as record's keys
+  await Post.put("post");
 
-  await User.put({ email: "bob@bob.com", name: "bob" }); // email property is required because we're used email as object store keyPath
-
-  await Post.put("post"); // Uses autoIncrement integer as record's keys
-
-  await Article.put(["article"], "article one"); // Key is required because we not specified any option
+  // Out-of-the-line-key is required because we not specified any option
+  await Article.put(["article"], "article one");
 })();
 ```
 
-## <a name="get"></a>get
+## <a name="get"></a>get ( _key_ )
 
-### Retrieve a specific record from database
+### Retrieve a specific record from object store
+
+Based on the options you specified to related object store you can get the record from object using `ObjectStore.get(value, optional_key)`
 
 ```js
+import { IDB } from "idborm";
+
+const MyDB = IDB.init("MyDB", 1, [
+  { name: "User", options: { keyPath: "email" } },
+  { name: "Post", options: { autoIncrement: true } },
+  { name: "Article" },
+]);
+
+const { User, Post, Article } = MyDB.objectStores;
+
 (async () => {
-  const MyDB = await IDB.init("MyDB", 1, [
-    { name: "User", options: { keyPath: "email" } },
-    { name: "Post", options: { autoIncrement: true } },
-    { name: "Article" },
-  ]);
-
-  const { User, Post, Article } = MyDB.objectStores;
-
-  // Use specified keyPath property as keyto retrieve the record
+  // Use specified keyPath property as key to retrieve the record
   const user = await User.get("bob@bob.com");
 
   // AutoIncrement integer as key to retrieve the record
@@ -183,30 +248,45 @@ Based on the options you specified to related object store you can put record in
 })();
 ```
 
-## <a name="delete"></a>delete
+## <a name="delete"></a>delete ( _key_ )
 
 ### Delete a specific record from database
 
 ```js
+import { IDB } from "idborm";
+
+const MyDB = IDB.init("MyDB", 1, [
+  { name: "User", options: { keyPath: "email" } },
+  { name: "Post", options: { autoIncrement: true } },
+  { name: "Article" },
+]);
+
+const { User, Post, Article } = MyDB.objectStores;
+
 (async () => {
-  const MyDB = await IDB.init("MyDB", 1, { name: "User", options: { keyPath: "email" } });
-
-  const { User } = MyDB.objectStores;
-
+  // Use specified keyPath property as key to delete the record
   await User.delete("bob@bob.com");
+
+  // AutoIncrement integer as key to delete the record
+  await Post.delete(1);
+
+  // Use manually specified key to delete the record
+  await Article.delete("article one");
 })();
 ```
 
-## <a name="keys"></a>keys
+## <a name="keys"></a>keys ( )
 
 ### Retrieve all records keys from database
 
 ```js
+import { IDB } from "idborm";
+
+const MyDB = IDB.init("MyDB", 1, { name: "User" });
+
+const { User } = MyDB.objectStores;
+
 (async () => {
-  const MyDB = await IDB.init("MyDB", 1, { name: "User" });
-
-  const { User } = MyDB.objectStores;
-
   await User.put("bob one", "user one");
   await User.put("bob 2", 2);
   await User.put("bob three", "user three");
@@ -221,23 +301,25 @@ Based on the options you specified to related object store you can put record in
 })();
 ```
 
-## <a name="values"></a>values
+## <a name="values"></a>values ( )
 
 ### Retrieve all records values from database
 
 ```js
+import { IDB } from "idborm";
+
+const MyDB = IDB.init("MyDB", 1, { name: "User", options: { autoIncrement: true } });
+
+const { User } = MyDB.objectStores;
+
 (async () => {
-  const MyDB = await IDB.init("MyDB", 1, { name: "User", options: { autoIncrement: true } });
-
-  const { User } = MyDB.objectStores;
-
   await User.put("bob one");
   await User.put({ name: "bob two" });
   await User.put(3);
 
   const values = await User.values();
 
-  console.log(value);
+  console.log(values);
   /*
     output:
       [ "bob one", { name: "bob two" }, 3 ]
@@ -245,32 +327,139 @@ Based on the options you specified to related object store you can put record in
 })();
 ```
 
-## <a name="entries"></a>entries
+## <a name="entries"></a>entries ( )
 
-### Retrieve all records keys and values from database
+### Retrieves an array of a given object's own enumerable string-keyed property **[key, value]** pairs
 
 ```js
+import { IDB } from "idborm";
+
+const MyDB = IDB.init("MyDB", 1, { name: "User", options: { keyPath: "id" } });
+
+const { User } = MyDB.objectStores;
+
 (async () => {
-  const MyDB = await IDB.init("MyDB", 1, { name: "User", options: { keyPath: "id" } });
-
-  const { User } = MyDB.objectStores;
-
   await User.put({ id: "user one", name: "bob one" });
   await User.put({ id: "user two", name: "bob two" });
 
   const entries = await User.entries();
 
-  console.log(value);
+  console.log(entries);
   /*
     output:
-      [ ["user one", { id: "user one", name: "bob one" }], ["user two", { id: "user two", name: "bob two" }] ]
+      [ 
+        ["user one", { id: "user one", name: "bob one" }],
+        ["user two", { id: "user two", name: "bob two" }]
+      ]
   */
 })();
 ```
 
-## Examples
+## <a name="clear"></a>clear( )
 
-#### Vanilla JS
+### Delete all records stored in an object store
+
+```js
+import { IDB } from "idborm";
+
+const MyDB = IDB.init("MyDB", 1, { name: "User", options: { keyPath: "id" } });
+
+const { User } = MyDB.objectStores;
+
+(async () => {
+  await User.put({ id: "user one", name: "bob one" });
+  await User.put({ id: "user two", name: "bob two" });
+
+  await User.clear();
+
+  const values = await User.values();
+
+  console.log(values);
+  /*
+    output:
+      []
+  */
+})();
+```
+
+## <a name="iterate"></a>iterate ( _( value, index, entries) => Promise_ )
+
+### Iterate over all records inside the objectStore and perform an async action on each one
+
+```js
+/*
+  i.e.
+  Delete all completed task:
+ */
+import { IDB } from "idborm";
+
+const MyDB = IDB.init("MyDB", 1, { name: "Todo", options: { keyPath: "id" } });
+
+const { Todo } = MyDB.objectStores;
+
+(async () => {
+  await Todo.put({ id: "task one", completed: true });
+  await Todo.put({ id: "task two", completed: false });
+
+  await Todo.iterate(([key, value], index, entries) => {
+    if (value.completed) {
+      return Todo.delete(key);
+    }
+  });
+
+  const values = await Todo.values();
+
+  console.log(values);
+  /*
+    output:
+      [ { id: "task two", completed: false } ]
+  */
+})();
+```
+
+## <a name="db.objectStores.methods.iterate"></a>DB.objectStores.methods.iterate ( _( objectStore, index, ObjectStoresArray) => Promise_ )
+
+### Iterate over all the object stores inside a database and perform an async action on each one
+
+```js
+/**
+  i.e.
+  Put some data in the all objectStore of a database:
+*/
+import { IDB } from "idborm";
+
+const MyDB = IDB.init("MyDB", 1, [
+  { name: "User", options: { autoIncrement: true } },
+  { name: "Post", options: { autoIncrement: true } },
+]);
+
+(async () => {
+  await MyDB.objectStores.methods.iterate((ObjectStore, index, objectStoresArray) => {
+    return ObjectStore.put("some data");
+  });
+})();
+```
+
+## <a name="db.delete"></a>DB.delete ( )
+
+### Delete an indexed database
+
+```js
+import { IDB } from "idborm";
+
+const MyDB = IDB.init("MyDB", 1, [
+  { name: "User", options: { autoIncrement: true } },
+  { name: "Post", options: { autoIncrement: true } },
+]);
+
+(async () => {
+  await MyDB.delete();
+})();
+```
+
+## <a name="examples"></a>Examples
+
+#### VanillaJS
 
 [![](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/wizardly-saha-q4lct?fontsize=13&hidenavigation=1&module=%2Findex.js)
 
@@ -284,7 +473,7 @@ I always welcome help. Please just stick to the lint rules and write tests with 
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/tajpouria/idborm/tags)
+I use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/tajpouria/idborm/tags)
 
 ## License
 

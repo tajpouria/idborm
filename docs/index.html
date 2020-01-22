@@ -67,10 +67,7 @@
 				<a href="#idborm-middot-a-hrefhttpsgithubcomtajpouriaidbormblobmasterlicenseimg-srchttpsimgshieldsiobadgelicense-mit-bluesvg-altgithub-licensea-a-hrefhttpswwwnpmjscompackageidbormimg-srchttpsimgshieldsionpmvidbormstyleflat-altnpm-versiona-a-hrefhttpstravis-ciorgtajpouriaidbormimg-srchttpstravis-ciorgtajpouriaidbormsvgbranchmaster-altbuild-statusa-a-hrefcontribute-img-srchttpsimgshieldsiobadgeprs-welcome-brightgreensvg-altprs-welcome-a" id="idborm-middot-a-hrefhttpsgithubcomtajpouriaidbormblobmasterlicenseimg-srchttpsimgshieldsiobadgelicense-mit-bluesvg-altgithub-licensea-a-hrefhttpswwwnpmjscompackageidbormimg-srchttpsimgshieldsionpmvidbormstyleflat-altnpm-versiona-a-hrefhttpstravis-ciorgtajpouriaidbormimg-srchttpstravis-ciorgtajpouriaidbormsvgbranchmaster-altbuild-statusa-a-hrefcontribute-img-srchttpsimgshieldsiobadgeprs-welcome-brightgreensvg-altprs-welcome-a" style="color: inherit; text-decoration: none;">
 					<h1>IDBORM &middot; <a href="https://github.com/tajpouria/idborm/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="GitHub license"></a> <a href="https://www.npmjs.com/package/idborm"><img src="https://img.shields.io/npm/v/idborm?style=flat" alt="npm version"></a> <a href="https://travis-ci.org/tajpouria/idborm"><img src="https://travis-ci.org/tajpouria/idborm.svg?branch=master" alt="Build Status"></a> <a href="#Contribute!"> <img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg" alt="PRs Welcome"> </a></h1>
 				</a>
-				<a href="#a-hrefhttpstajpouriagithubioidborm-homepage-a" id="a-hrefhttpstajpouriagithubioidborm-homepage-a" style="color: inherit; text-decoration: none;">
-					<h3><a href="https://tajpouria.github.io/idborm/"> Homepage </a></h3>
-				</a>
-				<p>A super simple and minimalist ORM built on top of IndexedDB powered by <a href="https://github.com/jakearchibald/idb"> idb </a> that makes IndexedDB usable in both <strong>service worker</strong> an <strong>application</strong></p>
+				<p>A super simple and minimalist ORM built on top of IndexedDB powered by <a href="https://github.com/jakearchibald/idb"> idb </a> that makes IndexedDB usable in both <strong>service worker</strong> and <strong>application</strong></p>
 				<a href="#table-of-contents" id="table-of-contents" style="color: inherit; text-decoration: none;">
 					<h2>Table of Contents</h2>
 				</a>
@@ -86,8 +83,13 @@
 							<li><a href="#keys"> keys </a></li>
 							<li><a href="#values"> values </a></li>
 							<li><a href="#entries"> entries </a></li>
+							<li><a href="#clear"> clear </a></li>
+							<li><a href="#iterate"> iterate </a></li>
+							<li><a href="#db.objectStores.methods.iterate"> DB.objectStores.methods.iterate</a></li>
+							<li><a href="#db.delete"> DB.delete </a></li>
 						</ul>
 					</li>
+					<li><a href="#examples">Examples</a></li>
 				</ul>
 				<a href="#a-nameinstallationainstallation" id="a-nameinstallationainstallation" style="color: inherit; text-decoration: none;">
 					<h2><a name="installation"></a>Installation</h2>
@@ -112,11 +114,11 @@ importScripts(<span class="hljs-string">"./idborm.iife.js"</span>);
 					<h2><a name="api"></a>API</h2>
 				</a>
 				<p>Assuming you&#39;re using a module-compatible system (like webpack, Rollup etc):</p>
-				<a href="#a-nameinitainit-emdatabase_nameem-emdatabase_versionem-emobject_stores_initializerem-" id="a-nameinitainit-emdatabase_nameem-emdatabase_versionem-emobject_stores_initializerem-" style="color: inherit; text-decoration: none;">
-					<h2><a name="init"></a>init( <em>database_name</em>, <em>database_version</em>, <em>object_store(s)_Initializer</em> )</h2>
+				<a href="#a-nameinitainit--emdatabase_nameem-emdatabase_versionem-emobject_stores_initializerem-" id="a-nameinitainit--emdatabase_nameem-emdatabase_versionem-emobject_stores_initializerem-" style="color: inherit; text-decoration: none;">
+					<h2><a name="init"></a>init ( <em>database_name</em>, <em>database_version</em>, <em>object_store(s)_Initializer</em> )</h2>
 				</a>
 				<a href="#initialize-database-and-object-stores" id="initialize-database-and-object-stores" style="color: inherit; text-decoration: none;">
-					<h4>Initialize database and object stores</h4>
+					<h3>Initialize database and object stores</h3>
 				</a>
 				<pre><code class="language-js"><span class="hljs-keyword">import</span> IDB <span class="hljs-keyword">from</span> <span class="hljs-string">"idborm"</span>;
 
@@ -128,7 +130,7 @@ importScripts(<span class="hljs-string">"./idborm.iife.js"</span>);
 						<ol>
 							<li>initialize single object store:</li>
 						</ol>
-						<pre><code class="language-js"><span class="hljs-keyword">import</span> IDB <span class="hljs-keyword">from</span> <span class="hljs-string">"idborm"</span>;
+						<pre><code class="language-js"><span class="hljs-keyword">import</span> { IDB } <span class="hljs-keyword">from</span> <span class="hljs-string">"idborm"</span>;
 
 <span class="hljs-comment">// Using an initializer_object</span>
 
@@ -139,7 +141,7 @@ importScripts(<span class="hljs-string">"./idborm.iife.js"</span>);
 						<ol start="2">
 							<li>initialize multiple object stores</li>
 						</ol>
-						<pre><code class="language-js"><span class="hljs-keyword">import</span> IDB <span class="hljs-keyword">from</span> <span class="hljs-string">"idborm"</span>;
+						<pre><code class="language-js"><span class="hljs-keyword">import</span> { IDB } <span class="hljs-keyword">from</span> <span class="hljs-string">"idborm"</span>;
 
 <span class="hljs-comment">// Using List containing multiple initializer_objects</span>
 
@@ -153,7 +155,7 @@ importScripts(<span class="hljs-string">"./idborm.iife.js"</span>);
 						<ol start="3">
 							<li>Create object store(s) using a callback function:</li>
 						</ol>
-						<pre><code class="language-js"><span class="hljs-keyword">import</span> IDB <span class="hljs-keyword">from</span> <span class="hljs-string">"idborm"</span>;
+						<pre><code class="language-js"><span class="hljs-keyword">import</span> { IDB } <span class="hljs-keyword">from</span> <span class="hljs-string">"idborm"</span>;
 
 <span class="hljs-comment">// Using a callback function that and initializer_object contains or a list containing multiple initializer_objects</span>
 
@@ -182,7 +184,7 @@ importScripts(<span class="hljs-string">"./idborm.iife.js"</span>);
 					</li>
 				</ul>
 				<pre><code class="language-js"><span class="hljs-comment">// i.e.</span>
-<span class="hljs-keyword">import</span> IDB <span class="hljs-keyword">from</span> <span class="hljs-string">"idborm"</span>;
+<span class="hljs-keyword">import</span> { IDB } <span class="hljs-keyword">from</span> <span class="hljs-string">"idborm"</span>;
 
 <span class="hljs-comment">// Create a dataBase containing three object stores</span>
 <span class="hljs-keyword">const</span> MyDB = IDB.init(<span class="hljs-string">"MyDB"</span>, <span class="hljs-number">1</span>, [
@@ -197,6 +199,7 @@ importScripts(<span class="hljs-string">"./idborm.iife.js"</span>);
   i.e.
   In following example we're create "Post" object store to database so we increased database version (1 -&gt; 2) to apply changes on database
 */</span>
+<span class="hljs-keyword">import</span> { IDB } <span class="hljs-keyword">from</span> <span class="hljs-string">"idborm"</span>;
 
 <span class="hljs-comment">// Before</span>
 <span class="hljs-keyword">const</span> MyDB = IDB.init(<span class="hljs-string">"MyDB"</span>, <span class="hljs-number">1</span>, { <span class="hljs-attr">name</span>: <span class="hljs-string">"User"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">keyPath</span>: <span class="hljs-string">"email"</span> } });
@@ -223,7 +226,7 @@ importScripts(<span class="hljs-string">"./idborm.iife.js"</span>);
 				</a>
 				<p>Once you define your object stores you can destructor them from your <code>database.objectStores</code></p>
 				<pre><code class="language-js"><span class="hljs-comment">// i.e.</span>
-<span class="hljs-keyword">import</span> IDB <span class="hljs-keyword">from</span> <span class="hljs-string">"idborm"</span>;
+<span class="hljs-keyword">import</span> { IDB } <span class="hljs-keyword">from</span> <span class="hljs-string">"idborm"</span>;
 
 <span class="hljs-comment">// Create a dataBase containing three object stores</span>
 <span class="hljs-keyword">const</span> MyDB = IDB.init(<span class="hljs-string">"MyDB"</span>, <span class="hljs-number">1</span>, [
@@ -234,14 +237,17 @@ importScripts(<span class="hljs-string">"./idborm.iife.js"</span>);
 
 <span class="hljs-comment">// Make sure that destructor object stores using exact same name the you defined them</span>
 <span class="hljs-keyword">const</span> { User, Post, Article } = MyDB.objectStores;</code></pre>
-				<a href="#a-nameputaput" id="a-nameputaput" style="color: inherit; text-decoration: none;">
-					<h2><a name="put"></a>put</h2>
+				<a href="#a-nameputaput--emvalueem-emoptional_keyem-" id="a-nameputaput--emvalueem-emoptional_keyem-" style="color: inherit; text-decoration: none;">
+					<h2><a name="put"></a>put ( <em>value</em>, <em>optional_key</em> )</h2>
 				</a>
-				<a href="#put-record-in-the-database" id="put-record-in-the-database" style="color: inherit; text-decoration: none;">
-					<h3>Put record in the database</h3>
+				<a href="#put-record-in-the-object-store" id="put-record-in-the-object-store" style="color: inherit; text-decoration: none;">
+					<h3>Put record in the object store</h3>
 				</a>
-				<p>Based on the options you specified to related object store you can put record in the database using <code>ObjectStore.put(value, optional_key)</code></p>
-				<pre><code class="language-js"><span class="hljs-keyword">const</span> MyDB = IDB.init(<span class="hljs-string">"MyDB"</span>, <span class="hljs-number">1</span>, [
+				<p>Based on the options you specified to related object store you can put the record in the object store using <code>ObjectStore.put(value, optional_key)</code> it will Put record in the object store and Replaces items with the same keys</p>
+				<p><strong>Notice when no option (keyPath or autoIncrement) specified key(out-of-the-line-key) is required</strong></p>
+				<pre><code class="language-js"><span class="hljs-keyword">import</span> { IDB } <span class="hljs-keyword">from</span> <span class="hljs-string">"idborm"</span>;
+
+<span class="hljs-keyword">const</span> MyDB = IDB.init(<span class="hljs-string">"MyDB"</span>, <span class="hljs-number">1</span>, [
   { <span class="hljs-attr">name</span>: <span class="hljs-string">"User"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">keyPath</span>: <span class="hljs-string">"email"</span> } },
   { <span class="hljs-attr">name</span>: <span class="hljs-string">"Post"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">autoIncrement</span>: <span class="hljs-literal">true</span> } },
   { <span class="hljs-attr">name</span>: <span class="hljs-string">"Article"</span> },
@@ -256,16 +262,19 @@ importScripts(<span class="hljs-string">"./idborm.iife.js"</span>);
   <span class="hljs-comment">// Uses autoIncrement integer as record's keys</span>
   <span class="hljs-keyword">await</span> Post.put(<span class="hljs-string">"post"</span>);
 
-  <span class="hljs-comment">// Key is required because we not specified any option</span>
+  <span class="hljs-comment">// Out-of-the-line-key is required because we not specified any option</span>
   <span class="hljs-keyword">await</span> Article.put([<span class="hljs-string">"article"</span>], <span class="hljs-string">"article one"</span>);
 })();</code></pre>
-				<a href="#a-namegetaget" id="a-namegetaget" style="color: inherit; text-decoration: none;">
-					<h2><a name="get"></a>get</h2>
+				<a href="#a-namegetaget--emkeyem-" id="a-namegetaget--emkeyem-" style="color: inherit; text-decoration: none;">
+					<h2><a name="get"></a>get ( <em>key</em> )</h2>
 				</a>
-				<a href="#retrieve-a-specific-record-from-database" id="retrieve-a-specific-record-from-database" style="color: inherit; text-decoration: none;">
-					<h3>Retrieve a specific record from database</h3>
+				<a href="#retrieve-a-specific-record-from-object-store" id="retrieve-a-specific-record-from-object-store" style="color: inherit; text-decoration: none;">
+					<h3>Retrieve a specific record from object store</h3>
 				</a>
-				<pre><code class="language-js"><span class="hljs-keyword">const</span> MyDB = IDB.init(<span class="hljs-string">"MyDB"</span>, <span class="hljs-number">1</span>, [
+				<p>Based on the options you specified to related object store you can get the record from object using <code>ObjectStore.get(value, optional_key)</code></p>
+				<pre><code class="language-js"><span class="hljs-keyword">import</span> { IDB } <span class="hljs-keyword">from</span> <span class="hljs-string">"idborm"</span>;
+
+<span class="hljs-keyword">const</span> MyDB = IDB.init(<span class="hljs-string">"MyDB"</span>, <span class="hljs-number">1</span>, [
   { <span class="hljs-attr">name</span>: <span class="hljs-string">"User"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">keyPath</span>: <span class="hljs-string">"email"</span> } },
   { <span class="hljs-attr">name</span>: <span class="hljs-string">"Post"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">autoIncrement</span>: <span class="hljs-literal">true</span> } },
   { <span class="hljs-attr">name</span>: <span class="hljs-string">"Article"</span> },
@@ -274,7 +283,7 @@ importScripts(<span class="hljs-string">"./idborm.iife.js"</span>);
 <span class="hljs-keyword">const</span> { User, Post, Article } = MyDB.objectStores;
 
 <span class="hljs-function">(<span class="hljs-params"><span class="hljs-keyword">async</span> (</span>) =&gt;</span> {
-  <span class="hljs-comment">// Use specified keyPath property as keyto retrieve the record</span>
+  <span class="hljs-comment">// Use specified keyPath property as key to retrieve the record</span>
   <span class="hljs-keyword">const</span> user = <span class="hljs-keyword">await</span> User.get(<span class="hljs-string">"bob@bob.com"</span>);
 
   <span class="hljs-comment">// AutoIncrement integer as key to retrieve the record</span>
@@ -283,26 +292,41 @@ importScripts(<span class="hljs-string">"./idborm.iife.js"</span>);
   <span class="hljs-comment">// Use manually specified key to retrieve the record</span>
   <span class="hljs-keyword">const</span> article = <span class="hljs-keyword">await</span> Article.get(<span class="hljs-string">"article one"</span>);
 })();</code></pre>
-				<a href="#a-namedeleteadelete" id="a-namedeleteadelete" style="color: inherit; text-decoration: none;">
-					<h2><a name="delete"></a>delete</h2>
+				<a href="#a-namedeleteadelete--emkeyem-" id="a-namedeleteadelete--emkeyem-" style="color: inherit; text-decoration: none;">
+					<h2><a name="delete"></a>delete ( <em>key</em> )</h2>
 				</a>
 				<a href="#delete-a-specific-record-from-database" id="delete-a-specific-record-from-database" style="color: inherit; text-decoration: none;">
 					<h3>Delete a specific record from database</h3>
 				</a>
-				<pre><code class="language-js"><span class="hljs-keyword">const</span> MyDB = IDB.init(<span class="hljs-string">"MyDB"</span>, <span class="hljs-number">1</span>, { <span class="hljs-attr">name</span>: <span class="hljs-string">"User"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">keyPath</span>: <span class="hljs-string">"email"</span> } });
+				<pre><code class="language-js"><span class="hljs-keyword">import</span> { IDB } <span class="hljs-keyword">from</span> <span class="hljs-string">"idborm"</span>;
 
-<span class="hljs-keyword">const</span> { User } = MyDB.objectStores;
+<span class="hljs-keyword">const</span> MyDB = IDB.init(<span class="hljs-string">"MyDB"</span>, <span class="hljs-number">1</span>, [
+  { <span class="hljs-attr">name</span>: <span class="hljs-string">"User"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">keyPath</span>: <span class="hljs-string">"email"</span> } },
+  { <span class="hljs-attr">name</span>: <span class="hljs-string">"Post"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">autoIncrement</span>: <span class="hljs-literal">true</span> } },
+  { <span class="hljs-attr">name</span>: <span class="hljs-string">"Article"</span> },
+]);
+
+<span class="hljs-keyword">const</span> { User, Post, Article } = MyDB.objectStores;
 
 <span class="hljs-function">(<span class="hljs-params"><span class="hljs-keyword">async</span> (</span>) =&gt;</span> {
+  <span class="hljs-comment">// Use specified keyPath property as key to delete the record</span>
   <span class="hljs-keyword">await</span> User.delete(<span class="hljs-string">"bob@bob.com"</span>);
+
+  <span class="hljs-comment">// AutoIncrement integer as key to delete the record</span>
+  <span class="hljs-keyword">await</span> Post.delete(<span class="hljs-number">1</span>);
+
+  <span class="hljs-comment">// Use manually specified key to delete the record</span>
+  <span class="hljs-keyword">await</span> Article.delete(<span class="hljs-string">"article one"</span>);
 })();</code></pre>
-				<a href="#a-namekeysakeys" id="a-namekeysakeys" style="color: inherit; text-decoration: none;">
-					<h2><a name="keys"></a>keys</h2>
+				<a href="#a-namekeysakeys--" id="a-namekeysakeys--" style="color: inherit; text-decoration: none;">
+					<h2><a name="keys"></a>keys ( )</h2>
 				</a>
 				<a href="#retrieve-all-records-keys-from-database" id="retrieve-all-records-keys-from-database" style="color: inherit; text-decoration: none;">
 					<h3>Retrieve all records keys from database</h3>
 				</a>
-				<pre><code class="language-js"><span class="hljs-keyword">const</span> MyDB = IDB.init(<span class="hljs-string">"MyDB"</span>, <span class="hljs-number">1</span>, { <span class="hljs-attr">name</span>: <span class="hljs-string">"User"</span> });
+				<pre><code class="language-js"><span class="hljs-keyword">import</span> { IDB } <span class="hljs-keyword">from</span> <span class="hljs-string">"idborm"</span>;
+
+<span class="hljs-keyword">const</span> MyDB = IDB.init(<span class="hljs-string">"MyDB"</span>, <span class="hljs-number">1</span>, { <span class="hljs-attr">name</span>: <span class="hljs-string">"User"</span> });
 
 <span class="hljs-keyword">const</span> { User } = MyDB.objectStores;
 
@@ -319,13 +343,15 @@ importScripts(<span class="hljs-string">"./idborm.iife.js"</span>);
       [ "user one", 2, "user three" ]
   */</span>
 })();</code></pre>
-				<a href="#a-namevaluesavalues" id="a-namevaluesavalues" style="color: inherit; text-decoration: none;">
-					<h2><a name="values"></a>values</h2>
+				<a href="#a-namevaluesavalues--" id="a-namevaluesavalues--" style="color: inherit; text-decoration: none;">
+					<h2><a name="values"></a>values ( )</h2>
 				</a>
 				<a href="#retrieve-all-records-values-from-database" id="retrieve-all-records-values-from-database" style="color: inherit; text-decoration: none;">
 					<h3>Retrieve all records values from database</h3>
 				</a>
-				<pre><code class="language-js"><span class="hljs-keyword">const</span> MyDB = IDB.init(<span class="hljs-string">"MyDB"</span>, <span class="hljs-number">1</span>, { <span class="hljs-attr">name</span>: <span class="hljs-string">"User"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">autoIncrement</span>: <span class="hljs-literal">true</span> } });
+				<pre><code class="language-js"><span class="hljs-keyword">import</span> { IDB } <span class="hljs-keyword">from</span> <span class="hljs-string">"idborm"</span>;
+
+<span class="hljs-keyword">const</span> MyDB = IDB.init(<span class="hljs-string">"MyDB"</span>, <span class="hljs-number">1</span>, { <span class="hljs-attr">name</span>: <span class="hljs-string">"User"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">autoIncrement</span>: <span class="hljs-literal">true</span> } });
 
 <span class="hljs-keyword">const</span> { User } = MyDB.objectStores;
 
@@ -336,19 +362,21 @@ importScripts(<span class="hljs-string">"./idborm.iife.js"</span>);
 
   <span class="hljs-keyword">const</span> values = <span class="hljs-keyword">await</span> User.values();
 
-  <span class="hljs-built_in">console</span>.log(value);
+  <span class="hljs-built_in">console</span>.log(values);
   <span class="hljs-comment">/*
     output:
       [ "bob one", { name: "bob two" }, 3 ]
   */</span>
 })();</code></pre>
-				<a href="#a-nameentriesaentries" id="a-nameentriesaentries" style="color: inherit; text-decoration: none;">
-					<h2><a name="entries"></a>entries</h2>
+				<a href="#a-nameentriesaentries--" id="a-nameentriesaentries--" style="color: inherit; text-decoration: none;">
+					<h2><a name="entries"></a>entries ( )</h2>
 				</a>
-				<a href="#retrieve-all-records-keys-and-values-from-database" id="retrieve-all-records-keys-and-values-from-database" style="color: inherit; text-decoration: none;">
-					<h3>Retrieve all records keys and values from database</h3>
+				<a href="#retrieves-an-array-of-a-given-object39s-own-enumerable-string-keyed-property-strongkey-valuestrong-pairs" id="retrieves-an-array-of-a-given-object39s-own-enumerable-string-keyed-property-strongkey-valuestrong-pairs" style="color: inherit; text-decoration: none;">
+					<h3>Retrieves an array of a given object&#39;s own enumerable string-keyed property <strong>[key, value]</strong> pairs</h3>
 				</a>
-				<pre><code class="language-js"><span class="hljs-keyword">const</span> MyDB = IDB.init(<span class="hljs-string">"MyDB"</span>, <span class="hljs-number">1</span>, { <span class="hljs-attr">name</span>: <span class="hljs-string">"User"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">keyPath</span>: <span class="hljs-string">"id"</span> } });
+				<pre><code class="language-js"><span class="hljs-keyword">import</span> { IDB } <span class="hljs-keyword">from</span> <span class="hljs-string">"idborm"</span>;
+
+<span class="hljs-keyword">const</span> MyDB = IDB.init(<span class="hljs-string">"MyDB"</span>, <span class="hljs-number">1</span>, { <span class="hljs-attr">name</span>: <span class="hljs-string">"User"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">keyPath</span>: <span class="hljs-string">"id"</span> } });
 
 <span class="hljs-keyword">const</span> { User } = MyDB.objectStores;
 
@@ -358,17 +386,118 @@ importScripts(<span class="hljs-string">"./idborm.iife.js"</span>);
 
   <span class="hljs-keyword">const</span> entries = <span class="hljs-keyword">await</span> User.entries();
 
-  <span class="hljs-built_in">console</span>.log(value);
+  <span class="hljs-built_in">console</span>.log(entries);
   <span class="hljs-comment">/*
     output:
-      [ ["user one", { id: "user one", name: "bob one" }], ["user two", { id: "user two", name: "bob two" }] ]
+      [ 
+        ["user one", { id: "user one", name: "bob one" }],
+        ["user two", { id: "user two", name: "bob two" }]
+      ]
   */</span>
 })();</code></pre>
-				<a href="#examples" id="examples" style="color: inherit; text-decoration: none;">
-					<h2>Examples</h2>
+				<a href="#a-nameclearaclear-" id="a-nameclearaclear-" style="color: inherit; text-decoration: none;">
+					<h2><a name="clear"></a>clear( )</h2>
 				</a>
-				<a href="#vanilla-js" id="vanilla-js" style="color: inherit; text-decoration: none;">
-					<h4>Vanilla JS</h4>
+				<a href="#delete-all-records-stored-in-an-object-store" id="delete-all-records-stored-in-an-object-store" style="color: inherit; text-decoration: none;">
+					<h3>Delete all records stored in an object store</h3>
+				</a>
+				<pre><code class="language-js"><span class="hljs-keyword">import</span> { IDB } <span class="hljs-keyword">from</span> <span class="hljs-string">"idborm"</span>;
+
+<span class="hljs-keyword">const</span> MyDB = IDB.init(<span class="hljs-string">"MyDB"</span>, <span class="hljs-number">1</span>, { <span class="hljs-attr">name</span>: <span class="hljs-string">"User"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">keyPath</span>: <span class="hljs-string">"id"</span> } });
+
+<span class="hljs-keyword">const</span> { User } = MyDB.objectStores;
+
+<span class="hljs-function">(<span class="hljs-params"><span class="hljs-keyword">async</span> (</span>) =&gt;</span> {
+  <span class="hljs-keyword">await</span> User.put({ <span class="hljs-attr">id</span>: <span class="hljs-string">"user one"</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">"bob one"</span> });
+  <span class="hljs-keyword">await</span> User.put({ <span class="hljs-attr">id</span>: <span class="hljs-string">"user two"</span>, <span class="hljs-attr">name</span>: <span class="hljs-string">"bob two"</span> });
+
+  <span class="hljs-keyword">await</span> User.clear();
+
+  <span class="hljs-keyword">const</span> values = <span class="hljs-keyword">await</span> User.values();
+
+  <span class="hljs-built_in">console</span>.log(values);
+  <span class="hljs-comment">/*
+    output:
+      []
+  */</span>
+})();</code></pre>
+				<a href="#a-nameiterateaiterate--em-value-index-entries-gt-promiseem-" id="a-nameiterateaiterate--em-value-index-entries-gt-promiseem-" style="color: inherit; text-decoration: none;">
+					<h2><a name="iterate"></a>iterate ( <em>( value, index, entries) =&gt; Promise</em> )</h2>
+				</a>
+				<a href="#iterate-over-all-records-inside-the-objectstore-and-perform-an-async-action-on-each-one" id="iterate-over-all-records-inside-the-objectstore-and-perform-an-async-action-on-each-one" style="color: inherit; text-decoration: none;">
+					<h3>Iterate over all records inside the objectStore and perform an async action on each one</h3>
+				</a>
+				<pre><code class="language-js"><span class="hljs-comment">/*
+  i.e.
+  Delete all completed task:
+ */</span>
+<span class="hljs-keyword">import</span> { IDB } <span class="hljs-keyword">from</span> <span class="hljs-string">"idborm"</span>;
+
+<span class="hljs-keyword">const</span> MyDB = IDB.init(<span class="hljs-string">"MyDB"</span>, <span class="hljs-number">1</span>, { <span class="hljs-attr">name</span>: <span class="hljs-string">"Todo"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">keyPath</span>: <span class="hljs-string">"id"</span> } });
+
+<span class="hljs-keyword">const</span> { Todo } = MyDB.objectStores;
+
+<span class="hljs-function">(<span class="hljs-params"><span class="hljs-keyword">async</span> (</span>) =&gt;</span> {
+  <span class="hljs-keyword">await</span> Todo.put({ <span class="hljs-attr">id</span>: <span class="hljs-string">"task one"</span>, <span class="hljs-attr">completed</span>: <span class="hljs-literal">true</span> });
+  <span class="hljs-keyword">await</span> Todo.put({ <span class="hljs-attr">id</span>: <span class="hljs-string">"task two"</span>, <span class="hljs-attr">completed</span>: <span class="hljs-literal">false</span> });
+
+  <span class="hljs-keyword">await</span> Todo.iterate(<span class="hljs-function">(<span class="hljs-params">[key, value], index, entries</span>) =&gt;</span> {
+    <span class="hljs-keyword">if</span> (value.completed) {
+      <span class="hljs-keyword">return</span> Todo.delete(key);
+    }
+  });
+
+  <span class="hljs-keyword">const</span> values = <span class="hljs-keyword">await</span> Todo.values();
+
+  <span class="hljs-built_in">console</span>.log(values);
+  <span class="hljs-comment">/*
+    output:
+      [ { id: "task two", completed: false } ]
+  */</span>
+})();</code></pre>
+				<a href="#a-namedbobjectstoresmethodsiterateadbobjectstoresmethodsiterate--em-objectstore-index-objectstoresarray-gt-promiseem-" id="a-namedbobjectstoresmethodsiterateadbobjectstoresmethodsiterate--em-objectstore-index-objectstoresarray-gt-promiseem-" style="color: inherit; text-decoration: none;">
+					<h2><a name="db.objectStores.methods.iterate"></a>DB.objectStores.methods.iterate ( <em>( objectStore, index, ObjectStoresArray) =&gt; Promise</em> )</h2>
+				</a>
+				<a href="#iterate-over-all-the-object-stores-inside-a-database-and-perform-an-async-action-on-each-one" id="iterate-over-all-the-object-stores-inside-a-database-and-perform-an-async-action-on-each-one" style="color: inherit; text-decoration: none;">
+					<h3>Iterate over all the object stores inside a database and perform an async action on each one</h3>
+				</a>
+				<pre><code class="language-js"><span class="hljs-comment">/**
+  i.e.
+  Put some data in the all objectStore of a database:
+*/</span>
+<span class="hljs-keyword">import</span> { IDB } <span class="hljs-keyword">from</span> <span class="hljs-string">"idborm"</span>;
+
+<span class="hljs-keyword">const</span> MyDB = IDB.init(<span class="hljs-string">"MyDB"</span>, <span class="hljs-number">1</span>, [
+  { <span class="hljs-attr">name</span>: <span class="hljs-string">"User"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">autoIncrement</span>: <span class="hljs-literal">true</span> } },
+  { <span class="hljs-attr">name</span>: <span class="hljs-string">"Post"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">autoIncrement</span>: <span class="hljs-literal">true</span> } },
+]);
+
+<span class="hljs-function">(<span class="hljs-params"><span class="hljs-keyword">async</span> (</span>) =&gt;</span> {
+  <span class="hljs-keyword">await</span> MyDB.objectStores.methods.iterate(<span class="hljs-function">(<span class="hljs-params">ObjectStore, index, objectStoresArray</span>) =&gt;</span> {
+    <span class="hljs-keyword">return</span> ObjectStore.put(<span class="hljs-string">"some data"</span>);
+  });
+})();</code></pre>
+				<a href="#a-namedbdeleteadbdelete--" id="a-namedbdeleteadbdelete--" style="color: inherit; text-decoration: none;">
+					<h2><a name="db.delete"></a>DB.delete ( )</h2>
+				</a>
+				<a href="#delete-an-indexed-database" id="delete-an-indexed-database" style="color: inherit; text-decoration: none;">
+					<h3>Delete an indexed database</h3>
+				</a>
+				<pre><code class="language-js"><span class="hljs-keyword">import</span> { IDB } <span class="hljs-keyword">from</span> <span class="hljs-string">"idborm"</span>;
+
+<span class="hljs-keyword">const</span> MyDB = IDB.init(<span class="hljs-string">"MyDB"</span>, <span class="hljs-number">1</span>, [
+  { <span class="hljs-attr">name</span>: <span class="hljs-string">"User"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">autoIncrement</span>: <span class="hljs-literal">true</span> } },
+  { <span class="hljs-attr">name</span>: <span class="hljs-string">"Post"</span>, <span class="hljs-attr">options</span>: { <span class="hljs-attr">autoIncrement</span>: <span class="hljs-literal">true</span> } },
+]);
+
+<span class="hljs-function">(<span class="hljs-params"><span class="hljs-keyword">async</span> (</span>) =&gt;</span> {
+  <span class="hljs-keyword">await</span> MyDB.delete();
+})();</code></pre>
+				<a href="#a-nameexamplesaexamples" id="a-nameexamplesaexamples" style="color: inherit; text-decoration: none;">
+					<h2><a name="examples"></a>Examples</h2>
+				</a>
+				<a href="#vanillajs" id="vanillajs" style="color: inherit; text-decoration: none;">
+					<h4>VanillaJS</h4>
 				</a>
 				<p><a href="https://codesandbox.io/s/wizardly-saha-q4lct?fontsize=13&amp;hidenavigation=1&amp;module=%2Findex.js"><img src="https://codesandbox.io/static/img/play-codesandbox.svg" alt=""></a></p>
 				<a href="#react-serviceworker" id="react-serviceworker" style="color: inherit; text-decoration: none;">
@@ -382,7 +511,7 @@ importScripts(<span class="hljs-string">"./idborm.iife.js"</span>);
 				<a href="#versioning" id="versioning" style="color: inherit; text-decoration: none;">
 					<h2>Versioning</h2>
 				</a>
-				<p>We use <a href="http://semver.org/">SemVer</a> for versioning. For the versions available, see the <a href="https://github.com/tajpouria/idborm/tags">tags on this repository</a></p>
+				<p>I use <a href="http://semver.org/">SemVer</a> for versioning. For the versions available, see the <a href="https://github.com/tajpouria/idborm/tags">tags on this repository</a></p>
 				<a href="#license" id="license" style="color: inherit; text-decoration: none;">
 					<h2>License</h2>
 				</a>
