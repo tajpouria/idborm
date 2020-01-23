@@ -1,5 +1,5 @@
 import React from "react";
-import { IDB, Entry } from "../../../lib";
+import { IDB, Entry } from "idborm";
 
 import "./App.css";
 

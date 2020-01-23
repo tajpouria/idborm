@@ -139,7 +139,7 @@ const MyDB = IDB.init("MyDB", 1, [
 ]);
 ```
 
-- `database_version`: Database objectStore(s) schema version, **bump up database_version on changing object_store(s)\_initializer to apply changes on database; (using same version or lower version will not change database object store(s)**
+- `database_version`: Database objectStore(s) schema version, **you have to bump database_version on changing object_store(s)\_initializer to apply changes on database; (using same version or lower version will not change database object store(s)**
 
 ```js
 /*
@@ -455,15 +455,13 @@ const MyDB = IDB.init("MyDB", 1, [
 })();
 ```
 
-## <a name="examples"></a>Examples
+## <a name="examples"></a>Example
 
 #### VanillaJS
 
 [![](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/wizardly-saha-q4lct?fontsize=13&hidenavigation=1&module=%2Findex.js)
 
-#### React-ServiceWorker
-
-[![](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/idborm-react-serviceworker-example-ent45?fontsize=14&hidenavigation=1&theme=dark)
+#### [ React-ServiceWorker ](https://github.com/tajpouria/idborm/tree/master/examples)
 
 ## Contribute!
 
