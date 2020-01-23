@@ -3,7 +3,7 @@
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>idborm - v1.0.0</title>
+	<title>idborm - v1.0.1</title>
 	<meta name="description" content="">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<link rel="stylesheet" href="assets/css/main.css">
@@ -22,7 +22,7 @@
 						<li class="state loading">Preparing search index...</li>
 						<li class="state failure">The search index is not available</li>
 					</ul>
-					<a href="index.html" class="title">idborm - v1.0.0</a>
+					<a href="index.html" class="title">idborm - v1.0.1</a>
 				</div>
 				<div class="table-cell" id="tsd-widgets">
 					<div id="tsd-filter">
@@ -56,7 +56,7 @@
 					<a href="globals.html">Globals</a>
 				</li>
 			</ul>
-			<h1>idborm - v1.0.0</h1>
+			<h1>idborm - v1.0.1</h1>
 		</div>
 	</div>
 </header>
@@ -193,7 +193,7 @@ importScripts(<span class="hljs-string">"./idborm.iife.js"</span>);
   { <span class="hljs-attr">name</span>: <span class="hljs-string">"Article"</span> },
 ]);</code></pre>
 				<ul>
-					<li><code>database_version</code>: Database objectStore(s) schema version, <strong>bump up database_version on changing object_store(s)_initializer to apply changes on database; (using same version or lower version will not change database object store(s)</strong></li>
+					<li><code>database_version</code>: Database objectStore(s) schema version, <strong>you have to bump database_version on changing object_store(s)_initializer to apply changes on database; (using same version or lower version will not change database object store(s)</strong></li>
 				</ul>
 				<pre><code class="language-js"><span class="hljs-comment">/*
   i.e.
@@ -493,13 +493,17 @@ importScripts(<span class="hljs-string">"./idborm.iife.js"</span>);
 <span class="hljs-function">(<span class="hljs-params"><span class="hljs-keyword">async</span> (</span>) =&gt;</span> {
   <span class="hljs-keyword">await</span> MyDB.delete();
 })();</code></pre>
-				<a href="#a-nameexamplesaexample" id="a-nameexamplesaexample" style="color: inherit; text-decoration: none;">
-					<h2><a name="examples"></a>Example</h2>
+				<a href="#a-nameexamplesaexamples" id="a-nameexamplesaexamples" style="color: inherit; text-decoration: none;">
+					<h2><a name="examples"></a>Examples</h2>
 				</a>
 				<a href="#vanillajs" id="vanillajs" style="color: inherit; text-decoration: none;">
 					<h4>VanillaJS</h4>
 				</a>
 				<p><a href="https://codesandbox.io/s/wizardly-saha-q4lct?fontsize=13&amp;hidenavigation=1&amp;module=%2Findex.js"><img src="https://codesandbox.io/static/img/play-codesandbox.svg" alt=""></a></p>
+				<a href="#react-serviceworker" id="react-serviceworker" style="color: inherit; text-decoration: none;">
+					<h4>React-ServiceWorker</h4>
+				</a>
+				<p><a href="https://idborm-react-serviceworker-example.netlify.com/"><img src="https://www.netlify.com/img/deploy/button.svg" alt="Netlify Status"></a></p>
 				<a href="#contribute" id="contribute" style="color: inherit; text-decoration: none;">
 					<h2>Contribute!</h2>
 				</a>

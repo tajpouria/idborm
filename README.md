@@ -457,13 +457,15 @@ const MyDB = IDB.init("MyDB", 1, [
 })();
 ```
 
-## <a name="examples"></a>Example
+## <a name="examples"></a>Examples
 
-#### VanillaJS Demo 
+#### VanillaJS Demo
+
 [![](https://codesandbox.io/static/img/play-codesandbox.svg)](https://codesandbox.io/s/wizardly-saha-q4lct?fontsize=13&hidenavigation=1&module=%2Findex.js)
 
+#### React-ServiceWorker
 
-#### [ React-ServiceWorker ](https://github.com/tajpouria/idborm/tree/master/examples)
+[![Netlify Status](https://www.netlify.com/img/deploy/button.svg)](https://idborm-react-serviceworker-example.netlify.com/)
 
 ## Contribute!
 
